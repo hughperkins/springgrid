@@ -1,13 +1,13 @@
 create table gamerequestqueue (
-   int gamerequestid,
-   varchar(255) ai0name,
-   varchar(255) ai0version,
-   varchar(255) ai1name,
-   varchar(255) ai1version
-   varchar(255) map,
-   varchar(255) maphash,
-   varchar(255) mod,
-   varchar(255) modhash
-   boolean cheatingallowed
+   gamerequestid integer not null,
+   ai0name varchar(255) not null,
+   ai0version varchar(255) not null,
+   ai1name varchar(255) not null,
+   ai1version varchar(255) not null,
+   mapname varchar(255) not null,
+   maphash varchar(255) not null,
+   modname varchar(255) not null,
+   modhash varchar(255) not null,
+   cheatingallowed varchar(255) not null default 'yes'
 );
 
