@@ -1,5 +1,5 @@
-create table gamerequestqueue (
-   gamerequestid integer not null,
+create table matchrequestqueue (
+   matchrequestid integer not null,
    ai0name varchar(255) not null,
    ai0version varchar(255) not null,
    ai1name varchar(255) not null,
