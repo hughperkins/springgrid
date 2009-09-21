@@ -1,0 +1,24 @@
+what is this?
+- it's the calcengine part of the ailadder
+- it gets the specification of a single ai match to run from a webserver and runs it
+- then it uploads the result to the webserver
+- at least, that's the goal, it doesn' quite do that yet ;-) but it almost does...
+
+What it does at the momenet:
+- downloads a request
+- runs spring, determines the result
+- does nothing with the result for now
+
+prequirements
+- python
+- internet connection
+- Spring
+- just for info, this was tested on Ubuntu Jaunty
+
+configuration:
+- set the directory of your spring installation in the top of the calcengine.py file
+- you'll need to have the appropriate AIs, mods and maps installed for now, though clearly this would need to be handled automatically in the future...
+
+running calcengine:
+- simply run calcengine.py
+
