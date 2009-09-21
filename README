@@ -1,0 +1,7 @@
+calcengine contains the calcengine, that runs spring games on any pc
+somewhere
+
+webserver contains the code for a webserver, or will do
+webserver/db contains the sql to create tables on the webserver db, 
+targeting mysql
+
