@@ -48,14 +48,31 @@
 # - mark the request as undergoing processing, with a date/time stamp
 # - create the appropriate xml to return the request to the calcengine
 
-import config
+import cgitb; cgitb.enable()
+import sys
+import os
+import Cookie
+# import cookiefile
+import cgi
 
+import config
+import dbconnection
+
+class InputParameters:
+   def __init__(self):
+      pass
+
+# retrieve calcengine name and calcengine sharedsecret
 def getinputparameters():
-   pass
+   form = cgi.FieldStorage()
+   inputparameters = InputParameters()
+   inputparameters.calcenginename = form["calcenginename"].value
+   inputparameters.sharedsecret = form["sharedsecret"].value
+   return inputparameters
 
 # can probably be in some shared file, rather than in each python file...
 def connectdb():
-   pass
+   dbconnection.connectdb()
 
 def validatesharedsecret():
    pass
@@ -70,6 +87,10 @@ def markrequestasinprogress( requestitem, calcenginedescription ):
    pass
 
 def sendrequesttoengine( requestitem ):
+   print "Content-type: text/xml"
+   print ""
+   print ""
+   print "<root />"
    pass
 
 getinputparameters()
