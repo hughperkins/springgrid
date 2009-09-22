@@ -48,6 +48,8 @@
 # - mark the request as undergoing processing, with a date/time stamp
 # - create the appropriate xml to return the request to the calcengine
 
+import config
+
 def getinputparameters():
    pass
 

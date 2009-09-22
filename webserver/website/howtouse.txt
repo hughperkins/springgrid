@@ -1,0 +1,8 @@
+prerequisites
+- have set up database, using the sql scripts in db
+- have a linux webserver capable of running python scripts
+
+setup
+- copy config.py.template to config.py
+- configure the database connection settings for your database
+

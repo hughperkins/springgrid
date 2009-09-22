@@ -1,0 +1,7 @@
+dbhost = "localhost"
+dbname = "ailadder"
+dbuser = ""
+dbpassword = ""
+
+gametimeoutminutes = 30
+
