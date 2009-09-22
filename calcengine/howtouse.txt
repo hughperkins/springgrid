@@ -18,6 +18,7 @@ prequirements
 configuration:
 - set the directory of your spring installation in the top of the calcengine.py file
 - you'll need to have the appropriate AIs, mods and maps installed for now, though clearly this would need to be handled automatically in the future...
+- change the name of your calcengine and your shared secret in the top of the calcengine.py file
 
 running calcengine:
 - simply run calcengine.py

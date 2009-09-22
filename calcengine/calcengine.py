@@ -36,6 +36,11 @@ webserverrequesturl = "http://manageddreams.com/ailadder/calcengineentrypointstu
 
 # webserverposturl = "http://springrts.com/ailadder/calcenginesubmitresult"
 
+# note that the sharedsecret is stored in clear (think wep shared secrets)
+# so don't go using your favorite most secure password here...
+calcenginename="yournamehereforexample"
+sharedsecret="somesimplesharedsecret"
+
 springgamedir = "/data/taspring/git/spring0804/game"
 scripttemplatefilename = "scripttemplate.txt"
 
@@ -60,7 +65,8 @@ def StringToInteger( integerstring ):
    return int( integerstring )
 
 def requestgamefromwebserver():
-   serverrequesthandle = urllib.urlopen( webserverrequesturl )
+   requestparams = urllib.urlencode({'calcenginename': calcenginename, 'sharedsecret': sharedsecret })
+   serverrequesthandle = urllib.urlopen( webserverrequesturl, requestparams )
    serverrequestarray = serverrequesthandle.readlines()
    print serverrequestarray
    serverrequeststring = ''.join( serverrequestarray )
