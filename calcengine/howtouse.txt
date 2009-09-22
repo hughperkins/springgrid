@@ -16,9 +16,10 @@ prequirements
 - just for info, this was tested on Ubuntu Jaunty
 
 configuration:
-- set the directory of your spring installation in the top of the calcengine.py file
+- copy config.py.template to config.py
+- set the directory of your spring installation in config.py
 - you'll need to have the appropriate AIs, mods and maps installed for now, though clearly this would need to be handled automatically in the future...
-- change the name of your calcengine and your shared secret in the top of the calcengine.py file
+- change the name of your calcengine and your shared secret in config.py
 
 running calcengine:
 - simply run calcengine.py

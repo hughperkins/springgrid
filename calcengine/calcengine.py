@@ -31,20 +31,11 @@ import sys
 import io
 from xml.dom import minidom
 
-# webserverrequesturl="http://springrts.com/ailadder/calcenginegetrequest"
-webserverrequesturl = "http://manageddreams.com/ailadder/calcengineentrypointstub.xml"
-
-# webserverposturl = "http://springrts.com/ailadder/calcenginesubmitresult"
-
-# note that the sharedsecret is stored in clear (think wep shared secrets)
-# so don't go using your favorite most secure password here...
-calcenginename="yournamehereforexample"
-sharedsecret="somesimplesharedsecret"
-
-springgamedir = "/data/taspring/git/spring0804/game"
-scripttemplatefilename = "scripttemplate.txt"
+import config
 
 scriptdir = os.path.dirname( os.path.realpath( __file__ ) )
+
+# config.config()
 
 class ServerRequest():
    def __init__( self ):
@@ -65,8 +56,8 @@ def StringToInteger( integerstring ):
    return int( integerstring )
 
 def requestgamefromwebserver():
-   requestparams = urllib.urlencode({'calcenginename': calcenginename, 'sharedsecret': sharedsecret })
-   serverrequesthandle = urllib.urlopen( webserverrequesturl, requestparams )
+   requestparams = urllib.urlencode({'calcenginename': config.calcenginename, 'sharedsecret': config.sharedsecret })
+   serverrequesthandle = urllib.urlopen( config.webserverrequesturl, requestparams )
    serverrequestarray = serverrequesthandle.readlines()
    print serverrequestarray
    serverrequeststring = ''.join( serverrequestarray )
@@ -104,7 +95,7 @@ def writeFile( filepath, contents ):
 
 def rungame( serverrequest ):
    gameresult = GameResult()
-   scripttemplatecontents = readFile( scriptdir + "/" + scripttemplatefilename )
+   scripttemplatecontents = readFile( scriptdir + "/" + config.scripttemplatefilename )
 
    scriptcontents = scripttemplatecontents
    scriptcontents = scriptcontents.replace("%MAP%", serverrequest.map )
@@ -116,20 +107,20 @@ def rungame( serverrequest ):
    scriptcontents = scriptcontents.replace("%AI1%", serverrequest.ai1 )
    scriptcontents = scriptcontents.replace("%AI1VERSION%", serverrequest.ai1version )
 
-   writeFile( springgamedir + "/script.txt", scriptcontents )
+   writeFile( config.springgamedir + "/script.txt", scriptcontents )
 
-   if os.path.exists( springgamedir + "/infolog.txt" ):
-      os.remove( springgamedir + "/infolog.txt" )
+   if os.path.exists( config.springgamedir + "/infolog.txt" ):
+      os.remove( config.springgamedir + "/infolog.txt" )
 
-   os.chdir( springgamedir )
+   os.chdir( config.springgamedir )
    # os.exec( "./spring script.txt" )
    # subprocess.call(["./spring", "script.txt"])
    popen = subprocess.Popen(["./spring", "script.txt"])
    finished = False
    while not finished:
       print "waiting for game to terminate..."
-      if os.path.exists( springgamedir + "/infolog.txt" ):
-         infologcontents = readFile( springgamedir + "/infolog.txt" )
+      if os.path.exists( config.springgamedir + "/infolog.txt" ):
+         infologcontents = readFile( config.springgamedir + "/infolog.txt" )
          # print infologcontents
          ai0endstring = serverrequest.gameendstring.replace("%TEAMNUMBER%", "0")
          ai1endstring = serverrequest.gameendstring.replace("%TEAMNUMBER%", "1")
