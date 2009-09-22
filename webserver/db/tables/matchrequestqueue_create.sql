@@ -21,14 +21,10 @@
 
 create table matchrequestqueue (
    matchrequest_id integer not null,
-   ai0name varchar(255) not null,
-   ai0version varchar(255) not null,
-   ai1name varchar(255) not null,
-   ai1version varchar(255) not null,
-   mapname varchar(255) not null,
-   maphash varchar(255) not null,
-   modname varchar(255) not null,
-   modhash varchar(255) not null,
-   cheatingallowed varchar(255) not null default 'yes'
+   ai0_id integer,
+   ai1_id integer,
+   map_id integer not null,
+   mod_id integer not null
 );
+# note: options will go in a separate table, joined on matchrequest_id
 

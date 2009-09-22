@@ -63,6 +63,10 @@ class InputParameters:
    def __init__(self):
       pass
 
+class MatchRequest:
+   def __init__(self):
+      pass
+
 # retrieve calcengine name and calcengine sharedsecret
 def getinputparameters():
    form = cgi.FieldStorage()
@@ -94,7 +98,7 @@ def getcalcenginedescription(inputparameters):
 # older than a certain time
 # placeholder for now
 def archiveoldrequests():
-   dbcursor.execute("select datetimeassigned from matchrequests_inprogress")
+   dbconnection.cursor.execute("select datetimeassigned from matchrequests_inprogress")
    row = dbconnection.cursor.fetchone()
    while row != None:
       datetimestring = row[0]
@@ -108,10 +112,35 @@ def getcompatibleitemfromqueue( calcenginedescription ):
    archiveoldrequests()
    # now we've archived the old requests, we just pick a request
    # in the future, we'll pick a compatible request.  In the future ;-)
-   dbconnection.cursor.execute("select matchrequest_id, ai0name, ai0version, ai1name, ai1version, mapname, maphash, modname, modhash, cheatingallowed from matchrequestqueue")
+   # also, we need to handle options.  In the future ;-)
+   dbconnection.cursor.execute("select matchrequest_id, ai0.ai_name, ai0.ai_version, ai1.ai_name, ai1.ai_version, mapname, maphash, modname, modhash " \
+      "from matchrequestqueue," \
+      " ais as ai0," \
+      " ais as ai1, " \
+      " maps, " \
+      " mods " \
+      " where ai0.ai_id = ai0_id " \
+      " and ai1.ai_id = ai1_id " \
+      " and maps.mapid = matchrequestqueue.map_id " \
+      " and mods.mod_id = matchrequestqueue.mod_id" )
    row = dbconnection.cursor.fetchone()
    # just take the first one...
-   
+   if row != None:
+      # we got a row
+      matchrequest = MatchRequest()
+      matchrequest.matchrequest_id = row[0]
+      matchrequest.ai0name = row[1]
+      matchrequest.ai0version = row[2]
+      matchrequest.ai1name = row[3]
+      matchrequest.ai1version = row[4]
+      matchrequest.mapname = row[5]
+      matchrequest.maphash = row[6]
+      matchrequest.modname = row[7]
+      matchrequest.modhash = row[8]
+      return matchrequest
+   else:
+      # no rows left. great!
+      return None
 
 def markrequestasinprogress( requestitem, calcenginedescription ):
    pass
@@ -120,23 +149,46 @@ def sendrequesttoengine( requestitem ):
    print "Content-type: text/xml"
    print ""
    print ""
-   print "<root />"
-   pass
+   print "<request "
+   print "mod='" + requestitem.modname + " "
+   print "modhash='" + requestitem.modhash + " "
+   print "map='" + requestitem.mapname + " "
+   print "maphash='" + requestitem.maphash + " "
+   print "ai0='" + requestitem.ai0name + " "
+   print "ai0version='" + requestitem.ai0version + " "
+   print "ai1='" + requestitem.ai1name + " "
+   print "ai1version='" + requestitem.ai1version + " "
+   print "gametimeoutminutes='" + config.gametimeoutminutes + " "
+   print "gameendstring='" + config.gameendstring + " "
+   print ">"
+   print "</request>"
 
 def fail():
-   print "Content-type: text/plain"
+   print "Content-type: text/xml"
    print ""
    print ""
-   print "Unauthorized."
-   sys.exit(0)
-   
+   print "<request summary='unauthorized' />"
+   print ""
+
+def sendnothing():
+   print "Content-type: text/xml"
+   print ""
+   print ""
+   print "<request summary='nothingtodo' />"
+   print ""
 
 inputparameters = getinputparameters()
 connectdb()
 if not validatesharedsecret( inputparameters ):
    fail()
+   sys.exit(0)
+
 calcenginedescription = getcalcenginedescription(inputparameters)
 requestitem = getcompatibleitemfromqueue(calcenginedescription)
+if requestitem == None:
+   sendnothing()
+   sys.exit(0)
+
 markrequestasinprogress( requestitem, calcenginedescription )
 sendrequesttoengine( requestitem )
 
