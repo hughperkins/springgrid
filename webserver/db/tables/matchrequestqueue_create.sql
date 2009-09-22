@@ -20,11 +20,13 @@
 #
 
 create table matchrequestqueue (
-   matchrequest_id integer not null,
+   matchrequest_id integer not null auto_increment,
    ai0_id integer,
    ai1_id integer,
    map_id integer not null,
-   mod_id integer not null
+   mod_id integer not null,
+
+   primary key(matchrequest_id)
 );
 # note: options will go in a separate table, joined on matchrequest_id
 

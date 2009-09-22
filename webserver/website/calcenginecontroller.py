@@ -19,12 +19,6 @@
 # http://www.opensource.org/licenses/gpl-license.php
 #
 
-create table calcengines (
-   calcengine_id integer not null auto_increment,
-   calcengine_name varchar(255) not null,
-   calcengine_contactname varchar(255) not null default '',
-   calcengine_sharedsecret varchar(255) not null,
+# this contains code for finding out about a particular calcengine from the db tables
 
-   primary key(calcengine_id)
-);
 

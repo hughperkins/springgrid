@@ -1,7 +1,9 @@
 create table maps (
-   mapid integer not null,
-   mapname varchar(255) not null,
-   maphash varchar(255) not null,
-   mapurl varchar(255) not null default ''
+   map_id integer not null auto_increment,
+   map_name varchar(255) not null,
+   map_hash varchar(255) not null,
+   map_url varchar(255) not null default '',
+
+   primary key (map_id)
 );
 

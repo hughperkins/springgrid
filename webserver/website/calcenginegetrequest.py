@@ -59,11 +59,10 @@ import config
 import dbconnection
 import dates
 
-class InputParameters:
-   def __init__(self):
-      pass
+import matchrequestcontroller
+import calcenginecontroller
 
-class MatchRequest:
+class InputParameters:
    def __init__(self):
       pass
 
@@ -74,10 +73,6 @@ def getinputparameters():
    inputparameters.calcenginename = form["calcenginename"].value
    inputparameters.sharedsecret = form["sharedsecret"].value
    return inputparameters
-
-# can probably be in some shared file, rather than in each python file...
-def connectdb():
-   dbconnection.connectdb()
 
 def validatesharedsecret(inputparameters):
    sharedsecret = dbconnection.cursor.execute("select calcengine_sharedsecret from calcengines where calcengine_name=%s", (inputparameters.calcenginename,) )
@@ -91,60 +86,9 @@ def validatesharedsecret(inputparameters):
 
 # basically, we want to know what maps and stuff it supports
 # for now this is a placeholder...
+# should call something in calcenginecontroller, or similar
 def getcalcenginedescription(inputparameters):
    return None
-
-# go through matchrequests_inprogress table, and remove any rows
-# older than a certain time
-# placeholder for now
-def archiveoldrequests():
-   dbconnection.cursor.execute("select datetimeassigned from matchrequests_inprogress")
-   row = dbconnection.cursor.fetchone()
-   while row != None:
-      datetimestring = row[0]
-      datetime = dates.dateStringToDateTime( datetimestring )
-      # do stuff
-
-# this should walk the queue till it finds something that the engine
-# can handle
-# for now, it just returns the first item in the queue
-# we need to only take things that arent in the inprogress queue of course...
-def getcompatibleitemfromqueue( calcenginedescription ):
-   archiveoldrequests()
-   # now we've archived the old requests, we just pick a request
-   # in the future, we'll pick a compatible request.  In the future ;-)
-   # also, we need to handle options.  In the future ;-)
-   dbconnection.cursor.execute("select matchrequest_id, ai0.ai_name, ai0.ai_version, ai1.ai_name, ai1.ai_version, mapname, maphash, modname, modhash " \
-      "from matchrequestqueue," \
-      " ais as ai0," \
-      " ais as ai1, " \
-      " maps, " \
-      " mods " \
-      " where ai0.ai_id = ai0_id " \
-      " and ai1.ai_id = ai1_id " \
-      " and maps.mapid = matchrequestqueue.map_id " \
-      " and mods.mod_id = matchrequestqueue.mod_id" )
-   row = dbconnection.cursor.fetchone()
-   # just take the first one...
-   if row != None:
-      # we got a row
-      matchrequest = MatchRequest()
-      matchrequest.matchrequest_id = row[0]
-      matchrequest.ai0name = row[1]
-      matchrequest.ai0version = row[2]
-      matchrequest.ai1name = row[3]
-      matchrequest.ai1version = row[4]
-      matchrequest.mapname = row[5]
-      matchrequest.maphash = row[6]
-      matchrequest.modname = row[7]
-      matchrequest.modhash = row[8]
-      return matchrequest
-   else:
-      # no rows left. great!
-      return None
-
-def markrequestasinprogress( requestitem, calcenginedescription ):
-   pass
 
 def sendrequesttoengine( requestitem ):
    print "Content-type: text/xml"
@@ -181,17 +125,20 @@ def sendnothing():
 
 
 inputparameters = getinputparameters()
-connectdb()
+dbconnection.connectdb()
 if not validatesharedsecret( inputparameters ):
    fail()
+   dbconnection.disconnectdb()
    sys.exit(0)
 
 calcenginedescription = getcalcenginedescription(inputparameters)
 requestitem = getcompatibleitemfromqueue(calcenginedescription)
 if requestitem == None:
    sendnothing()
+   dbconnection.disconnectdb()
    sys.exit(0)
 
 markrequestasinprogress( requestitem, calcenginedescription )
 sendrequesttoengine( requestitem )
+dbconnection.disconnectdb()
 
