@@ -108,6 +108,7 @@ def archiveoldrequests():
 # this should walk the queue till it finds something that the engine
 # can handle
 # for now, it just returns the first item in the queue
+# we need to only take things that arent in the inprogress queue of course...
 def getcompatibleitemfromqueue( calcenginedescription ):
    archiveoldrequests()
    # now we've archived the old requests, we just pick a request
@@ -176,6 +177,8 @@ def sendnothing():
    print ""
    print "<request summary='nothingtodo' />"
    print ""
+
+
 
 inputparameters = getinputparameters()
 connectdb()

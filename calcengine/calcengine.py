@@ -35,8 +35,6 @@ import config
 
 scriptdir = os.path.dirname( os.path.realpath( __file__ ) )
 
-# config.config()
-
 class ServerRequest():
    def __init__( self ):
      pass     
@@ -57,13 +55,16 @@ def StringToInteger( integerstring ):
 
 def requestgamefromwebserver():
    requestparams = urllib.urlencode({'calcenginename': config.calcenginename, 'sharedsecret': config.sharedsecret })
-   serverrequesthandle = urllib.urlopen( config.webserverrequesturl, requestparams )
+   serverrequesthandle = urllib.urlopen( config.websiterequestpage, requestparams )
    serverrequestarray = serverrequesthandle.readlines()
-   print serverrequestarray
+   # print serverrequestarray
    serverrequeststring = ''.join( serverrequestarray )
    print serverrequeststring
    serverrequestdom = minidom.parseString( serverrequeststring )
-   print serverrequestdom
+   # print serverrequestdom
+   if serverrequestdom.documentElement.hasAttribute("summary"):
+      print serverrequestdom.documentElement.getAttribute("summary")
+      return None
    serverrequest = ServerRequest()
    serverrequest.ai0 = serverrequestdom.documentElement.getAttribute("ai0")
    serverrequest.ai0version = serverrequestdom.documentElement.getAttribute("ai0version")
@@ -156,10 +157,14 @@ def uploadresulttoserver( serverrequest, gameresult ):
    pass
 
 while True:
+   print "Checking for new request..."
    serverrequest = requestgamefromwebserver()
-   result = rungame( serverrequest )
-   uploadresulttoserver( serverrequest, result )
+   if serverrequest != None:
+      # we have a request to process
+      result = rungame( serverrequest )
+      uploadresulttoserver( serverrequest, result )
+   else:
+      # else, sleep...
+      print "Nothing to do.  Sleeping..."
+      time.sleep(config.sleepthislongwhennothingtodoseconds)
    
-   # just exit for now, though obviously one wouldn't exit if this was
-   # running against a real website
-   sys.exit(1)

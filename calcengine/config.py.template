@@ -1,12 +1,17 @@
-# webserverrequesturl="http://manageddreams.com/ailadder/calcenginegetrequest.py"
-webserverrequesturl="http://manageddreams.com/ailadder/calcengineentrypointstub.xml"
-webserverposturl = "http://springrts.com/ailadder/calcenginesubmitresult.py"
-
 # note that the sharedsecret is stored in clear (think wep shared secrets)
 # so don't go using your favorite most secure password here...
-calcenginename="yournamehereforexample"
-sharedsecret="somesimplesharedsecret"
+calcenginename="test"
+sharedsecret="foo"
 
 springgamedir = "/data/taspring/dummyspring"
 scripttemplatefilename = "scripttemplate.txt"
+
+sleepthislongwhennothingtodoseconds = 60
+
+websiteurl = "http://manageddreams.com/ailadder"
+
+# stuff under this line probably doesn't need modifying, in general
+
+websiterequestpage = websiteurl + "/calcenginegetrequest.py"
+websitepostpage = websiteurl + "/calcenginesubmitresult.py"
 
