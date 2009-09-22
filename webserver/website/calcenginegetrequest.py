@@ -30,6 +30,8 @@
 # - name of calcengine
 # - calcengine sharedsecret
 
+# these will come in in 'post' values
+
 # as far as maps and mods that the calcengine can use:
 # - this info will be obtained from the database
 # - either the calcengine can signal that it will download things as it goes
@@ -46,5 +48,33 @@
 # - mark the request as undergoing processing, with a date/time stamp
 # - create the appropriate xml to return the request to the calcengine
 
+def getinputparameters():
+   pass
 
+# can probably be in some shared file, rather than in each python file...
+def connectdb():
+   pass
+
+def validatesharedsecret():
+   pass
+
+def getcalcenginedescription():
+   pass
+
+def getcompatibleitemfromqeue( calcenginedescription ):
+   pass
+
+def markrequestasinprogress( requestitem, calcenginedescription ):
+   pass
+
+def sendrequesttoengine( requestitem ):
+   pass
+
+getinputparameters()
+connectdb()
+validatesharedsecret()
+calcenginedescription = getcalcenginedescription()
+requestitem = getcompatibleitemfromqueue(calcenginedescription)
+markrequestasinprogress( requestitem, calcenginedescription )
+sendrequesttoengine( requestitem )
 
