@@ -4,4 +4,6 @@ dbuser = ""
 dbpassword = ""
 
 gametimeoutminutes = 30
+requestinprogresstimeoutminutes = 60
+
 

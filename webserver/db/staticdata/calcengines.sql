@@ -1,0 +1,3 @@
+# this is just for testing...
+insert into calcengines values (1, 'test', 'test', 'foo' );
+

@@ -57,6 +57,7 @@ import cgi
 
 import config
 import dbconnection
+import dates
 
 class InputParameters:
    def __init__(self):
@@ -74,14 +75,43 @@ def getinputparameters():
 def connectdb():
    dbconnection.connectdb()
 
-def validatesharedsecret():
-   pass
+def validatesharedsecret(inputparameters):
+   sharedsecret = dbconnection.cursor.execute("select calcengine_sharedsecret from calcengines where calcengine_name=%s", (inputparameters.calcenginename,) )
+   row = dbconnection.cursor.fetchone()
+   if row == None:
+      return False
+   actualsharedsecret = row[0]
+   if actualsharedsecret == inputparameters.sharedsecret:
+      return True
+   return False
 
-def getcalcenginedescription():
-   pass
+# basically, we want to know what maps and stuff it supports
+# for now this is a placeholder...
+def getcalcenginedescription(inputparameters):
+   return None
 
-def getcompatibleitemfromqeue( calcenginedescription ):
-   pass
+# go through matchrequests_inprogress table, and remove any rows
+# older than a certain time
+# placeholder for now
+def archiveoldrequests():
+   dbcursor.execute("select datetimeassigned from matchrequests_inprogress")
+   row = dbconnection.cursor.fetchone()
+   while row != None:
+      datetimestring = row[0]
+      datetime = dates.dateStringToDateTime( datetimestring )
+      # do stuff
+
+# this should walk the queue till it finds something that the engine
+# can handle
+# for now, it just returns the first item in the queue
+def getcompatibleitemfromqueue( calcenginedescription ):
+   archiveoldrequests()
+   # now we've archived the old requests, we just pick a request
+   # in the future, we'll pick a compatible request.  In the future ;-)
+   dbconnection.cursor.execute("select matchrequest_id, ai0name, ai0version, ai1name, ai1version, mapname, maphash, modname, modhash, cheatingallowed from matchrequestqueue")
+   row = dbconnection.cursor.fetchone()
+   # just take the first one...
+   
 
 def markrequestasinprogress( requestitem, calcenginedescription ):
    pass
@@ -93,10 +123,19 @@ def sendrequesttoengine( requestitem ):
    print "<root />"
    pass
 
-getinputparameters()
+def fail():
+   print "Content-type: text/plain"
+   print ""
+   print ""
+   print "Unauthorized."
+   sys.exit(0)
+   
+
+inputparameters = getinputparameters()
 connectdb()
-validatesharedsecret()
-calcenginedescription = getcalcenginedescription()
+if not validatesharedsecret( inputparameters ):
+   fail()
+calcenginedescription = getcalcenginedescription(inputparameters)
 requestitem = getcompatibleitemfromqueue(calcenginedescription)
 markrequestasinprogress( requestitem, calcenginedescription )
 sendrequesttoengine( requestitem )
