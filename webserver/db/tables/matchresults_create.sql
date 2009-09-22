@@ -1,5 +1,6 @@
 create table matchresults (
-   matchrequestid integer not null,
+   matchresult_id integer not null,
+   matchrequest_id integer not null,
    ai0name varchar(255) not null,
    ai0version varchar(255) not null,
    ai1name varchar(255) not null,
