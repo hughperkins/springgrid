@@ -21,10 +21,6 @@
 # http://www.opensource.org/licenses/gpl-license.php
 #
 
-# lets a user add a single mod to the database
-#
-# This is mostly for bootstrapping, to make the website immediately useful
-
 import cgitb; cgitb.enable()
 
 import dbconnection

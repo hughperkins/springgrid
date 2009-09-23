@@ -3,7 +3,7 @@
 # Copyright Hugh Perkins 2009
 # hughperkins@gmail.com http://manageddreams.com
 #
-# This program is free software; you can redistribute it and/or modify it
+# This program is free software; you can redistribute it and/or aiify it
 # under the terms of the GNU General Public License as published by the
 # Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
@@ -21,49 +21,34 @@
 # http://www.opensource.org/licenses/gpl-license.php
 #
 
+# lets a user add a single ai to the database
+#
+# This is mostly for bootstrapping, to make the website immediately useful
+
 import cgitb; cgitb.enable()
+import cgi
 
 import dbconnection
-import htmlformshelper
 
 dbconnection.connectdb()
 
-print "Content-type: text/html"
+print "Content-type: text/plain"
 print ""
 print ""
 
-maps = dbconnection.querytomaplist( "select map_name, map_hash from maps", ('map_name','map_hash' ) )
+form = cgi.FieldStorage()
+ainame = form["ainame"].value.strip()
+aiversion = form["aiversion"].value.strip()
 
-print "<html>" \
-"<head>" \
-"<title>AILadder - Map List</title>" \
-"</head>" \
-"<body>" \
-"<h3>AILadder - Map List</h3>" \
-"<table border='1' padding='3'>" \
-"<tr><td>Map name</td><td>Map hash</td></tr>"
-
-for map in maps:
-   print "<tr><td>" + map['map_name'] + "</td><td>" + map['map_hash'] + "</td></tr>"
-
-print "</table>"
-
-print "<p />"
-print "<hr />"
-print "<p />"
-
-print "<h4>Register new map:</h4>"
-print "<form action='addmap.py' method='post'>" \
-"<table border='1' padding='3'>" \
-"<tr><td>Map name</td><td><input name='mapname'</td></tr>" \
-"<tr><td>Map hash</td><td><input name='maphash'</td></tr>" \
-"<tr><td></td><td><input type='submit' value='Add' /></td></tr>" \
-"</table>" \
-"</form>" \
-
-
-print "</body>" \
-"</html>"
+if aiversion != None and ainame != None and ainame != "" and aiversion != "":
+   rows = dbconnection.cursor.execute( "insert into ais ( ai_name, ai_version ) "\
+      " values ( %s, %s )", ( ainame, aiversion, ) )
+   if rows == 1:
+      print "Added ok"
+   else:
+      print "Something went wrong.  Please check your values and try again."
+else:
+   print "Please fill in the fields and try again"
 
 dbconnection.disconnectdb()
 

@@ -32,19 +32,19 @@ print "Content-type: text/html"
 print ""
 print ""
 
-maps = dbconnection.querytomaplist( "select map_name, map_hash from maps", ('map_name','map_hash' ) )
+ais = dbconnection.querytomaplist( "select ai_name, ai_version from ais", ('ai_name','ai_version' ) )
 
 print "<html>" \
 "<head>" \
-"<title>AILadder - Map List</title>" \
+"<title>AILadder - AI List</title>" \
 "</head>" \
 "<body>" \
-"<h3>AILadder - Map List</h3>" \
+"<h3>AILadder - AI List</h3>" \
 "<table border='1' padding='3'>" \
-"<tr><td>Map name</td><td>Map hash</td></tr>"
+"<tr><td>AI Name</td><td>AI Version</td></tr>"
 
-for map in maps:
-   print "<tr><td>" + map['map_name'] + "</td><td>" + map['map_hash'] + "</td></tr>"
+for ai in ais:
+   print "<tr><td>" + ai['ai_name'] + "</td><td>" + ai['ai_version'] + "</td></tr>"
 
 print "</table>"
 
@@ -52,11 +52,11 @@ print "<p />"
 print "<hr />"
 print "<p />"
 
-print "<h4>Register new map:</h4>"
-print "<form action='addmap.py' method='post'>" \
+print "<h4>Register new AI:</h4>"
+print "<form action='addai.py' method='post'>" \
 "<table border='1' padding='3'>" \
-"<tr><td>Map name</td><td><input name='mapname'</td></tr>" \
-"<tr><td>Map hash</td><td><input name='maphash'</td></tr>" \
+"<tr><td>AI name</td><td><input name='ainame'</td></tr>" \
+"<tr><td>AI version</td><td><input name='aiversion'</td></tr>" \
 "<tr><td></td><td><input type='submit' value='Add' /></td></tr>" \
 "</table>" \
 "</form>" \
