@@ -25,13 +25,16 @@
 
 import time
 import urllib
+import urllib2
 import subprocess
 import os
 import sys
 import io
 from xml.dom import minidom
+import tarfile
 
 import config
+import urllib2_file
 
 scriptdir = os.path.dirname( os.path.realpath( __file__ ) )
 
@@ -66,6 +69,7 @@ def requestgamefromwebserver():
       print serverrequestdom.documentElement.getAttribute("summary")
       return None
    serverrequest = ServerRequest()
+   serverrequest.matchrequestid = serverrequestdom.documentElement.getAttribute("matchrequestid")
    serverrequest.ai0 = serverrequestdom.documentElement.getAttribute("ai0")
    serverrequest.ai0version = serverrequestdom.documentElement.getAttribute("ai0version")
    serverrequest.ai1 = serverrequestdom.documentElement.getAttribute("ai1")
@@ -129,23 +133,34 @@ def rungame( serverrequest ):
             # ai0 died
             print "team 1 won!"
             gameresult.winningai = 1
+            gameresult.resultstring = "ai1won"
             popen.kill()
             return gameresult
          if infologcontents.find( ai0endstring ) == -1 and infologcontents.find(ai1endstring ) != - 1:
             # ai1 died
             print "team 0 won!"
             gameresult.winningai = 0
+            gameresult.resultstring = "ai0won"
             popen.kill()
             return gameresult
          if infologcontents.find( ai0endstring ) != -1 and infologcontents.find(ai1endstring ) != - 1:
             # both died...
             print "A draw..." 
             gameresult.winningai = -1
+            gameresult.resultstring = "draw"
             popen.kill()
             return gameresult
 
       # could also check for spring exiting here (== draw)
       # and timeout (== draw)
+
+      if popen.poll() != None:
+         # spring finished / died / crashed
+         # presumably if we got here, it crashed, otherwise infolog would have been written   
+         print "Crashed" 
+         gameresult.winningai = -1
+         gameresult.resultstring = "crashed"
+         return gameresult
 
       time.sleep (1)
 
@@ -154,13 +169,67 @@ def rungame( serverrequest ):
 def uploadresulttoserver( serverrequest, gameresult ):
    # upload gameresult and serverrequest to server...
    # ...
-   pass
+
+   # first we should take care of the replay
+   # what was its filename? :-O
+   # right, going to take a snapshot of the replay directory before starting
+   # and then we'll take anything new as the correct replay
+   global demosdirectorylistingbeforegame
+   demosdirectorynow = snapshotdemosdirectory()
+   thisreplayfilename = ''
+   for filename in demosdirectorynow:
+      if not filename in demosdirectorylistingbeforegame:
+         print thisreplayfilename
+         thisreplayfilename = filename
+   if thisreplayfilename == '':
+      # then we didn't create a replay for some reason..
+      pass
+   else:
+      # first tar.bz2 it
+      tarhandle = tarfile.open(config.springgamedir + "/thisreplay.tar.bz2", "w:bz2" )
+      os.chdir( config.springgamedir + "/demos" )  # cd in, so that we don't embed the paths
+                   # in the tar file...
+      tarhandle.add( thisreplayfilename )
+      tarhandle.close()
+
+   # ok, let's do the upload... if we don't have a replay, we won't send the replay
+   if thisreplayfilename != '':
+      replayfilehandle = open( config.springgamedir + "/thisreplay.tar.bz2", 'r' )
+
+#      requestparams = urllib.urlencode({
+      requestparams = {
+          'calcenginename': config.calcenginename,
+          'sharedsecret': config.sharedsecret,
+          'matchrequestid': serverrequest.matchrequestid,
+          'result': gameresult.resultstring,
+          'replay': replayfilehandle }
+      # serverrequesthandle = urllib.urlopen( config.websitepostpage, requestparams )      
+      serverrequest = urllib2.Request( config.websitepostpage, requestparams, {} )      
+      stream = urllib2.urlopen( serverrequest )
+      pageresult = stream.read()
+      print pageresult
+      replayfilehandle.close()
+   else:
+      print "we haven't programmed in the case of no replay found yet..."
+      pass
+
+demosdirectorylistingbeforegame = None
+
+# we'll find the names of all files in the demos directory (the 
+# replays), and then any new one will be assumed to be the one from the
+# game we just played
+def snapshotdemosdirectory():
+   listing = []
+   for filename in os.listdir( config.springgamedir + "/demos" ):
+      listing.append(filename)
+   return listing
 
 while True:
    print "Checking for new request..."
    serverrequest = requestgamefromwebserver()
    if serverrequest != None:
       # we have a request to process
+      demosdirectorylistingbeforegame = snapshotdemosdirectory()
       result = rungame( serverrequest )
       uploadresulttoserver( serverrequest, result )
    else:

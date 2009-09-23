@@ -45,6 +45,19 @@ void writeToInfolog( char *message ) {
    Infolog << message << endl;
 }
 
+void createfakereplay() {
+   char replayfilename[100];
+   sprintf( replayfilename, "demos/%i", rand() );
+   ofstream replayfile( replayfilename );
+   // let's write about 500k of stuff...
+   // though after zipping it it will be much smaller
+   // use rand to prevent zipping being too powerful
+   for( int i = 0; i < 20000; i++ ) {
+      replayfile << "blah " << rand() << " blah " << rand() << " blah " << rand() << "..." << endl;
+   }
+   replayfile << "if you see this, the whole fake-replay was transmitted ok." << endl;
+}
+
 void writeStuffToInfologbis() {
    for( int i = 0; i < 100; i++ ) {
       writeToInfolog("blah");
@@ -62,19 +75,20 @@ void writeStuffToInfolog() {
 
 int main( int argc, char** argv ) {
    srand((unsigned)time(0)); // seed the pseudo-random numbers with system time
-   int randomnumber = rand() % 5;
+   int randomnumber = rand() % 4; // use % 5 if you want to simulate hangs too
    int a = 0;
    int b = 0;
    char message[1024];
+   createfakereplay();
    switch( randomnumber ) {
-      case 0:   // crash
+      case 4:   // crash
          cout << "crashing" << endl;
          writeStuffToInfolog();
          a = 0;
          b = 5 / a;
          break;
 
-      case 1:   // hang 
+      case 5:   // hang 
          cout << "hanging" << endl;
          writeStuffToInfolog();
          hang();
@@ -88,7 +102,7 @@ int main( int argc, char** argv ) {
          hang();
          break;
 
-      case 3:   // ai1 dies
+      case 1:   // ai1 dies
          cout << "ai1 dieing..." << endl;
          writeStuffToInfolog();
          sprintf( message, "%s%i%s", endgamemessageprefix, 1, endgamemessagepostfix );
@@ -96,7 +110,7 @@ int main( int argc, char** argv ) {
          hang();
          break;
 
-      case 4:   // both ais die
+      case 0:   // both ais die
          cout << "both dieing..." << endl;
          writeStuffToInfolog();
          sprintf( message, "%s%i%s", endgamemessageprefix, 0, endgamemessagepostfix );

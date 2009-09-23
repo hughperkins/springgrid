@@ -60,41 +60,17 @@ import dbconnection
 import dates
 
 import matchrequestcontroller
-import calcenginecontroller
-
-class InputParameters:
-   def __init__(self):
-      pass
-
-# retrieve calcengine name and calcengine sharedsecret
-def getinputparameters():
-   form = cgi.FieldStorage()
-   inputparameters = InputParameters()
-   inputparameters.calcenginename = form["calcenginename"].value
-   inputparameters.sharedsecret = form["sharedsecret"].value
-   return inputparameters
-
-def validatesharedsecret(inputparameters):
-   sharedsecret = dbconnection.cursor.execute("select calcengine_sharedsecret from calcengines where calcengine_name=%s", (inputparameters.calcenginename,) )
-   row = dbconnection.cursor.fetchone()
-   if row == None:
-      return False
-   actualsharedsecret = row[0]
-   if actualsharedsecret == inputparameters.sharedsecret:
-      return True
-   return False
+import calcenginehelper
 
 # basically, we want to know what maps and stuff it supports
 # for now this is a placeholder...
 # should call something in calcenginecontroller, or similar
-def getcalcenginedescription(inputparameters):
-   return inputparameters.calcenginename
+def getcalcenginedescription(calcenginename):
+   return calcenginename
 
 def sendrequesttoengine( requestitem ):
-   print "Content-type: text/xml"
-   print ""
-   print ""
    print "<request "
+   print "matchrequestid='" + str( requestitem.matchrequest_id ) + "' "
    print "mod='" + requestitem.modname + "' "
    print "modhash='" + requestitem.modhash + "' "
    print "map='" + requestitem.mapname + "' "
@@ -108,13 +84,6 @@ def sendrequesttoengine( requestitem ):
    print ">"
    print "</request>"
 
-def fail():
-   print "Content-type: text/xml"
-   print ""
-   print ""
-   print "<request summary='unauthorized' />"
-   print ""
-
 def sendnothing():
    print "Content-type: text/xml"
    print ""
@@ -123,25 +92,26 @@ def sendnothing():
    print ""
 
 
+testing = False
 
-# inputparameters = getinputparameters()
-inputparameters = InputParameters()
-inputparameters.calcenginename = 'test'
-inputparameters.sharedsecret = 'foo'
+print "Content-type: text/xml"
+print ""
+print ""
 dbconnection.connectdb()
-if not validatesharedsecret( inputparameters ):
-   fail()
-   dbconnection.disconnectdb()
-   sys.exit(0)
 
-calcenginedescription = getcalcenginedescription(inputparameters)
-requestitem = matchrequestcontroller.getcompatibleitemfromqueue(calcenginedescription)
-if requestitem == None:
-   sendnothing()
-   dbconnection.disconnectdb()
-   sys.exit(0)
+def go():
+   if testing or calcenginehelper.calcengineauthorized():
+      calcenginedescription = getcalcenginedescription(calcenginehelper.calcenginename)
+      requestitem = matchrequestcontroller.getcompatibleitemfromqueue(calcenginedescription)
+      if requestitem == None:
+         print "<request summary='nothingtodo' />"
+         return
+      matchrequestcontroller.markrequestasinprogress( requestitem, calcenginehelper.calcenginename )
+      sendrequesttoengine( requestitem )
+   else:
+      print "<request summary='unauthorized' />"
 
-matchrequestcontroller.markrequestasinprogress( requestitem, calcenginedescription )
-sendrequesttoengine( requestitem )
+go()
+
 dbconnection.disconnectdb()
 

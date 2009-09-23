@@ -19,8 +19,32 @@
 # http://www.opensource.org/licenses/gpl-license.php
 #
 
-create table matchresults (
-   matchrequest_id integer not null,
-   matchresult varchar(255) not null
-);
+import cgi
+
+import dbconnection
+import formhelper
+
+calcenginename = ""
+
+def calcengineauthorized():
+   global calcenginename 
+
+   calcenginename = formhelper.getValue("calcenginename")
+   sharedsecret = formhelper.getValue("sharedsecret")
+   return validatesharedsecret( calcenginename, sharedsecret )
+
+def validatesharedsecret(lcalcenginename, sharedsecret):
+   global calcenginename
+   dbconnection.cursor.execute("select calcengine_sharedsecret from calcengines where calcengine_name=%s", (lcalcenginename,) )
+   row = dbconnection.cursor.fetchone()
+   if row == None:
+      return False
+   actualsharedsecret = row[0]
+   if actualsharedsecret == sharedsecret:
+      calcenginename = lcalcenginename
+      return True
+   return False
+
+
+
 

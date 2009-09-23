@@ -65,7 +65,9 @@ def getcompatibleitemfromqueue( calcenginedescription ):
       " and maps.map_id = matchrequestqueue.map_id " \
       " and mods.mod_id = matchrequestqueue.mod_id " \
       " and not exists (select * from matchrequests_inprogress "\
-      " where matchrequests_inprogress.matchrequest_id = matchrequestqueue.matchrequest_id ) " )
+      " where matchrequests_inprogress.matchrequest_id = matchrequestqueue.matchrequest_id ) " \
+      " and not exists (select * from matchresults "\
+      " where matchresults.matchrequest_id = matchrequestqueue.matchrequest_id ) " )
 #      " left join matchrequests_inprogress on       " 
 #matchrequests_inprogress.matchrequest_id = matchrequestqueue.matchrequest_id " \
 #      " and not exists (select * from matchrequests_inprogress where " \
@@ -99,6 +101,18 @@ def markrequestasinprogress( requestitem, calcenginedescription ):
       " where calcengines.calcengine_name = %s",
       ( requestitem.matchrequest_id, dates.dateTimeToDateString( datetime.datetime.now() ), calcenginedescription ) )
 
+# validate that an incoming result is for a match assigned to this server
+# return true if so, otherwise false
+def matchrequestvalidforthisserver( calcenginename, matchrequest_id ):
+   print calcenginename + " " + str(matchrequest_id)
+   rows = dbconnection.cursor.execute("select * from matchrequests_inprogress, "\
+      " calcengines "\
+      " where matchrequest_id = %s " \
+      " and calcengines.calcengine_id = matchrequests_inprogress.calcengine_id "\
+      " and calcengine_name = %s ",
+      ( matchrequest_id, calcenginename, ) )
+   return ( rows == 1 )
+
 def submitrequest( requestitem ):
    # ignoring hashes for now...
    rows = dbconnection.cursor.execute("insert into matchrequestqueue (ai0_id, ai1_id, map_id, mod_id) " \
@@ -113,4 +127,16 @@ def submitrequest( requestitem ):
       (requestitem.ai0name, requestitem.ai0version, requestitem.ai1name, requestitem.ai1version,
           requestitem.mapname, requestitem.modname, ) )
    return ( rows == 1 )
+
+def storeresult( calcenginename, matchrequest_id, result ):
+   # delete any existing result, saves doing check first...
+   dbconnection.cursor.execute("delete from matchresults where "\
+      " matchrequest_id = %s ", ( matchrequest_id, ) )
+   dbconnection.cursor.execute("insert into matchresults "\
+      " (matchrequest_id, matchresult ) "\
+      " values ( %s, %s ) ",
+      ( matchrequest_id, result, ) )
+#   # remove inprogress marker
+ #  dbconnection.cursor.execute("delete from matchrequests_inprogress "\
+  #     " where matchrequest_id = %s ", ( matchrequest_id,) )
 
