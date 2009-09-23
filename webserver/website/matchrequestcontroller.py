@@ -50,7 +50,7 @@ def getcompatibleitemfromqueue( calcenginedescription ):
    # now we've archived the old requests, we just pick a request
    # in the future, we'll pick a compatible request.  In the future ;-)
    # also, we need to handle options.  In the future ;-)
-   dbconnection.cursor.execute("select matchrequest_id, ai0.ai_name, ai0.ai_version, ai1.ai_name, ai1.ai_version, map_name, map_hash, mod_name, mod_hash " \
+   dbconnection.cursor.execute("select matchrequestqueue.matchrequest_id, ai0.ai_name, ai0.ai_version, ai1.ai_name, ai1.ai_version, map_name, map_hash, mod_name, mod_hash " \
       "from matchrequestqueue," \
       " ais as ai0," \
       " ais as ai1, " \
@@ -59,7 +59,9 @@ def getcompatibleitemfromqueue( calcenginedescription ):
       " where ai0.ai_id = ai0_id " \
       " and ai1.ai_id = ai1_id " \
       " and maps.map_id = matchrequestqueue.map_id " \
-      " and mods.mod_id = matchrequestqueue.mod_id" )
+      " and mods.mod_id = matchrequestqueue.mod_id " \
+      " and not exists (select * from matchrequests_inprogress where " \
+      "                     matchrequests_inprogress.matchrequest_id = matchrequestqueue.matchrequest_id ) " )
    row = dbconnection.cursor.fetchone()
    # just take the first one...
    if row != None:
