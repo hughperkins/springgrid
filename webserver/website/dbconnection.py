@@ -52,3 +52,24 @@ def querytolist( querysql ):
       row = cursor.fetchone()
    return resultlist
 
+# querysql is the sql string
+# fieldnames is a list of fieldnames, in the order they will come out in the
+# resultset columns, and without skipping any, ie the 2nd fieldname should
+# correspond to the 2nd column of the resultset
+# the result is a list of maps, ie something like:
+# ( { 'somecolumn': 'somevalue' }, {'somecolumn': 'anothervalue' } )
+def querytomaplist( querysql, fieldnames ):
+   cursor.execute( querysql )
+   row = cursor.fetchone()
+   resultlist = []
+   while row != None:
+      index = 0
+      thisrowmap = {}
+      for fieldname in fieldnames:
+         thisrowmap[ fieldname ] = row[index]
+         index = index + 1
+      resultlist.append( thisrowmap )
+      row = cursor.fetchone()
+   return resultlist
+   
+

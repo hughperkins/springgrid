@@ -2,7 +2,23 @@ prerequisites
 - have set up database, using the sql scripts in db
 - have a linux webserver capable of running python scripts
 
+notes on apache2 setup for python scripts
+- an insecure but easy way to do this on a default apache2 installation on ubuntu
+  is to edit /etc/apache2/sites-enabled/000-default , and change the /var/www/ section as follows:
+
+        <Directory /var/www/>
+                Options Indexes FollowSymLinks MultiViews +ExecCGI
+                AddHandler cgi-script cgi py
+                AllowOverride None
+                Order allow,deny
+                allow from all
+        </Directory>
+
+setting up database
+- change into db directory
+- run "./createall.sh <dbusername> <dbpassword> <dbname> localhost"
+
 setup
 - copy config.py.template to config.py
-- configure the database connection settings for your database
+- configure config.py with the database connection settings for your database
 
