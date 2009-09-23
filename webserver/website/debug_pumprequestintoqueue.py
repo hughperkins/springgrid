@@ -29,7 +29,7 @@
 
 # also, no form for now, we just put the request into the querystring ;-)
 
-mport cgitb; cgitb.enable()
+import cgitb; cgitb.enable()
 import sys
 import os
 import Cookie
@@ -40,6 +40,8 @@ import config
 import dbconnection
 import dates
 
+import matchrequestcontroller
+
 # get request from form
 form = cgi.FieldStorage()
 
@@ -49,18 +51,20 @@ matchrequest.ai0version = form["ai0version"].value
 matchrequest.ai1name = form["ai1name"].value
 matchrequest.ai1version = form["ai1version"].value
 matchrequest.mapname = form["mapname"].value
-matchrequest.maphash = form["maphash"].value
+# matchrequest.maphash = form["maphash"].value
 matchrequest.modname = form["modname"].value
-matchrequest.modhash = form["modhash"].value
-
-dbconnection.connectdb()
-
-matchrequestcontroller.submitrequest( matchrequest )
+# matchrequest.modhash = form["modhash"].value
 
 print "Content-type: text/plain"
 print ""
 print ""
-print "Submitted"
+
+dbconnection.connectdb()
+
+if matchrequestcontroller.submitrequest( matchrequest ):
+   print "Submitted"
+else:
+   print "Not submitted, please check your values and try again."
 
 dbconnection.disconnectdb()
 

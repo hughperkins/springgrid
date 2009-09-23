@@ -95,16 +95,16 @@ def sendrequesttoengine( requestitem ):
    print ""
    print ""
    print "<request "
-   print "mod='" + requestitem.modname + " "
-   print "modhash='" + requestitem.modhash + " "
-   print "map='" + requestitem.mapname + " "
-   print "maphash='" + requestitem.maphash + " "
-   print "ai0='" + requestitem.ai0name + " "
-   print "ai0version='" + requestitem.ai0version + " "
-   print "ai1='" + requestitem.ai1name + " "
-   print "ai1version='" + requestitem.ai1version + " "
-   print "gametimeoutminutes='" + config.gametimeoutminutes + " "
-   print "gameendstring='" + config.gameendstring + " "
+   print "mod='" + requestitem.modname + "' "
+   print "modhash='" + requestitem.modhash + "' "
+   print "map='" + requestitem.mapname + "' "
+   print "maphash='" + requestitem.maphash + "' "
+   print "ai0='" + requestitem.ai0name + "' "
+   print "ai0version='" + requestitem.ai0version + "' "
+   print "ai1='" + requestitem.ai1name + "' "
+   print "ai1version='" + requestitem.ai1version + "' "
+   print "gametimeoutminutes='" + str(config.gametimeoutminutes) + "' "
+   print "gameendstring='" + config.gameendstring + "' "
    print ">"
    print "</request>"
 
@@ -132,13 +132,13 @@ if not validatesharedsecret( inputparameters ):
    sys.exit(0)
 
 calcenginedescription = getcalcenginedescription(inputparameters)
-requestitem = getcompatibleitemfromqueue(calcenginedescription)
+requestitem = matchrequestcontroller.getcompatibleitemfromqueue(calcenginedescription)
 if requestitem == None:
    sendnothing()
    dbconnection.disconnectdb()
    sys.exit(0)
 
-markrequestasinprogress( requestitem, calcenginedescription )
+matchrequestcontroller.markrequestasinprogress( requestitem, calcenginedescription )
 sendrequesttoengine( requestitem )
 dbconnection.disconnectdb()
 

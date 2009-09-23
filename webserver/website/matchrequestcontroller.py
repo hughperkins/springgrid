@@ -21,6 +21,10 @@
 
 # This contains code for manipulating the matchrequest tables
 
+import dbconnection
+import dates
+import config
+
 class MatchRequest:
    def __init__(self):
       pass
@@ -80,7 +84,7 @@ def markrequestasinprogress( requestitem, calcenginedescription ):
 
 def submitrequest( requestitem ):
    # ignoring hashes for now...
-   dbconnection.cursor.execute("insert into matchrequestqueue (ai0_id, ai1_id, map_id, mod_id) " \
+   rows = dbconnection.cursor.execute("insert into matchrequestqueue (ai0_id, ai1_id, map_id, mod_id) " \
       " select ai0.ai_id, ai1.ai_id, map_id, mod_id " \
       " from ais ai0, ais ai1, maps, mods " \
       " where ai0.ai_name = %s " \
@@ -91,5 +95,5 @@ def submitrequest( requestitem ):
       " and mods.mod_name =%s ",
       (requestitem.ai0name, requestitem.ai0version, requestitem.ai1name, requestitem.ai1version,
           requestitem.mapname, requestitem.modname, ) )
-
+   return ( rows == 1 )
 
