@@ -1,4 +1,4 @@
-# Copyright Hugh Perkins 2004, 2009
+# Copyright Hugh Perkins 2009
 # hughperkins@gmail.com http://manageddreams.com
 #
 # This program is free software; you can redistribute it and/or modify it
@@ -19,36 +19,10 @@
 # http://www.opensource.org/licenses/gpl-license.php
 #
 
-import sys
-import os
-import MySQLdb
-
-import config
-
-connection = None
-cursor = None
-
-def connectdb():
-   global connection, cursor
-   connection = MySQLdb.connect( host = config.dbhost,
-     user = config.dbuser,
-     passwd = config.dbpassword,
-     db = config.dbname )
-   cursor = connection.cursor()
-   return cursor
-
-def disconnectdb():
-   cursor.close()
-   connection.close()
-
-# returns a list(?) containing the results from the query
-# which should return a single column of data
-def querytolist( querysql ):
-   cursor.execute( querysql )
-   row = cursor.fetchone()
-   resultlist = []
-   while row != None:
-      resultlist.append( row[0] )
-      row = cursor.fetchone()
-   return resultlist
+def listToDropdown( controlname, itemlist ):
+   liststring = "<select name='" + controlname + "'>"
+   for listitem in itemlist:
+      liststring += "<option value='" + listitem + "'>" + listitem + "</option>"
+   liststring += "</select>"
+   return liststring
 

@@ -63,6 +63,7 @@ dbconnection.connectdb()
 
 if matchrequestcontroller.submitrequest( matchrequest ):
    print "Submitted"
+   # could be nice to print out queue here, or make another page for that
 else:
    print "Not submitted, please check your values and try again."
 
