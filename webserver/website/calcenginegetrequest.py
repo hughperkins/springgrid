@@ -88,7 +88,7 @@ def validatesharedsecret(inputparameters):
 # for now this is a placeholder...
 # should call something in calcenginecontroller, or similar
 def getcalcenginedescription(inputparameters):
-   return None
+   return inputparameters.calcenginename
 
 def sendrequesttoengine( requestitem ):
    print "Content-type: text/xml"
@@ -124,7 +124,10 @@ def sendnothing():
 
 
 
-inputparameters = getinputparameters()
+# inputparameters = getinputparameters()
+inputparameters = InputParameters()
+inputparameters.calcenginename = 'test'
+inputparameters.sharedsecret = 'foo'
 dbconnection.connectdb()
 if not validatesharedsecret( inputparameters ):
    fail()

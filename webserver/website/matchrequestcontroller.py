@@ -21,6 +21,8 @@
 
 # This contains code for manipulating the matchrequest tables
 
+import datetime
+
 import dbconnection
 import dates
 import config
@@ -34,12 +36,14 @@ class MatchRequest:
 # older than a certain time
 # placeholder for now
 def archiveoldrequests():
-   dbconnection.cursor.execute("select datetimeassigned from matchrequests_inprogress")
+   dbconnection.cursor.execute("select matchrequest_id, datetimeassigned from matchrequests_inprogress")
    row = dbconnection.cursor.fetchone()
    while row != None:
-      datetimestring = row[0]
+      matchrequestid = row[0]
+      datetimestring = row[1]
       datetime = dates.dateStringToDateTime( datetimestring )
-      # do stuff
+      
+      row = dbconnection.cursor.fetchone()
 
 # this should walk the queue till it finds something that the engine
 # can handle
@@ -51,17 +55,21 @@ def getcompatibleitemfromqueue( calcenginedescription ):
    # in the future, we'll pick a compatible request.  In the future ;-)
    # also, we need to handle options.  In the future ;-)
    dbconnection.cursor.execute("select matchrequestqueue.matchrequest_id, ai0.ai_name, ai0.ai_version, ai1.ai_name, ai1.ai_version, map_name, map_hash, mod_name, mod_hash " \
-      "from matchrequestqueue," \
-      " ais as ai0," \
+      "from ais as ai0," \
       " ais as ai1, " \
       " maps, " \
-      " mods " \
+      " mods, " \
+      " matchrequestqueue " \
       " where ai0.ai_id = ai0_id " \
       " and ai1.ai_id = ai1_id " \
       " and maps.map_id = matchrequestqueue.map_id " \
       " and mods.mod_id = matchrequestqueue.mod_id " \
-      " and not exists (select * from matchrequests_inprogress where " \
-      "                     matchrequests_inprogress.matchrequest_id = matchrequestqueue.matchrequest_id ) " )
+      " and not exists (select * from matchrequests_inprogress "\
+      " where matchrequests_inprogress.matchrequest_id = matchrequestqueue.matchrequest_id ) " )
+#      " left join matchrequests_inprogress on       " 
+#matchrequests_inprogress.matchrequest_id = matchrequestqueue.matchrequest_id " \
+#      " and not exists (select * from matchrequests_inprogress where " \
+ #     "                     matchrequests_inprogress.matchrequest_id = matchrequestqueue.matchrequest_id ) " )
    row = dbconnection.cursor.fetchone()
    # just take the first one...
    if row != None:
@@ -82,7 +90,14 @@ def getcompatibleitemfromqueue( calcenginedescription ):
       return None
 
 def markrequestasinprogress( requestitem, calcenginedescription ):
-   pass
+   dbconnection.cursor.execute("delete from matchrequests_inprogress "\
+      "where matchrequest_id = %s", ( requestitem.matchrequest_id, ) )
+   dbconnection.cursor.execute("insert into matchrequests_inprogress "\
+      "( matchrequest_id, calcengine_id, datetimeassigned ) "\
+      " select %s, calcengines.calcengine_id, %s "\
+      " from calcengines "\
+      " where calcengines.calcengine_name = %s",
+      ( requestitem.matchrequest_id, dates.dateTimeToDateString( datetime.datetime.now() ), calcenginedescription ) )
 
 def submitrequest( requestitem ):
    # ignoring hashes for now...

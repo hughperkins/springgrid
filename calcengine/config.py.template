@@ -8,7 +8,7 @@ scripttemplatefilename = "scripttemplate.txt"
 
 sleepthislongwhennothingtodoseconds = 60
 
-websiteurl = "http://manageddreams.com/ailadder"
+websiteurl = "http://localhost/ailadder"
 
 # stuff under this line probably doesn't need modifying, in general
 
