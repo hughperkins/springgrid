@@ -39,6 +39,7 @@ import cgi
 import config
 import dbconnection
 import dates
+import loginhelper
 
 import matchrequestcontroller
 
@@ -61,11 +62,16 @@ print ""
 
 dbconnection.connectdb()
 
-if matchrequestcontroller.submitrequest( matchrequest ):
-   print "Submitted"
-   # could be nice to print out queue here, or make another page for that
+loginhelper.processCookie()
+
+if loginhelper.gusername != '':
+   if matchrequestcontroller.submitrequest( matchrequest ):
+      print "Submitted"
+      # could be nice to print out queue here, or make another page for that
+   else:
+      print "Not submitted, please check your values and try again."
 else:
-   print "Not submitted, please check your values and try again."
+   print "Please login first."
 
 dbconnection.disconnectdb()
 

@@ -21,54 +21,36 @@
 # http://www.opensource.org/licenses/gpl-license.php
 #
 
-import cgitb; cgitb.enable()
+# handles user login
 
-import dbconnection
-import htmlformshelper
+import cgitb; cgitb.enable()
+import cgi
+
 import loginhelper
+import dbconnection
 
 dbconnection.connectdb()
 
 loginhelper.processCookie()
 
-print "Content-type: text/html"
-print ""
-print ""
-
-ais = dbconnection.querytomaplist( "select ai_name, ai_version from ais", ('ai_name','ai_version' ) )
-
-print "<html>" \
-"<head>" \
-"<title>AILadder - AI List</title>" \
-"</head>" \
-"<body>" \
-"<h3>AILadder - AI List</h3>" \
-"<table border='1' padding='3'>" \
-"<tr><td>AI Name</td><td>AI Version</td></tr>"
-
-for ai in ais:
-   print "<tr><td>" + ai['ai_name'] + "</td><td>" + ai['ai_version'] + "</td></tr>"
-
-print "</table>"
-
-if loginhelper.gusername != '':
-
-   print "<p />"
-   print "<hr />"
-   print "<p />"
-
-   print "<h4>Register new AI:</h4>"
-   print "<form action='addai.py' method='post'>" \
-   "<table border='1' padding='3'>" \
-   "<tr><td>AI name</td><td><input name='ainame'</td></tr>" \
-   "<tr><td>AI version</td><td><input name='aiversion'</td></tr>" \
-   "<tr><td></td><td><input type='submit' value='Add' /></td></tr>" \
-   "</table>" \
-   "</form>" \
-
-
-print "</body>" \
-"</html>"
+if loginhelper.gusername != "":
+   print loginhelper.loginhtml
+else:
+   form = cgi.FieldStorage()
+   if not (form.has_key("username") and form.has_key("password")):
+      print "Content-type: text/html"
+      print ""
+      print ""
+      print "<h4>Logon error: Please fill in the username and password fields.</h4>"
+   else:
+      username = form["username"].value
+      password = form["password"].value
+      loginhelper.logonUser( username, password )
+      print "Content-type: text/html"
+      print loginhelper.cookie.output()
+      print ""
+      print ""
+      print loginhelper.loginhtml
 
 dbconnection.disconnectdb()
 

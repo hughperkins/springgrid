@@ -25,8 +25,11 @@ import cgitb; cgitb.enable()
 
 import dbconnection
 import htmlformshelper
+import loginhelper
 
 dbconnection.connectdb()
+
+loginhelper.processCookie()
 
 print "Content-type: text/html"
 print ""
@@ -48,18 +51,20 @@ for mod in mods:
 
 print "</table>"
 
-print "<p />"
-print "<hr />"
-print "<p />"
+if loginhelper.gusername != '':
 
-print "<h4>Register new mod:</h4>"
-print "<form action='addmod.py' method='post'>" \
-"<table border='1' padding='3'>" \
-"<tr><td>Mod name</td><td><input name='modname'</td></tr>" \
-"<tr><td>Mod hash</td><td><input name='modhash'</td></tr>" \
-"<tr><td></td><td><input type='submit' value='Add' /></td></tr>" \
-"</table>" \
-"</form>" \
+   print "<p />"
+   print "<hr />"
+   print "<p />"
+
+   print "<h4>Register new mod:</h4>"
+   print "<form action='addmod.py' method='post'>" \
+   "<table border='1' padding='3'>" \
+   "<tr><td>Mod name</td><td><input name='modname'</td></tr>" \
+   "<tr><td>Mod hash</td><td><input name='modhash'</td></tr>" \
+   "<tr><td></td><td><input type='submit' value='Add' /></td></tr>" \
+   "</table>" \
+   "</form>" \
 
 
 print "</body>" \

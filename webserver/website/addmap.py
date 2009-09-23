@@ -29,26 +29,32 @@ import cgitb; cgitb.enable()
 import cgi
 
 import dbconnection
+import loginhelper
 
 dbconnection.connectdb()
+
+loginhelper.processCookie()
 
 print "Content-type: text/plain"
 print ""
 print ""
 
-form = cgi.FieldStorage()
-mapname = form["mapname"].value.strip()
-maphash = form["maphash"].value.strip()
-
-if maphash != None and mapname != None and mapname != "" and maphash != "":
-   rows = dbconnection.cursor.execute( "insert into maps ( map_name, map_hash ) "\
-      " values ( %s, %s )", ( mapname, maphash, ) )
-   if rows == 1:
-      print "Added ok"
-   else:
-      print "Something went wrong.  Please check your values and try again."
+if loginhelper.gusername == '':
+   print "You must login first"
 else:
-   print "Please fill in the fields and try again"
+   form = cgi.FieldStorage()
+   mapname = form["mapname"].value.strip()
+   maphash = form["maphash"].value.strip()
+
+   if maphash != None and mapname != None and mapname != "" and maphash != "":
+      rows = dbconnection.cursor.execute( "insert into maps ( map_name, map_hash ) "\
+         " values ( %s, %s )", ( mapname, maphash, ) )
+      if rows == 1:
+         print "Added ok"
+      else:
+         print "Something went wrong.  Please check your values and try again."
+   else:
+      print "Please fill in the fields and try again"
 
 dbconnection.disconnectdb()
 

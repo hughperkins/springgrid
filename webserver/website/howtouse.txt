@@ -21,4 +21,5 @@ setting up database
 setup
 - copy config.py.template to config.py
 - configure config.py with the database connection settings for your database
+- modify the admin password in the 'accounts' table (default password: 'admin')
 

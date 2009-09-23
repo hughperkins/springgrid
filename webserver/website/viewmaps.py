@@ -25,8 +25,11 @@ import cgitb; cgitb.enable()
 
 import dbconnection
 import htmlformshelper
+import loginhelper
 
 dbconnection.connectdb()
+
+loginhelper.processCookie()
 
 print "Content-type: text/html"
 print ""
@@ -48,18 +51,19 @@ for map in maps:
 
 print "</table>"
 
-print "<p />"
-print "<hr />"
-print "<p />"
+if loginhelper.gusername != '':
+   print "<p />"
+   print "<hr />"
+   print "<p />"
 
-print "<h4>Register new map:</h4>"
-print "<form action='addmap.py' method='post'>" \
-"<table border='1' padding='3'>" \
-"<tr><td>Map name</td><td><input name='mapname'</td></tr>" \
-"<tr><td>Map hash</td><td><input name='maphash'</td></tr>" \
-"<tr><td></td><td><input type='submit' value='Add' /></td></tr>" \
-"</table>" \
-"</form>" \
+   print "<h4>Register new map:</h4>"
+   print "<form action='addmap.py' method='post'>" \
+   "<table border='1' padding='3'>" \
+   "<tr><td>Map name</td><td><input name='mapname'</td></tr>" \
+   "<tr><td>Map hash</td><td><input name='maphash'</td></tr>" \
+   "<tr><td></td><td><input type='submit' value='Add' /></td></tr>" \
+   "</table>" \
+   "</form>" \
 
 
 print "</body>" \
