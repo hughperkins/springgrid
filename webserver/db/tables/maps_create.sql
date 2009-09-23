@@ -7,3 +7,5 @@ create table maps (
    primary key (map_id)
 );
 
+alter table maps add unique key (map_name);
+

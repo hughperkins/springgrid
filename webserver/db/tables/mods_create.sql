@@ -7,3 +7,6 @@ create table mods (
    primary key(mod_id)
 );
 
+alter table mods add unique key (mod_name);
+
+

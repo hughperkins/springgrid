@@ -30,3 +30,6 @@ create table ais (
    primary key(ai_id)
 );
 
+alter table ais add unique key (ai_name, ai_version);
+
+
