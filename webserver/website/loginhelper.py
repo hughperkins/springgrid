@@ -32,7 +32,11 @@ import os.path
 
 import dbconnection
    
-gusername = ""
+gusername = ""  # first call loginhelper.processCookie().  If the user
+                # is already logged in after that, then gusername will no
+                # longer be blank
+                # testing gusername != '' is sufficient to check if the user
+                # is logged in
 loginhtml = ""
 cookiereference = 0
 cookie = Cookie.SimpleCookie()

@@ -1,4 +1,8 @@
+todo:
 - add leagues / matchconfigs
 - add leaguegroups
+- add gameendstring to per-mod config
+
+done:
 - group menu by league, setup, runner
 
