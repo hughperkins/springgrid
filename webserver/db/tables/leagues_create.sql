@@ -20,3 +20,25 @@
 #
 
 
+# represents one scenario of playing the game: map, mod
+# options, ...
+
+create table leagues (
+   league_id integer not null auto_increment,
+
+   league_name varchar(255) not null,
+   league_creatorid integer not null, # the guy who created it, from accounts
+
+   map_id integer not null,
+   mod_id integer not null,
+
+   primary key (league_id )
+);
+
+# we can have other options specified in a different table
+# like, cheating etc...
+
+# make sure leage names are unique...
+alter table leagues add unique key ( league_name );
+
+
