@@ -30,6 +30,7 @@ import cgi
 
 import dbconnection
 import loginhelper
+import formhelper
 
 dbconnection.connectdb()
 
@@ -42,13 +43,19 @@ print ""
 if loginhelper.gusername == '':
    print "You must login first"
 else:
-   form = cgi.FieldStorage()
-   ainame = form["ainame"].value.strip()
-   aiversion = form["aiversion"].value.strip()
+   ainame = formhelper.getValue("ainame")
+   aiversion = formhelper.getValue("aiversion")
+   downloadurl = formhelper.getValue("downloadurl")
 
    if aiversion != None and ainame != None and ainame != "" and aiversion != "":
-      rows = dbconnection.cursor.execute( "insert into ais ( ai_name, ai_version ) "\
-         " values ( %s, %s )", ( ainame, aiversion, ) )
+      if downloadurl == None:
+         downloadurl = ''
+      rows = dbconnection.cursor.execute( "insert into ais "\
+         "( ai_name, ai_version, ai_downloadurl, ai_owneraccount_id  ) "\
+         " select %s, %s, %s, account_id "\
+         " from accounts "\
+         " where username = %s ",
+         ( ainame, aiversion, downloadurl, loginhelper.gusername ) )
       if rows == 1:
          print "Added ok"
       else:

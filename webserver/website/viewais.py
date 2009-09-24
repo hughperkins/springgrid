@@ -35,7 +35,7 @@ print "Content-type: text/html"
 print ""
 print ""
 
-ais = dbconnection.querytomaplist( "select ai_name, ai_version from ais", ('ai_name','ai_version' ) )
+ais = dbconnection.querytomaplist( "select ai_name, ai_version, ai_downloadurl from ais", ('ai_name','ai_version', 'ai_downloadurl' ) )
 
 print "<html>" \
 "<head>" \
@@ -44,10 +44,14 @@ print "<html>" \
 "<body>" \
 "<h3>AILadder - AI List</h3>" \
 "<table border='1' padding='3'>" \
-"<tr><td>AI Name</td><td>AI Version</td></tr>"
+"<tr><td>AI Name</td><td>AI Version</td><td>Download url</td></tr>"
 
 for ai in ais:
-   print "<tr><td>" + ai['ai_name'] + "</td><td>" + ai['ai_version'] + "</td></tr>"
+   print "<tr>"
+   print "<td>" + ai['ai_name'] + "</td>"
+   print "<td>" + ai['ai_version'] + "</td>"
+   print "<td><a href='" + ai['ai_downloadurl'] + "'>" + ai['ai_downloadurl'] + "</a></td>"
+   print "</tr>"
 
 print "</table>"
 
@@ -59,10 +63,12 @@ if loginhelper.gusername != '':
 
    print "<h4>Register new AI:</h4>"
    print "Note that the AI name is case-sensitive.<p />"
+   print "Download url should be for a file in .tgz .tar.gz or .tar.bz2 format.<p />"
    print "<form action='addai.py' method='post'>" \
    "<table border='1' padding='3'>" \
    "<tr><td>AI name</td><td><input name='ainame'</td></tr>" \
    "<tr><td>AI version</td><td><input name='aiversion'</td></tr>" \
+   "<tr><td>Download url</td><td><input name='downloadurl'</td></tr>" \
    "<tr><td></td><td><input type='submit' value='Add' /></td></tr>" \
    "</table>" \
    "</form>" \

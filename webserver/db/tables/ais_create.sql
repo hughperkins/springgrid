@@ -25,7 +25,7 @@ create table ais (
    ai_name varchar(255) not null,
    ai_version varchar(255) not null,
    ai_downloadurl varchar(255) not null default '',
-   ai_dev_id integer,
+   ai_owneraccount_id integer not null,
 
    primary key(ai_id)
 );
