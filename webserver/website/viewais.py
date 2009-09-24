@@ -58,6 +58,7 @@ if loginhelper.gusername != '':
    print "<p />"
 
    print "<h4>Register new AI:</h4>"
+   print "Note that the AI name is case-sensitive.<p />"
    print "<form action='addai.py' method='post'>" \
    "<table border='1' padding='3'>" \
    "<tr><td>AI name</td><td><input name='ainame'</td></tr>" \

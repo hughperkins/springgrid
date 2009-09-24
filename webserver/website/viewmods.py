@@ -58,6 +58,10 @@ if loginhelper.gusername != '':
    print "<p />"
 
    print "<h4>Register new mod:</h4>"
+   print "Note: the modname and the modhash should be set to whatever is used "
+   print "in the startscript, so an easy way to get them is to start a game "
+   print "from the lobby, then look at the file 'script.txt' in the spring "
+   print "game directory<p />"
    print "<form action='addmod.py' method='post'>" \
    "<table border='1' padding='3'>" \
    "<tr><td>Mod name</td><td><input name='modname'</td></tr>" \

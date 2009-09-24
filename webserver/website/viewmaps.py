@@ -57,6 +57,10 @@ if loginhelper.gusername != '':
    print "<p />"
 
    print "<h4>Register new map:</h4>"
+   print "Note: the mapname and the maphash should be set to whatever is used "
+   print "in the startscript, so an easy way to get them is to start a game "
+   print "from the lobby, then look at the file 'script.txt' in the spring "
+   print "game directory<p />"
    print "<form action='addmap.py' method='post'>" \
    "<table border='1' padding='3'>" \
    "<tr><td>Map name</td><td><input name='mapname'</td></tr>" \
