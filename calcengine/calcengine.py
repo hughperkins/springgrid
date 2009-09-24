@@ -120,7 +120,8 @@ def rungame( serverrequest ):
    os.chdir( config.springgamedir )
    # os.exec( "./spring script.txt" )
    # subprocess.call(["./spring", "script.txt"])
-   popen = subprocess.Popen(["./spring", "script.txt"])
+   # popen = subprocess.Popen(["./spring", "script.txt"])
+   popen = subprocess.Popen([config.springgamedir + "/spring", "script.txt"])
    finished = False
    while not finished:
       print "waiting for game to terminate..."
