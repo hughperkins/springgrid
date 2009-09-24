@@ -35,9 +35,9 @@ if [[ x$dbhost == x ]]; then {
 } fi
 
 cd tables
-./createall.sh $1 $2 $3 $4
+./createall.sh $1 $2 $3 $4 2>&1
 
 cd ../staticdata
-./adddata.sh $1 $2 $3 $4
+./adddata.sh $1 $2 $3 $4 2>&1
 
 

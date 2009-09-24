@@ -1,3 +1,5 @@
 # this is just for testing...
-insert into calcengines values (1, 'test', 'test', 'foo' );
+insert into calcengines 
+( calcengine_name, calcengine_owneraccountid, calcengine_sharedsecret )
+values ( 'test', 1, 'foo' );
 

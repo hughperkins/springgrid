@@ -1,4 +1,4 @@
 # test data obviously...
 
-insert into accounts (username, password) values ('admin','admin');
+insert into accounts (username, userfullname, password) values ('admin', 'admin','admin');
 

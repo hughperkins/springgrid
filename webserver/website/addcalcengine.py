@@ -3,7 +3,7 @@
 # Copyright Hugh Perkins 2009
 # hughperkins@gmail.com http://manageddreams.com
 #
-# This program is free software; you can redistribute it and/or modify it
+# This program is free software; you can redistribute it and/or aiify it
 # under the terms of the GNU General Public License as published by the
 # Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
@@ -21,39 +21,40 @@
 # http://www.opensource.org/licenses/gpl-license.php
 #
 
-# handles user login
-
 import cgitb; cgitb.enable()
 import cgi
 
-import loginhelper
 import dbconnection
+import loginhelper
 import formhelper
 
 dbconnection.connectdb()
 
-# loginhelper.processCookie()
+loginhelper.processCookie()
 
-#if loginhelper.gusername != "":
-#   print "Content-type: text/html"
-#   print ""
-#   print ""
-#   print loginhelper.loginhtml
-#else:
-username = formhelper.getValue('username')
-password = formhelper.getValue('password')
-if username == None or password == None or username == '' or password == '':
-   print "Content-type: text/html"
-   print ""
-   print ""
-   print "<h4>Logon error: Please fill in the username and password fields.</h4>"
+print "Content-type: text/plain"
+print ""
+print ""
+
+if loginhelper.gusername == '':
+   print "You must login first"
 else:
-   loginhelper.logonUser( username, password )
-   print "Content-type: text/html"
-   print loginhelper.cookie.output()
-   print ""
-   print ""
-   print loginhelper.loginhtml
+   calcenginename = formhelper.getValue('calcenginename')
+   sharedsecret = formhelper.getValue('sharedsecret')
+
+   if calcenginename != None and sharedsecret != None and calcenginename != '' and sharedsecret != '':
+
+      rows = dbconnection.cursor.execute( "insert into calcengines "\
+         "( calcengine_name,calcengine_owneraccountid, calcengine_sharedsecret ) "\
+         " select %s, account_id, %s from "\
+         " accounts where username = %s ",
+         ( calcenginename,sharedsecret, loginhelper.gusername, ) )
+      if rows == 1:
+         print "Added ok"
+      else:
+         print "Something went wrong.  Please check your values and try again."
+   else:
+      print "Please fill in the fields and try again"
 
 dbconnection.disconnectdb()
 

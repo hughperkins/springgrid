@@ -21,6 +21,7 @@
 
 # functions for login, cookies etc...
 
+import cgitb; cgitb.enable()
 import Cookie
 import MySQLdb
 import random
@@ -32,7 +33,7 @@ import os.path
 import dbconnection
    
 gusername = ""
-loginthml = ""
+loginhtml = ""
 cookiereference = 0
 cookie = Cookie.SimpleCookie()
 
@@ -66,7 +67,7 @@ def logonUser(username, password):
          " values (%s, %s )", (username, cookiereference, ) )
 
    gusername = username
-   loginhtml = "<p>Currently logged in as: " + gusername + "</p>"
+   loginhtml = "<p>Logged in as: " + gusername + "</p>"
 
 # def ChangePassword( cursor, form, sLogin ):
 #    global loginhtml
@@ -92,7 +93,7 @@ def processCookie():
      gusername = row[0]
       
   if gusername != "": 
-     loginhtml = "<p>Currently logged in as: " + gusername + "</p>"
+     loginhtml = "<p>Logged in as: " + gusername + "</p>"
   else:  
      cookie = Cookie.SimpleCookie()
      cookiereference = 0

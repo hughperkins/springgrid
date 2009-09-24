@@ -42,6 +42,8 @@ def getform():
  
 def getValue( fieldname ):
    form = getform()
+   if not form.has_key(fieldname):
+      return None
    return form[fieldname].value
 
 # takes a file at fieldname
