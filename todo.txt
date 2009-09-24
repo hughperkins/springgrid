@@ -1,9 +1,12 @@
 todo:
-- add leagues / matchconfigs
-- add leaguegroups
+- add subscription to each league for each ai
+- add scheduler, to queue up matchrequests for each league
+- add results calculator
 - add gameendstring to per-mod config
 - roles
 
 done:
+- add leagues / matchconfigs
+- add leaguegroups
 - group menu by league, setup, runner
 

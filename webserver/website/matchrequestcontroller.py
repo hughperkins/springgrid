@@ -41,7 +41,7 @@ def archiveoldrequests():
    while row != None:
       matchrequestid = row[0]
       datetimestring = row[1]
-      datetime = dates.dateStringToDateTime( datetimestring )
+      # datetime = dates.dateStringToDateTime( datetimestring )
       
       row = dbconnection.cursor.fetchone()
 

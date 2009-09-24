@@ -1,4 +1,0 @@
-In your webbrowser, do:
-
-http://manageddreams.com/ailadder/debug_pumprequestintoqueue.py?ai0name=HughAI&ai0version=1.0&ai1name=E323AI&ai1version=2.12.0&mapname=SmallDivide.smf&modname=Balanced Annihilation V6.96
-
