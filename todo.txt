@@ -1,0 +1,4 @@
+- add leagues / matchconfigs
+- add leaguegroups
+- group menu by league, setup, runner
+
