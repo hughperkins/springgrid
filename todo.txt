@@ -2,6 +2,7 @@ todo:
 - add leagues / matchconfigs
 - add leaguegroups
 - add gameendstring to per-mod config
+- roles
 
 done:
 - group menu by league, setup, runner
