@@ -44,6 +44,8 @@ aiversions = dbconnection.querytolist("select distinct ai_version from ais")
 maps = dbconnection.querytolist("select distinct map_name from maps")
 mods = dbconnection.querytolist("select distinct mod_name from mods")
 
+options = dbconnection.querytolist("select option_name from aioptions")
+
 print "<html>" \
 "<head>" \
 "<title>AILadder - submit game request</title>" \
@@ -57,8 +59,14 @@ print "<html>" \
 "<tr><td>AI1 name</td><td>" + htmlformshelper.listToDropdown("ai1name", ainames) + "</td></tr>" \
 "<tr><td>AI1 version</td><td>" + htmlformshelper.listToDropdown("ai1version", aiversions) + "</td></tr>" \
 "<tr><td>Map</td><td>" + htmlformshelper.listToDropdown("mapname", maps) + "</td></tr>" \
-"<tr><td>Mod</td><td>" + htmlformshelper.listToDropdown("modname", mods) + "</td></tr>" \
-"<tr><td></td><td><input type='submit' value='Submit Request' /></td></tr>" \
+"<tr><td>Mod</td><td>" + htmlformshelper.listToDropdown("modname", mods) + "</td></tr>"
+
+print "<tr><td>Options:</td><td>"
+for option in options:
+   print "<input type='checkbox' name='option_" + option + "' >" + option + "</input><br />"
+print "</td></tr>"
+
+print "<tr><td></td><td><input type='submit' value='Submit Request' /></td></tr>" \
 "</table>" \
 "</form>" \
 "</body>" \

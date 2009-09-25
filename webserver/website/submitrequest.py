@@ -42,14 +42,14 @@ from utils import *
 from core import *
 
 # get request from form
-matchrequest = matchrequestcontroller.MatchRequest()
-matchrequest.ai0name = formhelper.getValue("ai0name")
-matchrequest.ai0version = formhelper.getValue("ai0version")
-matchrequest.ai1name = formhelper.getValue("ai1name")
-matchrequest.ai1version = formhelper.getValue("ai1version")
-matchrequest.mapname = formhelper.getValue("mapname")
+#matchrequest = matchrequestcontroller.MatchRequest()
+ai0name = formhelper.getValue("ai0name")
+ai0version = formhelper.getValue("ai0version")
+ai1name = formhelper.getValue("ai1name")
+ai1version = formhelper.getValue("ai1version")
+mapname = formhelper.getValue("mapname")
 # matchrequest.maphash = formhelper.getValue("maphash")
-matchrequest.modname = formhelper.getValue("modname")
+modname = formhelper.getValue("modname")
 # matchrequest.modhash = formhelper.getValue("modhash")
 
 print "Content-type: text/plain"
@@ -60,10 +60,48 @@ dbconnection.connectdb()
 
 loginhelper.processCookie()
 
-if loginhelper.gusername != '':
-   if matchrequestcontroller.submitrequest( matchrequest ):
-      print "Submitted"
+if loginhelper.isLoggedOn():
+   #if matchrequestcontroller.submitrequest( matchrequest ):
+    #  print "Submitted"
       # could be nice to print out queue here, or make another page for that
+
+   # we need to get the matchrequestid first, otherwise we 
+   # can't retrieve it reliably
+   # if someone beats us to it on that id, we'll get a unique
+   # row violation, which is ok
+   dbconnection.cursor.execute("select max(matchrequest_id) "\
+      " from matchrequestqueue " )
+   matchrequestid = dbconnection.cursor.fetchone()[0] + 1
+   rows = dbconnection.cursor.execute("insert into matchrequestqueue (matchrequest_id, ai0_id, ai1_id, map_id, mod_id) " \
+      " select %s, ai0.ai_id, ai1.ai_id, map_id, mod_id " \
+      " from ais ai0, ais ai1, maps, mods " \
+      " where ai0.ai_name = %s " \
+      " and ai0.ai_version = %s " \
+      " and ai1.ai_name = %s " \
+      " and ai1.ai_version =%s " \
+      " and maps.map_name = %s " \
+      " and mods.mod_name =%s ",
+      (matchrequestid, ai0name, ai0version, ai1name, ai1version,
+      mapname, modname, ) )
+   if rows == 1:
+      #print dbconnection.cursor.fetchone()[0]
+
+      # add options:
+      options = dbconnection.querytolist("select option_name from aioptions")
+      selectedoptions = []
+      # get selected options from form submission:
+      for option in options:
+         if formhelper.getValue( "option_" + option ) != None:
+            selectedoptions.append( option )
+      # add to db
+      for option in selectedoptions:
+         dbconnection.cursor.execute("insert into matchrequest_options "\
+            " ( matchrequest_id, option_id ) " \
+            " select %s, option_id "\
+            " from aioptions "\
+            " where aioptions.option_name = %s ",
+            (matchrequestid,option) )
+      print "Submitted ok"
    else:
       print "Not submitted, please check your values and try again."
 else:

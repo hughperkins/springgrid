@@ -74,8 +74,9 @@ print "<td>ai1name</td>"
 print "<td>ai1version</td>"
 print "<td>mapname</td>"
 print "<td>modname</td>"
-print "<td>datetimeassigned</td>"
+print "<td>options</td>"
 print "<td>calcenginename</td>"
+print "<td>datetimeassigned</td>"
 print "</tr>"
 
 for request in requests:
@@ -87,8 +88,16 @@ for request in requests:
    print "<td>" + request['ai1version'] + "</td>"
    print "<td>" + request['mapname'] + "</td>"
    print "<td>" + request['modname'] + "</td>"
-   print "<td>" + str(request['datetimeassigned']) + "</td>"
+   print "<td>"
+   options = dbconnection.querytolistwithparams("select option_name "\
+      " from aioptions, matchrequest_options " \
+      " where aioptions.option_id = matchrequest_options.option_id "\
+      " and matchrequest_options.matchrequest_id = %s ",
+      ( request['matchrequestid'], ) )
+   print ' '.join( options )
+   print "</td>"
    print "<td>" + str(request['calcenginename']) + "</td>"
+   print "<td>" + str(request['datetimeassigned']) + "</td>"
    print "</tr>"
 
 print "</table>"
