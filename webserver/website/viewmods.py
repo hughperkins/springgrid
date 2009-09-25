@@ -33,7 +33,7 @@ print "Content-type: text/html"
 print ""
 print ""
 
-mods = dbconnection.querytomaplist( "select mod_name, mod_hash from mods", ('mod_name','mod_hash' ) )
+mods = dbconnection.querytomaplist( "select mod_name, mod_hash, mod_url from mods", ('mod_name','mod_hash', 'mod_url' ) )
 
 print "<html>" \
 "<head>" \
@@ -42,10 +42,10 @@ print "<html>" \
 "<body>" \
 "<h3>AILadder - Mod List</h3>" \
 "<table border='1' padding='3'>" \
-"<tr><td>Mod name</td><td>Mod hash</td></tr>"
+"<tr><td>Mod name</td><td>Mod hash</td><td>Mod download url</td></tr>"
 
 for mod in mods:
-   print "<tr><td>" + mod['mod_name'] + "</td><td>" + mod['mod_hash'] + "</td></tr>"
+   print "<tr><td>" + mod['mod_name'] + "</td><td>" + mod['mod_hash'] + "</td><td><a href='" + mod['mod_url'] + "'>" + mod['mod_url'] + "</a></td></tr>"
 
 print "</table>"
 
@@ -64,6 +64,7 @@ if loginhelper.gusername != '':
    "<table border='1' padding='3'>" \
    "<tr><td>Mod name</td><td><input name='modname'</td></tr>" \
    "<tr><td>Mod hash</td><td><input name='modhash'</td></tr>" \
+   "<tr><td>Mod download url</td><td><input name='modurl'</td></tr>" \
    "<tr><td></td><td><input type='submit' value='Add' /></td></tr>" \
    "</table>" \
    "</form>" \

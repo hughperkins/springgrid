@@ -29,6 +29,7 @@ import cgitb; cgitb.enable()
 import cgi
 
 from utils import *
+from core import *
 
 dbconnection.connectdb()
 
@@ -38,16 +39,18 @@ print "Content-type: text/plain"
 print ""
 print ""
 
-if loginhelper.gusername == '':
-   print "You must login first"
+if not roles.isInRole(roles.modadmin):
+   print "You must be logged in as a modadmin"
 else:
-   form = cgi.FieldStorage()
-   modname = form["modname"].value.strip()
-   modhash = form["modhash"].value.strip()
+   modname = formhelper.getValue("modname")
+   modhash = formhelper.getValue("modhash")
+   modurl = formhelper.getValue("modurl")
 
    if modhash != None and modname != None and modname != "" and modhash != "":
-      rows = dbconnection.cursor.execute( "insert into mods ( mod_name, mod_hash ) "\
-         " values ( %s, %s )", ( modname, modhash, ) )
+      if modurl == None:
+         modurl = ''
+      rows = dbconnection.cursor.execute( "insert into mods ( mod_name, mod_hash, mod_url ) "\
+         " values ( %s, %s, %s )", ( modname, modhash, modurl ) )
       if rows == 1:
          print "Added ok"
       else:

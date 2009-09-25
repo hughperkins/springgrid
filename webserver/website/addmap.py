@@ -29,6 +29,7 @@ import cgitb; cgitb.enable()
 import cgi
 
 from utils import *
+from core import *
 
 dbconnection.connectdb()
 
@@ -38,8 +39,8 @@ print "Content-type: text/plain"
 print ""
 print ""
 
-if loginhelper.gusername == '':
-   print "You must login first"
+if not roles.isInRole(roles.mapadmin):
+   print "You must be logged in as a mapadmin"
 else:
    mapname = formhelper.getValue("mapname")
    maphash = formhelper.getValue("maphash")

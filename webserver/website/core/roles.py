@@ -29,6 +29,8 @@ from utils import *
 # they're also in the roles table, and should match
 accountadmin = 'accountadmin'
 aiadmin = 'aiadmin'
+mapadmin = 'mapadmin'
+modadmin = 'modadmin'
 
 # returns if the logged-in user is in the named role
 def isInRole(rolename):
