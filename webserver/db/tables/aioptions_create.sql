@@ -24,6 +24,8 @@
 # this table for example
 
 create table aioptions (
-   optionname varchar(255)
+   option_id integer not null auto_increment,
+   option_name varchar(255),
+   primary key(option_id)
 );
 

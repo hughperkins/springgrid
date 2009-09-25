@@ -46,7 +46,7 @@ print "<html>" \
 
 for ai in ais:
    print "<tr>"
-   print "<td>" + ai['ai_name'] + "</td>"
+   print "<td><a href='viewai.py?ainame=" + ai['ai_name'] + "&aiversion=" + ai['ai_version'] + "'>" + ai['ai_name'] + "</a></td>"
    print "<td>" + ai['ai_version'] + "</td>"
    print "<td><a href='" + ai['ai_downloadurl'] + "'>" + ai['ai_downloadurl'] + "</a></td>"
    print "</tr>"

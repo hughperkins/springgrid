@@ -2,10 +2,34 @@ todo:
 - add subscription to each league for each ai
 - add scheduler, to queue up matchrequests for each league
 - add results calculator
-- add gameendstring to per-mod config
 - add cheating / no-cheating option, and enforce in engine
 - some way of passing options through to ai (via script.txt?)
 - store passwords as salted hashes
+- implement game timeout in calcengine
+- upload logfile after game, per-ai, or at least the infolog.txt
+- be able to configure arm vs core vs ... vs random
+- add start positions to map
+
+list of options to handle:
+- can an ai cheat?
+- can an ai not cheat?
+- league: cheating or not cheating?
+- match: cheating or not cheating?
+- custom options to pass through to an ai, on a per-match basis
+- custom options to pass through to an ai, every time that ai plays
+- add in ai configurations?  so an ai has an ai, and a config?
+   - would have to be via the options in the script.txt
+   - or actually could be more than that.  could be a specific config file
+      ( and that config file could point to other config files)
+   - or maybe could be a bunch of config files...
+      - must be either .txt, .tdf or .xml files (or some other config file types)
+      - path relative to ai path
+      - config file locations specified by ai admin
+- anyway for now could just have multiple ai versions...
+  - for each ai version, need to specify whether it supports cheating, not cheating etc...
+
+not sure if actually necessary (so: to test/investigate):
+- add gameendstring to per-mod config
 
 done:
 - add change password form
@@ -15,4 +39,26 @@ done:
 - add leagues / matchconfigs
 - add leaguegroups
 - group menu by league, setup, runner
+
+
+work area:
+
+imagine ai options:
+- cheatingequalslose
+- cheatingallowed
+
+then in engine, if this is set, anyone who cheats loses, and the other
+side wins
+
+then in supported optiosn for one ai, which can play with both cheating on and off:
+- cheatingequalslose set
+- cheatingequalslose unset
+
+.. but how to signal that it can also play when this option is not set?
+
+.. and what happens if a new option is added?
+
+.. by default, an ai is assumed to be able to handle all unset options?
+
+.. oh, could just create two options?:
 

@@ -20,7 +20,7 @@
 #
 
 # maps that an ai can use
-create table ais_allowedmaps (
+create table ai_allowedmaps (
    ai_id integer not null,
    map_id integer not null,
 

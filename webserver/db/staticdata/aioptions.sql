@@ -1,2 +1,4 @@
-insert into aioptions values ('cheatingon');
-insert into aioptions values ('cheatingoff');
+insert into aioptions (option_name) values ('cheatingequalslose');
+insert into aioptions (option_name) values ('cheatingallowed');
+insert into aioptions (option_name) values ('dummymatch');
+

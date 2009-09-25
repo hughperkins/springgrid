@@ -19,11 +19,15 @@
 # http://www.opensource.org/licenses/gpl-license.php
 #
 
-# list of mods that each AI can use
-create table ais_allowedmods (
-   ai_id integer not null,
-   mod_id integer not null,
+# list of options valid for use by each ai
+#
+# example:
+# (1, 'cheatingon', 'yes')
+# (1, 'cheatingoff', 'yes')
 
-   primary key (ai_id, mod_id)
+create table ai_allowedoptions (
+   ai_id integer not null,
+   option_id integer not null,
+   primary key(ai_id, option_id)
 );
 
