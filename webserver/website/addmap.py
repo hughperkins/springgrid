@@ -41,13 +41,15 @@ print ""
 if loginhelper.gusername == '':
    print "You must login first"
 else:
-   form = cgi.FieldStorage()
-   mapname = form["mapname"].value.strip()
-   maphash = form["maphash"].value.strip()
+   mapname = formhelper.getValue("mapname")
+   maphash = formhelper.getValue("maphash")
+   mapurl = formhelper.getValue("mapurl")
 
    if maphash != None and mapname != None and mapname != "" and maphash != "":
-      rows = dbconnection.cursor.execute( "insert into maps ( map_name, map_hash ) "\
-         " values ( %s, %s )", ( mapname, maphash, ) )
+      if mapurl == None:
+         mapurl = ''
+      rows = dbconnection.cursor.execute( "insert into maps ( map_name, map_hash, map_url ) "\
+         " values ( %s, %s, %s )", ( mapname, maphash, mapurl ) )
       if rows == 1:
          print "Added ok"
       else:

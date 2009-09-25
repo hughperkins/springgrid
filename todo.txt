@@ -8,6 +8,7 @@ todo:
 - store passwords as salted hashes
 
 done:
+- add change password form
 - roles
 - fix dates on old python
 - migrated modules to subdirectories

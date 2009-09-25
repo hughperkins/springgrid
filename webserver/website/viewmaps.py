@@ -33,7 +33,7 @@ print "Content-type: text/html"
 print ""
 print ""
 
-maps = dbconnection.querytomaplist( "select map_name, map_hash from maps", ('map_name','map_hash' ) )
+maps = dbconnection.querytomaplist( "select map_name, map_hash, map_url from maps", ('map_name','map_hash', 'map_url' ) )
 
 print "<html>" \
 "<head>" \
@@ -42,10 +42,10 @@ print "<html>" \
 "<body>" \
 "<h3>AILadder - Map List</h3>" \
 "<table border='1' padding='3'>" \
-"<tr><td>Map name</td><td>Map hash</td></tr>"
+"<tr><td>Map name</td><td>Map hash</td><td>Map download url</td></tr>"
 
 for map in maps:
-   print "<tr><td>" + map['map_name'] + "</td><td>" + map['map_hash'] + "</td></tr>"
+   print "<tr><td>" + map['map_name'] + "</td><td>" + map['map_hash'] + "</td><td><a href='" + map['map_url'] + "'>" + map['map_url'] + "</a></td></tr>"
 
 print "</table>"
 
@@ -63,6 +63,7 @@ if loginhelper.gusername != '':
    "<table border='1' padding='3'>" \
    "<tr><td>Map name</td><td><input name='mapname'</td></tr>" \
    "<tr><td>Map hash</td><td><input name='maphash'</td></tr>" \
+   "<tr><td>Map download url</td><td><input name='mapurl'</td></tr>" \
    "<tr><td></td><td><input type='submit' value='Add' /></td></tr>" \
    "</table>" \
    "</form>" \
