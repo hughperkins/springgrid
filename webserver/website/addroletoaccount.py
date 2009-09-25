@@ -21,10 +21,6 @@
 # http://www.opensource.org/licenses/gpl-license.php
 #
 
-# lets a user add a single ai to the database
-#
-# This is mostly for bootstrapping, to make the website immediately useful
-
 import cgitb; cgitb.enable()
 import cgi
 
@@ -39,22 +35,20 @@ print "Content-type: text/plain"
 print ""
 print ""
 
-if not roles.isInRole(roles.aiadmin):
-   print "You must be logged in as an aiadmin"
+if not roles.isInRole(roles.accountadmin):
+   print "You must be logged in as an accountadmin"
 else:
-   ainame = formhelper.getValue("ainame")
-   aiversion = formhelper.getValue("aiversion")
-   downloadurl = formhelper.getValue("downloadurl")
+   username = formhelper.getValue('username')
+   rolename = formhelper.getValue('rolename')
 
-   if aiversion != None and ainame != None and ainame != "" and aiversion != "":
-      if downloadurl == None:
-         downloadurl = ''
-      rows = dbconnection.cursor.execute( "insert into ais "\
-         "( ai_name, ai_version, ai_downloadurl, ai_owneraccount_id  ) "\
-         " select %s, %s, %s, account_id "\
-         " from accounts "\
-         " where username = %s ",
-         ( ainame, aiversion, downloadurl, loginhelper.gusername ) )
+   if username != None and rolename != '' and username != None and rolename != '':
+      rows = dbconnection.cursor.execute( "insert into role_members "\
+         "( role_id, account_id ) "\
+         " select role_id, account_id from "\
+         " roles, accounts "\
+         " where role_name = %s "\
+         " and username = %s ",
+         ( rolename, username ) )
       if rows == 1:
          print "Added ok"
       else:

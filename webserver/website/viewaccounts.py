@@ -24,6 +24,7 @@
 import cgitb; cgitb.enable()
 
 from utils import *
+from core import *
 
 # quick and nasty form to create user accounts...
 
@@ -52,11 +53,11 @@ def go():
    "<tr><td>username</td><td>User full name</td></tr>"
 
    for account in accounts:
-      print "<tr><td>" + account['username'] + "</td><td>" + account['userfullname'] + "</td></tr>"
+      print "<tr><td><a href='viewaccount.py?username=" + account['username'] + "'>" + account['username'] + "</td><td>" + account['userfullname'] + "</a></td></tr>"
 
    print "</table>"
 
-   if loginhelper.gusername != '':
+   if roles.isInRole(roles.accountadmin):
 
       print "<p />"
       print "<hr />"

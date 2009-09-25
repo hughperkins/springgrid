@@ -52,6 +52,17 @@ def querytolist( querysql ):
       row = cursor.fetchone()
    return resultlist
 
+# returns a list(?) containing the results from the query
+# which should return a single column of data
+def querytolistwithparams( querysql, params ):
+   cursor.execute( querysql, params )
+   row = cursor.fetchone()
+   resultlist = []
+   while row != None:
+      resultlist.append( row[0] )
+      row = cursor.fetchone()
+   return resultlist
+
 # querysql is the sql string
 # fieldnames is a list of fieldnames, in the order they will come out in the
 # resultset columns, and without skipping any, ie the 2nd fieldname should

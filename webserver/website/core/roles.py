@@ -25,15 +25,34 @@
 
 from utils import *
 
+# list rolenames here
+# they're also in the roles table, and should match
+accountadmin = 'accountadmin'
+aiadmin = 'aiadmin'
+
 # returns if the logged-in user is in the named role
 def isInRole(rolename):
    if not loginhelper.isLoggedOn():
       return False
    username = loginhelper.getUsername()
-   return isInRole( username, rolename )
+   return isInRole2( username, rolename )
 
 # This is slightly easier to test, so factor it out:
-def isInRole(username, rolename):
+def isInRole2(username, rolename):
+   if rolename == None:
+      print "ERROR: no rolename specified"
+      return False
+   if rolename == '':
+      print "ERROR: no rolename specified"
+      return False
+   # validate rolename:
+   rows = dbconnection.cursor.execute("select role_name "\
+      " from roles "\
+      " where role_name = %s ",
+      ( rolename, ) )
+   if rows != 1:
+      print "ERROR: invalid rolename specified"
+      return False
    rows = dbconnection.cursor.execute("select role_name "\
       " from role_members, accounts, roles "\
       " where role_name = %s "\
@@ -45,9 +64,9 @@ def isInRole(username, rolename):
 
 def test():
    # This supposes original static data is in the db
-   if not tester.testBoolean('check if admin is accountadmin', isInRole( 'admin', 'accountadmin'), True ):
+   if not tester.testBoolean('check if admin is accountadmin', isInRole2( 'admin', 'accountadmin'), True ):
       return
-   if not tester.testBoolean('check if guest is accountadmin', isInRole( 'guest', 'accountadmin'), False ):
+   if not tester.testBoolean('check if guest is accountadmin', isInRole2( 'guest', 'accountadmin'), False ):
       return
    print "PASS"
 
