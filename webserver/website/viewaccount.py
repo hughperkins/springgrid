@@ -50,11 +50,14 @@ print "<html>" \
 "<body>" \
 "<h3>AILadder - View account " + username + "</h3>" \
 "<table border='1' padding='3'>" \
-"<tr><td>Role:</td></tr>"
+"<tr><td>Role:</td><td></td></tr>"
 
 for row in rows:
    print "<tr>"
    print "<td>" + row + "</td>"
+   print "<td><a href='removerolefromaccount.py?"\
+      "username=" + username + "&rolename=" + row + "'>"\
+      "Remove from role</a></td>"
    print "</tr>"
 
 print "</table>"
