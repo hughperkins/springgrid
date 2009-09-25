@@ -8,6 +8,7 @@ todo:
 - some way of passing options through to ai (via script.txt?)
 
 done:
+- fix dates on old python
 - migrated modules to subdirectories
 - add leagues / matchconfigs
 - add leaguegroups

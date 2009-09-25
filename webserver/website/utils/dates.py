@@ -23,24 +23,40 @@
 
 import datetime
 
+import stringhelper
+
 # datestrings are in format:
 # yyyymmddhhmmss
 #
 
 def dateStringToDateTime( datestring ):
-   return datetime.datetime.strptime(datestring,"%Y%m%d%H%M%S")
+   # strptime is not available on older versions of python, so rewrite...
+   # return datetime.datetime.strptime(datestring,"%Y%m%d%H%M%S")
+   (year, datestring ) = stringhelper.eatAsInt(datestring, 4 ) 
+   (month, datestring ) = stringhelper.eatAsInt(datestring, 2 ) 
+   (day, datestring ) = stringhelper.eatAsInt(datestring, 2 ) 
+   (hour, datestring ) = stringhelper.eatAsInt(datestring, 2 ) 
+   (minute, datestring ) = stringhelper.eatAsInt(datestring, 2 ) 
+   (second, datestring ) = stringhelper.eatAsInt(datestring, 2 ) 
+   return datetime.datetime( year, month, day, hour, minute, second )
 
 def dateTimeToDateString( datedatetime ):
    return datedatetime.strftime("%Y%m%d%H%M%S")
 
 def runSelfTest():
-   somedate = datetime.datetime.now()
+   somedate = datetime.datetime(2009,5,3,2,6,17)
    print somedate
    datestring = dateTimeToDateString( somedate )
    print datestring
+   if datestring != "20090503020617":
+      print 'FAIL'
+      return
    seconddate = dateStringToDateTime( datestring )
    print seconddate
-   # print ( somedate == seconddate )
+   if seconddate != somedate:
+      print 'FAIL'
+      return
+   print 'PASS'
 
 if __name__ == '__main__':
    runSelfTest()
