@@ -54,13 +54,24 @@ print "<html>" \
 " like say cheating on, or cheating off</p>"\
 "<p>You can group leagues together in leaguegroups.</p>"\
 "<table border='1' padding='3'>" \
-"<tr><td>League Name:</td><td>Mod Name</td><td>Map Name</td></tr>"
+"<tr><td>League Name:</td><td>Mod Name</td><td>Map Name</td><td>Assigned options</td></tr>"
 
 for row in rows:
    print "<tr>"
    print "<td><a href='viewleague.py?leaguename=" + row['leaguename'] + "'>" + row['leaguename'] + "</a></td>"
    print "<td>" + row['modname'] + "</td>"
    print "<td>" + row['mapname'] + "</td>"
+
+   print "<td>"
+   options = dbconnection.querytolistwithparams("select option_name "\
+      " from aioptions, leagueoptions, leagues " \
+      " where leagueoptions.option_id = aioptions.option_id "\
+      " and leagueoptions.league_id = leagues.league_id "\
+      " and league_name = %s ",
+      ( row['leaguename'], ) )
+   print ' '.join( options )
+   print "</td>"
+
    print "</tr>"
 
 print "</table>"

@@ -27,9 +27,9 @@ import os
 scriptdir = os.path.dirname( os.path.realpath( __file__ ) )
 
 def getReplayPath( matchrequestid ):
-   if not os.path.isdir(scriptdir + "/replays"):
-      os.mkdir( scriptdir + "/replays" )
-   return scriptdir + "/replays/replay_" + str( matchrequestid ) + ".tar.bz2"
+   if not os.path.isdir(scriptdir + "/../replays"):
+      os.mkdir( scriptdir + "/../replays" )
+   return scriptdir + "/../replays/replay_" + str( matchrequestid ) + ".tar.bz2"
 
 def getReplayWebRelativePath( matchrequestid ):
    return "replays/replay_" + str( matchrequestid ) + ".tar.bz2"

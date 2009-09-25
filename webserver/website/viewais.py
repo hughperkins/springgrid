@@ -42,12 +42,24 @@ print "<html>" \
 "<body>" \
 "<h3>AILadder - AI List</h3>" \
 "<table border='1' padding='3'>" \
-"<tr><td>AI Name</td><td>AI Version</td><td>Download url</td></tr>"
+"<tr><td>AI Name</td><td>AI Version</td><td>Compatible Options</td><td>Download url</td></tr>"
 
 for ai in ais:
    print "<tr>"
    print "<td><a href='viewai.py?ainame=" + ai['ai_name'] + "&aiversion=" + ai['ai_version'] + "'>" + ai['ai_name'] + "</a></td>"
    print "<td>" + ai['ai_version'] + "</td>"
+
+   print "<td>"
+   options = dbconnection.querytolistwithparams("select option_name "\
+      " from aioptions, ai_allowedoptions, ais " \
+      " where aioptions.option_id = ai_allowedoptions.option_id "\
+      " and ai_allowedoptions.ai_id = ais.ai_id "\
+      " and ais.ai_name = %s "\
+      " and ais.ai_version = %s ",
+      ( ai['ai_name'], ai['ai_version'] ) )
+   print ' '.join( options )
+   print "</td>"
+
    print "<td><a href='" + ai['ai_downloadurl'] + "'>" + ai['ai_downloadurl'] + "</a></td>"
    print "</tr>"
 
