@@ -14,8 +14,12 @@ function toggle( sourceid) {
 </head>
 <body>
 <h3>AILadder</h3>
+<h4 style="cursor: pointer;" onclick="toggle('accountdiv');">Account</h4>
+<div style="display: none; margin: 10px;" id="accountdiv">
 <a target="contents" href="loginform.html">Login</a><p />
+<a target="contents" href="changepasswordform.html">Change password</a><p />
 <a target="contents" href="logout.py">Logout</a><p />
+</div>
 <h4 style="cursor: pointer;" onclick="toggle('leaguediv');">League</h4>
 <div style="display: block; margin: 10px;" id="leaguediv">
 <a target="contents" href="viewleaguegroupresults.py">View league group results</a><p />

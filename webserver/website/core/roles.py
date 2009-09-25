@@ -62,6 +62,7 @@ def isInRole2(username, rolename):
       ( rolename, username, ) )
    return ( rows == 1 )
 
+# self test function
 def test():
    # This supposes original static data is in the db
    if not tester.testBoolean('check if admin is accountadmin', isInRole2( 'admin', 'accountadmin'), True ):

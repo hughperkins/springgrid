@@ -3,12 +3,12 @@ todo:
 - add scheduler, to queue up matchrequests for each league
 - add results calculator
 - add gameendstring to per-mod config
-- roles
 - add cheating / no-cheating option, and enforce in engine
 - some way of passing options through to ai (via script.txt?)
 - store passwords as salted hashes
 
 done:
+- roles
 - fix dates on old python
 - migrated modules to subdirectories
 - add leagues / matchconfigs

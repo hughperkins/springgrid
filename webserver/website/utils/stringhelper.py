@@ -29,6 +29,7 @@ def eatAsInt( targetstring, n ):
    #print remainingstring
    return ( int(intstring), remainingstring )
 
+# self test function
 def test():
    startstring = "200904"
    (intvalue, startstring) = eatAsInt( startstring, 4 )

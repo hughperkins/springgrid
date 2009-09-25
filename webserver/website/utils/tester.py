@@ -30,6 +30,7 @@ def testBoolean( description, testvalue, targetvalue ):
       print "Testing " + description + ": FAIL: " + str(testvalue) + " vs " + str(targetvalue)
       return False
 
+# self test function
 def test():
    if testBoolean("check for true", True, True ) == False:
       print 'FAIL'
