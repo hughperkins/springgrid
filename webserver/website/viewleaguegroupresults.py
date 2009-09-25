@@ -3,5 +3,5 @@
 print "Content-type: text/plain"
 print ""
 print ""
-print "In progress"
+print "Page under construction."
 

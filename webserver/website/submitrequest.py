@@ -37,24 +37,24 @@ import Cookie
 import cgi
 
 import config
-import dbconnection
-import dates
-import loginhelper
 
-import matchrequestcontroller
+import utils.loginhelper as loginhelper
+import utils.dbconnection as dbconnection
+import utils.formhelper as formhelper
+import utils.htmlformshelper as htmlformshelper
+
+import core.matchrequestcontroller as matchrequestcontroller
 
 # get request from form
-form = cgi.FieldStorage()
-
 matchrequest = matchrequestcontroller.MatchRequest()
-matchrequest.ai0name = form["ai0name"].value
-matchrequest.ai0version = form["ai0version"].value
-matchrequest.ai1name = form["ai1name"].value
-matchrequest.ai1version = form["ai1version"].value
-matchrequest.mapname = form["mapname"].value
-# matchrequest.maphash = form["maphash"].value
-matchrequest.modname = form["modname"].value
-# matchrequest.modhash = form["modhash"].value
+matchrequest.ai0name = formhelper.getValue("ai0name")
+matchrequest.ai0version = formhelper.getValue("ai0version")
+matchrequest.ai1name = formhelper.getValue("ai1name")
+matchrequest.ai1version = formhelper.getValue("ai1version")
+matchrequest.mapname = formhelper.getValue("mapname")
+# matchrequest.maphash = formhelper.getValue("maphash")
+matchrequest.modname = formhelper.getValue("modname")
+# matchrequest.modhash = formhelper.getValue("modhash")
 
 print "Content-type: text/plain"
 print ""

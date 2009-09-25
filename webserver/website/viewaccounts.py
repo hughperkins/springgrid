@@ -23,9 +23,11 @@
 
 import cgitb; cgitb.enable()
 
-import dbconnection
-import htmlformshelper
-import loginhelper
+import utils.loginhelper as loginhelper
+import utils.dbconnection as dbconnection
+import utils.formhelper as formhelper
+import utils.htmlformshelper as htmlformshelper
+import utils.dates as dates
 
 # quick and nasty form to create user accounts...
 

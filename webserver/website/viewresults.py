@@ -24,10 +24,11 @@
 import cgitb; cgitb.enable()
 import os
 
-import dbconnection
-import htmlformshelper
-import loginhelper
-import replaycontroller
+import utils.dbconnection as dbconnection
+import utils.htmlformshelper as htmlformshelper
+import utils.loginhelper as loginhelper
+
+import core.replaycontroller as replaycontroller
 
 dbconnection.connectdb()
 

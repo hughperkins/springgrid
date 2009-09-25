@@ -19,11 +19,34 @@
 # http://www.opensource.org/licenses/gpl-license.php
 #
 
-create table aidevs (
-   aidev_id integer not null auto_increment,
-   aidev_fullname varchar(255) not null,
-   aidev_emailaddress varchar(255) not null default '',
-   aidev_password varchar(255) not null,
+import cgi
 
-   primary key(aidev_id)
-);
+import utils.loginhelper as loginhelper
+import utils.dbconnection as dbconnection
+import utils.formhelper as formhelper
+import utils.htmlformshelper as htmlformshelper
+
+calcenginename = ""
+
+def calcengineauthorized():
+   global calcenginename 
+
+   calcenginename = formhelper.getValue("calcenginename")
+   sharedsecret = formhelper.getValue("sharedsecret")
+   return validatesharedsecret( calcenginename, sharedsecret )
+
+def validatesharedsecret(lcalcenginename, sharedsecret):
+   global calcenginename
+   dbconnection.cursor.execute("select calcengine_sharedsecret from calcengines where calcengine_name=%s", (lcalcenginename,) )
+   row = dbconnection.cursor.fetchone()
+   if row == None:
+      return False
+   actualsharedsecret = row[0]
+   if actualsharedsecret == sharedsecret:
+      calcenginename = lcalcenginename
+      return True
+   return False
+
+
+
+

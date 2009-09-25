@@ -42,3 +42,6 @@ def runSelfTest():
    print seconddate
    # print ( somedate == seconddate )
 
+if __name__ == '__main__':
+   runSelfTest()
+

@@ -4,8 +4,11 @@ todo:
 - add results calculator
 - add gameendstring to per-mod config
 - roles
+- add cheating / no-cheating option, and enforce in engine
+- some way of passing options through to ai (via script.txt?)
 
 done:
+- migrated modules to subdirectories
 - add leagues / matchconfigs
 - add leaguegroups
 - group menu by league, setup, runner

@@ -19,32 +19,12 @@
 # http://www.opensource.org/licenses/gpl-license.php
 #
 
-import cgi
+create table roles (
+   role_id integer not null auto_increment,
+   role_name varchar(255) not null,
 
-import dbconnection
-import formhelper
+   primary key (role_id )
+);
 
-calcenginename = ""
-
-def calcengineauthorized():
-   global calcenginename 
-
-   calcenginename = formhelper.getValue("calcenginename")
-   sharedsecret = formhelper.getValue("sharedsecret")
-   return validatesharedsecret( calcenginename, sharedsecret )
-
-def validatesharedsecret(lcalcenginename, sharedsecret):
-   global calcenginename
-   dbconnection.cursor.execute("select calcengine_sharedsecret from calcengines where calcengine_name=%s", (lcalcenginename,) )
-   row = dbconnection.cursor.fetchone()
-   if row == None:
-      return False
-   actualsharedsecret = row[0]
-   if actualsharedsecret == sharedsecret:
-      calcenginename = lcalcenginename
-      return True
-   return False
-
-
-
+alter table roles add unique key (role_name );
 
