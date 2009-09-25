@@ -23,11 +23,7 @@
 
 import cgitb; cgitb.enable()
 
-import utils.loginhelper as loginhelper
-import utils.dbconnection as dbconnection
-import utils.formhelper as formhelper
-import utils.htmlformshelper as htmlformshelper
-import utils.dates as dates
+from utils import *
 
 dbconnection.connectdb()
 

@@ -24,9 +24,7 @@
 import cgitb; cgitb.enable()
 import os
 
-import utils.dbconnection as dbconnection
-import utils.htmlformshelper as htmlformshelper
-import utils.loginhelper as loginhelper
+from utils import *
 
 import core.replaycontroller as replaycontroller
 

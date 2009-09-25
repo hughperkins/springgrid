@@ -38,12 +38,8 @@ import cgi
 
 import config
 
-import utils.loginhelper as loginhelper
-import utils.dbconnection as dbconnection
-import utils.formhelper as formhelper
-import utils.htmlformshelper as htmlformshelper
-
-import core.matchrequestcontroller as matchrequestcontroller
+from utils import *
+from core import *
 
 # get request from form
 matchrequest = matchrequestcontroller.MatchRequest()

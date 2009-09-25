@@ -31,13 +31,9 @@ import Cookie
 import cgi
 
 import config
-import dbconnection
-import dates
-import formhelper
 
-import matchrequestcontroller
-import calcenginehelper
-import replaycontroller
+from utils import *
+from core import *
 
 testing = False
 

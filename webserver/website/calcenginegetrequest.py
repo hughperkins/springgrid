@@ -56,11 +56,9 @@ import Cookie
 import cgi
 
 import config
-import dbconnection
-import dates
 
-import matchrequestcontroller
-import calcenginehelper
+from utils import *
+from core import *
 
 # basically, we want to know what maps and stuff it supports
 # for now this is a placeholder...
