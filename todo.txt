@@ -6,6 +6,7 @@ todo:
 - roles
 - add cheating / no-cheating option, and enforce in engine
 - some way of passing options through to ai (via script.txt?)
+- store passwords as salted hashes
 
 done:
 - fix dates on old python

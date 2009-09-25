@@ -43,7 +43,7 @@ def dateStringToDateTime( datestring ):
 def dateTimeToDateString( datedatetime ):
    return datedatetime.strftime("%Y%m%d%H%M%S")
 
-def runSelfTest():
+def test():
    somedate = datetime.datetime(2009,5,3,2,6,17)
    print somedate
    datestring = dateTimeToDateString( somedate )
@@ -59,5 +59,5 @@ def runSelfTest():
    print 'PASS'
 
 if __name__ == '__main__':
-   runSelfTest()
+   test()
 

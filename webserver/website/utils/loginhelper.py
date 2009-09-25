@@ -44,6 +44,14 @@ cookie = Cookie.SimpleCookie()
 def GenerateRef():
    return random.randint(0,1000000)
 
+def isLoggedOn():
+   global gusername
+   return ( gusername != '')
+
+def getUsername():
+   global gusername
+   return gusername
+
 def logonUser(username, password):
    global gusername
    global loginhtml
