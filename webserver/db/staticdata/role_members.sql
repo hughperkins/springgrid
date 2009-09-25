@@ -10,4 +10,7 @@ insert into role_members (role_id, account_id ) values
 # admin as mapadmin
 insert into role_members (role_id, account_id ) values
    ( 4, 1 ); 
+# admin as leagueadmin
+insert into role_members (role_id, account_id ) values
+   ( 5, 1 ); 
 

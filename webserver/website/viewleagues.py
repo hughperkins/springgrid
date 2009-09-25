@@ -58,7 +58,7 @@ print "<html>" \
 
 for row in rows:
    print "<tr>"
-   print "<td>" + row['leaguename'] + "</td>"
+   print "<td><a href='viewleague.py?leaguename=" + row['leaguename'] + "'>" + row['leaguename'] + "</a></td>"
    print "<td>" + row['modname'] + "</td>"
    print "<td>" + row['mapname'] + "</td>"
    print "</tr>"

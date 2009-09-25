@@ -31,6 +31,7 @@ accountadmin = 'accountadmin'
 aiadmin = 'aiadmin'
 mapadmin = 'mapadmin'
 modadmin = 'modadmin'
+leagueadmin = 'leagueadmin'
 
 # returns if the logged-in user is in the named role
 def isInRole(rolename):
