@@ -4,7 +4,6 @@ todo:
 - add results calculator
 - enforce no-cheating option in calcengine
 - some way of passing options through to ai (via script.txt?)
-- store passwords as salted hashes
 - implement game timeout in calcengine
 - upload logfile after game, per-ai, or at least the infolog.txt
 - be able to configure arm vs core vs ... vs random
@@ -32,6 +31,7 @@ not sure if actually necessary (so: to test/investigate):
 - add gameendstring to per-mod config
 
 done:
+- store passwords as salted hashes
 - add cheating / no-cheating option
 - add change password form
 - roles

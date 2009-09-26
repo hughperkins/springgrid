@@ -10,11 +10,11 @@ div.menu {
    width: 175px;
 }
 div.menu div {
+    background-color: lightblue;
 }
 div.menu div.popuptitle {
    border: solid 1px;
    padding: 5px;
-    background-color: lightblue;
 }
 
 div.menu div.popup {
@@ -25,8 +25,9 @@ div.menu div.popup {
    width: 280px;
 }
 
-div.menu:hover {
+div.menu:hover div.popuptitle {
    font-weight: bold;
+   background-color: aaf;
 }
 
 div.menu:hover div.popup {
@@ -38,14 +39,25 @@ div.popup a {
    color: black;
 }
 div.popup a:hover {
-   font-weight: bold;   
 }
-
+div.menuitem {
+   padding: 10px;
+}
+div.menuitem:hover {
+   padding: 10px;
+   font-weight: bold;   
+   background-color: aaf;
+}
 div.contents {
    position: absolute;
 
    top: 60px;
    left: 60px;
+}
+
+td.tablehead {
+   background-color: lightblue;
+   front-weight: bold;
 }
 </style>
 
@@ -54,47 +66,47 @@ div.contents {
 <div class="menu">
 <div class="popuptitle">Account</div>
 <div class="popup">
-<a href="loginform.py">Login</a><br />
-<a href="changepasswordform.py">Change password</a><br />
-<a href="logout.py">Logout</a><br />
+<a href="loginform.py"><div class="menuitem">Login</div></a>
+<a href="changepasswordform.py"><div class="menuitem">Change password</div></a>
+<a href="logout.py"><div class="menuitem">Logout</div></a>
 </div>
 </div>
 
 <div class="menu">
 <div class="popuptitle">League</div>
 <div class="popup">
-<a href="viewleaguegroupresults.py">View league group results</a><br />
-<a href="viewleagueresults.py">View league results</a><br />
-<a href="viewresults.py">View match results</a><br />
+<a href="viewleaguegroupresults.py"><div class="menuitem">View league group results</div></a>
+<a href="viewleagueresults.py"><div class="menuitem">View league results</div></a>
+<a href="viewresults.py"><div class="menuitem">View match results</div></a>
 </div>
 </div>
 
 <div class="menu">
 <div class="popuptitle">Runner</div>
 <div class="popup">
-<a href="viewrequests.py">View request queue</a><br />
-<a href="submitrequestform.py">Add request to queue</a><br />
+<a href="viewrequests.py"><div class="menuitem">View request queue</div></a>
+<a href="submitrequestform.py"><div class="menuitem">Add request to queue</div></a>
 </div>
 </div>
 
 <div class="menu">
 <div class="popuptitle">Setup</div>
 <div class="popup">
-<a href="setupnotes.py">Setup notes</a><br />
-<a href="viewleaguegroups.py">View league groups</a><br />
-<a href="viewleagues.py">View leagues</a><br />
-<a href="viewcalcengines.py">View available calc engines</a><br />
-<a href="viewmaps.py">View available maps</a><br />
-<a href="viewmods.py">View available mods</a><br />
-<a href="viewais.py">View available ais</a><br />
-<a href="viewaccounts.py">View accounts</a><br />
+<a href="setupnotes.py"><div class="menuitem">Setup notes</div></a>
+<a href="viewleaguegroups.py"><div class="menuitem">View league groups</div></a>
+<a href="viewleagues.py"><div class="menuitem">View leagues</div></a>
+<a href="viewcalcengines.py"><div class="menuitem">View available calc engines</div></a>
+<a href="viewmaps.py"><div class="menuitem">View available maps</div></a>
+<a href="viewmods.py"><div class="menuitem">View available mods</div></a>
+<a href="viewais.py"><div class="menuitem">View available ais</div></a>
+<a href="viewaccounts.py"><div class="menuitem">View accounts</div></a>
 </div>
 </div>
 
 <div class="menu">
 <div class="popuptitle">About</div>
 <div class="popup">
-<a href="about.py">About</a><br />
+<a href="about.py"><div class="menuitem">About</div></a>
 </div>
 </div>
 
