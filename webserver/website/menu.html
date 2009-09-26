@@ -1,51 +1,104 @@
-<html>
-<head>
-<title>AILadder</title>
-<script type="text/javascript">
-function toggle( sourceid) {
-   source = document.getElementById(sourceid);
-   if( source.style.display == 'block' ) {
-      source.style.display ='none';
-   } else {
-      source.style.display ='block';
-   }
+<style type="text/css">
+div.mainmenu {
+    position: absolute;
+    z-index: 1;
+    top: 20px;
+    left: 50px;
 }
-</script>
-</head>
-<body>
-<h3>AILadder</h3>
-<h4 style="cursor: pointer;" onclick="toggle('accountdiv');">Account</h4>
-<div style="display: none; margin: 10px;" id="accountdiv">
-<a target="contents" href="loginform.html">Login</a><p />
-<a target="contents" href="changepasswordform.html">Change password</a><p />
-<a target="contents" href="logout.py">Logout</a><p />
-</div>
-<h4 style="cursor: pointer;" onclick="toggle('leaguediv');">League</h4>
-<div style="display: block; margin: 10px;" id="leaguediv">
-<a target="contents" href="viewleaguegroupresults.py">View league group results</a><p />
-<a target="contents" href="viewleagueresults.py">View league results</a><p />
-<a target="contents" href="viewresults.py">View match results</a><p />
-</div>
-<h4 style="cursor: pointer;" onclick="toggle('runnerdiv');">Runner</h4>
-<div style="display: none; margin: 10px;" id="runnerdiv">
-<a target="contents" href="viewrequests.py">View request queue</a><p />
-<a target="contents" href="submitrequestform.py">Add request to queue</a><p />
-</div>
-<h4 style="cursor: pointer;" onclick="toggle('setupdiv');">Setup</h4>
-<div style="display: none; margin: 10px;" id="setupdiv">
-<a target="contents" href="howtouse.txt">Setup notes</a><p />
-<a target="contents" href="viewleaguegroups.py">View league groups</a><p />
-<a target="contents" href="viewleagues.py">View leagues</a><p />
-<a target="contents" href="viewcalcengines.py">View available calc engines</a><p />
-<a target="contents" href="viewmaps.py">View available maps</a><p />
-<a target="contents" href="viewmods.py">View available mods</a><p />
-<a target="contents" href="viewais.py">View available ais</a><p />
-<a target="contents" href="viewaccounts.py">View accounts</a><p />
-</div>
-<h4 style="cursor: pointer;" onclick="toggle('aboutdiv');">About</h4>
-<div style="display: none; margin: 10px;" id="aboutdiv">
-<a target="contents" href="about.html">About</a><p />
-</div>
-</body>
+div.menu {
+   float: left;   
+   width: 175px;
+}
+div.menu div {
+}
+div.menu div.popuptitle {
+   border: solid 1px;
+   padding: 5px;
+    background-color: lightblue;
+}
 
+div.menu div.popup {
+   display: none;
+   font-weight: normal;
+   border: solid 1px;
+    background-color: lightblue;
+   width: 280px;
+}
+
+div.menu:hover {
+   font-weight: bold;
+}
+
+div.menu:hover div.popup {
+   display: block;
+}
+
+div.popup a {
+   text-decoration: none;   
+   color: black;
+}
+div.popup a:hover {
+   font-weight: bold;   
+}
+
+div.contents {
+   position: absolute;
+
+   top: 60px;
+   left: 60px;
+}
+</style>
+
+<div class="mainmenu">
+
+<div class="menu">
+<div class="popuptitle">Account</div>
+<div class="popup">
+<a href="loginform.py">Login</a><br />
+<a href="changepasswordform.py">Change password</a><br />
+<a href="logout.py">Logout</a><br />
+</div>
+</div>
+
+<div class="menu">
+<div class="popuptitle">League</div>
+<div class="popup">
+<a href="viewleaguegroupresults.py">View league group results</a><br />
+<a href="viewleagueresults.py">View league results</a><br />
+<a href="viewresults.py">View match results</a><br />
+</div>
+</div>
+
+<div class="menu">
+<div class="popuptitle">Runner</div>
+<div class="popup">
+<a href="viewrequests.py">View request queue</a><br />
+<a href="submitrequestform.py">Add request to queue</a><br />
+</div>
+</div>
+
+<div class="menu">
+<div class="popuptitle">Setup</div>
+<div class="popup">
+<a href="setupnotes.py">Setup notes</a><br />
+<a href="viewleaguegroups.py">View league groups</a><br />
+<a href="viewleagues.py">View leagues</a><br />
+<a href="viewcalcengines.py">View available calc engines</a><br />
+<a href="viewmaps.py">View available maps</a><br />
+<a href="viewmods.py">View available mods</a><br />
+<a href="viewais.py">View available ais</a><br />
+<a href="viewaccounts.py">View accounts</a><br />
+</div>
+</div>
+
+<div class="menu">
+<div class="popuptitle">About</div>
+<div class="popup">
+<a href="about.py">About</a><br />
+</div>
+</div>
+
+</div>
+
+<div class="contents">
 

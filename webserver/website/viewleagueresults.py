@@ -25,6 +25,7 @@ import cgitb; cgitb.enable()
 import os
 
 from utils import *
+from core import *
 
 import core.replaycontroller as replaycontroller
 
@@ -35,6 +36,8 @@ loginhelper.processCookie()
 print "Content-type: text/html"
 print ""
 print ""
+
+menu.printPageTop()
 
 requests = dbconnection.querytomaplist( "select matchrequestqueue.matchrequest_id, " \
       "ai0.ai_name, "\
@@ -63,12 +66,7 @@ requests = dbconnection.querytomaplist( "select matchrequestqueue.matchrequest_i
       "   and mods.mod_id = matchrequestqueue.mod_id ",
    ( 'matchrequestid','ai0name', 'ai0version', 'ai1name', 'ai1version', 'mapname', 'modname', 'calcenginename', 'matchresult', ) )
 
-print "<html>" \
-"<head>" \
-"<title>AILadder - League results</title>" \
-"</head>" \
-"<body>" \
-"<h3>AILadder - Match results</h3>" \
+print "<h3>AILadder - Match results</h3>" \
 "<table border='1' padding='3'>" \
 "<tr>"
 print "<td>matchrequestid</td>"
@@ -103,9 +101,7 @@ for request in requests:
 
 print "</table>"
 
-print "</body>" \
-"</html>"
-
 dbconnection.disconnectdb()
 
+menu.printPageBottom()
 

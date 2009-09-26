@@ -34,6 +34,8 @@ print "Content-type: text/html"
 print ""
 print ""
 
+menu.printPageTop()
+
 username = formhelper.getValue('username')
 
 rows = dbconnection.querytolistwithparams( "select role_name "\
@@ -43,12 +45,7 @@ rows = dbconnection.querytolistwithparams( "select role_name "\
    " and accounts.username = %s",
    (username,) )
 
-print "<html>" \
-"<head>" \
-"<title>AILadder - View account " + username + "</title>" \
-"</head>" \
-"<body>" \
-"<h3>AILadder - View account " + username + "</h3>" \
+print "<h3>AILadder - View account " + username + "</h3>" \
 "<table border='1' padding='3'>" \
 "<tr><td>Role:</td><td></td></tr>"
 
@@ -87,11 +84,9 @@ if roles.isInRole(roles.accountadmin):
    print "<tr><td></td><td><input type='submit' value='Add' /></td></tr>" \
    "</table>" \
    "<input type='hidden' name='username' value='" + username + "' />"\
-   "</form>" \
-
-print "</body>" \
-"</html>"
+   "</form>"
 
 dbconnection.disconnectdb()
 
+menu.printPageBottom()
 

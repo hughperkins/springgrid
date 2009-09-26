@@ -24,6 +24,7 @@
 import cgitb; cgitb.enable()
 
 from utils import *
+from core import *
 
 dbconnection.connectdb()
 
@@ -33,17 +34,14 @@ print "Content-type: text/html"
 print ""
 print ""
 
+menu.printPageTop()
+
 rows = dbconnection.querytomaplist( "select "\
    "     leaguegroup_name "\
    " from leaguegroups ",
    ('leaguegroupname', ) )
 
-print "<html>" \
-"<head>" \
-"<title>AILadder - View league groups</title>" \
-"</head>" \
-"<body>" \
-"<h3>AILadder - View leagues</h3>" \
+print "<h3>AILadder - View leagues</h3>" \
 "<p>A league is a specific game configuration used for testing AIs "\
 " against each other</p>"\
 "<p>For example, a league could be a specific map, mod, and certain options,"\
@@ -72,12 +70,9 @@ if loginhelper.gusername != '':
 
    print "<tr><td></td><td><input type='submit' value='Add' /></td></tr>" \
    "</table>" \
-   "</form>" \
-
-
-print "</body>" \
-"</html>"
+   "</form>"
 
 dbconnection.disconnectdb()
 
+menu.printPageBottom()
 

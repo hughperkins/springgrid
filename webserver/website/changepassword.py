@@ -35,9 +35,11 @@ dbconnection.connectdb()
 
 loginhelper.processCookie()
 
-print "Content-type: text/plain"
+print "Content-type: text/html"
 print ""
 print ""
+
+menu.printPageTop()
 
 if not loginhelper.isLoggedOn():
    print "Please log in first."
@@ -56,6 +58,8 @@ else:
          print "Something went wrong.  Please check your values and try again."
    else:
       print "Please fill in the fields and try again"
+
+menu.printPageBottom()
 
 dbconnection.disconnectdb()
 

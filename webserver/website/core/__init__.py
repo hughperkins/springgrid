@@ -3,5 +3,5 @@
 
 # This lets us do 'from core import *':
 __all__ = ['roles', 'calcenginehelper','matchrequestcontroller',
-   'replaycontroller']
+   'replaycontroller', 'menu']
 

@@ -31,31 +31,19 @@ from core import *
 
 dbconnection.connectdb()
 
+print "Content-type: text/html"
+print ""
+print ""
+menu.printPageTop()
 
-# loginhelper.processCookie()
-
-#if loginhelper.gusername != "":
-#   print "Content-type: text/html"
-#   print ""
-#   print ""
-#   print loginhelper.loginhtml
-#else:
-username = formhelper.getValue('username')
-password = formhelper.getValue('password')
-if username == None or password == None or username == '' or password == '':
-   print "Content-type: text/html"
-   print ""
-   print ""
-   menu.printPageTop()
-   print "<h4>Logon error: Please fill in the username and password fields.</h4>"
-else:
-   loginhelper.logonUser( username, password )
-   print "Content-type: text/html"
-   print loginhelper.cookie.output()
-   print ""
-   print ""
-   menu.printPageTop()
-   print loginhelper.loginhtml
+print "<h3>AI Ladder - login</h3>"
+print "<form action='login.py' method='post'>"
+print "<table border='1' cellpadding='3'>"
+print "<tr><td>Username:</td><td><input type='text' name='username'></td></tr>"
+print "<tr><td>Password:</td><td><input type='password' name='password'></td></tr>"
+print "<tr><td></td><td><input type='submit' value='Login'></td></tr>"
+print "</table>"
+print "</form>"
 
 dbconnection.disconnectdb()
 

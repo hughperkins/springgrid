@@ -35,9 +35,11 @@ dbconnection.connectdb()
 
 loginhelper.processCookie()
 
-print "Content-type: text/plain"
+print "Content-type: text/html"
 print ""
 print ""
+
+menu.printPageTop()
 
 if not roles.isInRole(roles.mapadmin):
    print "You must be logged in as a mapadmin"
@@ -60,4 +62,5 @@ else:
 
 dbconnection.disconnectdb()
 
+menu.printPageBottom()
 

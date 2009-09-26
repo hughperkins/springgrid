@@ -21,44 +21,20 @@
 # http://www.opensource.org/licenses/gpl-license.php
 #
 
-# handles user login
-
 import cgitb; cgitb.enable()
-import cgi
 
 from utils import *
 from core import *
 
-dbconnection.connectdb()
+print "Content-type: text/html"
+print ""
+print ""
 
+menu.printPageTop()
 
-# loginhelper.processCookie()
-
-#if loginhelper.gusername != "":
-#   print "Content-type: text/html"
-#   print ""
-#   print ""
-#   print loginhelper.loginhtml
-#else:
-username = formhelper.getValue('username')
-password = formhelper.getValue('password')
-if username == None or password == None or username == '' or password == '':
-   print "Content-type: text/html"
-   print ""
-   print ""
-   menu.printPageTop()
-   print "<h4>Logon error: Please fill in the username and password fields.</h4>"
-else:
-   loginhelper.logonUser( username, password )
-   print "Content-type: text/html"
-   print loginhelper.cookie.output()
-   print ""
-   print ""
-   menu.printPageTop()
-   print loginhelper.loginhtml
-
-dbconnection.disconnectdb()
+print "<pre>"
+print filehelper.readFile("howtouse.txt")
+print "</pre>"
 
 menu.printPageBottom()
-
 

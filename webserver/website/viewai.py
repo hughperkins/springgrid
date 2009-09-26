@@ -34,6 +34,8 @@ print "Content-type: text/html"
 print ""
 print ""
 
+menu.printPageTop()
+
 ainame = formhelper.getValue('ainame')
 aiversion = formhelper.getValue('aiversion')
 
@@ -45,12 +47,7 @@ compatibleoptions = dbconnection.querytolistwithparams( "select option_name "\
    " and ais.ai_version= %s ",
    ( ainame, aiversion, ) )
 
-print "<html>" \
-"<head>" \
-"<title>AILadder - View AI '" + ainame + " " + aiversion + "'</title>" \
-"</head>" \
-"<body>" \
-"<h3>AILadder - View AI '" + ainame + " " + aiversion + "'</h3>"
+print "<h3>AILadder - View AI '" + ainame + " " + aiversion + "'</h3>"
 
 print "<p>This page can configure the options compatible with one ai</p>"
 print "<p>For example, if it can run when cheating is allowed, then add the option 'cheatingallowed', or, if it can run when cheating is banned, then add the option 'cheatingequalslose'</p>"
@@ -89,11 +86,9 @@ if roles.isInRole(roles.aiadmin):
    "</table>" \
    "<input type='hidden' name='ainame' value='" + ainame + "' />" \
    "<input type='hidden' name='aiversion' value='" + aiversion + "' />" \
-   "</form>" \
+   "</form>"
 
-
-print "</body>" \
-"</html>"
+menu.printPageBottom()
 
 dbconnection.disconnectdb()
 

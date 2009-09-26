@@ -24,6 +24,7 @@
 import cgitb; cgitb.enable()
 
 from utils import *
+from core import *
 
 dbconnection.connectdb()
 
@@ -32,6 +33,8 @@ loginhelper.processCookie()
 print "Content-type: text/html"
 print ""
 print ""
+
+menu.printPageTop()
 
 rows = dbconnection.querytomaplist( "select "\
    "    calcengine_name, "\
@@ -43,12 +46,7 @@ rows = dbconnection.querytomaplist( "select "\
    " where calcengines.calcengine_owneraccountid = accounts.account_id ",
    ('calcenginename','username','userfullname', 'sharedsecret' ) )
 
-print "<html>" \
-"<head>" \
-"<title>AILadder - Calc Engine List</title>" \
-"</head>" \
-"<body>" \
-"<h3>AILadder - Calc Engine List</h3>" \
+print "<h3>AILadder - Calc Engine List</h3>" \
 "<table border='1' padding='3'>" \
 "<tr><td>Calc Engine Name</td><td>Calc Engine Owner Name:</td><td>Shared secret (only visible for your own calcengines)</td></tr>"
 
@@ -78,12 +76,9 @@ if loginhelper.gusername != '':
    "<tr><td>Calc engine shared secret</td><td><input name='sharedsecret'</td></tr>" \
    "<tr><td></td><td><input type='submit' value='Add' /></td></tr>" \
    "</table>" \
-   "</form>" \
-
-
-print "</body>" \
-"</html>"
+   "</form>"
 
 dbconnection.disconnectdb()
 
+menu.printPageBottom()
 

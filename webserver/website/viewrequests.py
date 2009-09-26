@@ -24,6 +24,7 @@
 import cgitb; cgitb.enable()
 
 from utils import *
+from core import *
 
 dbconnection.connectdb()
 
@@ -32,6 +33,8 @@ loginhelper.processCookie()
 print "Content-type: text/html"
 print ""
 print ""
+
+menu.printPageTop()
 
 requests = dbconnection.querytomaplist( "select matchrequestqueue.matchrequest_id, " \
       "ai0.ai_name, "\
@@ -59,12 +62,7 @@ requests = dbconnection.querytomaplist( "select matchrequestqueue.matchrequest_i
              " where matchresults.matchrequest_id = matchrequestqueue.matchrequest_id )",
    ( 'matchrequestid','ai0name', 'ai0version', 'ai1name', 'ai1version', 'mapname', 'modname', 'datetimeassigned', 'calcenginename', ) )
 
-print "<html>" \
-"<head>" \
-"<title>AILadder - Match requests</title>" \
-"</head>" \
-"<body>" \
-"<h3>AILadder - Match requests</h3>" \
+print "<h3>AILadder - Match requests</h3>" \
 "<table border='1' padding='3'>" \
 "<tr>"
 print "<td>matchrequestid</td>"
@@ -102,9 +100,7 @@ for request in requests:
 
 print "</table>"
 
-print "</body>" \
-"</html>"
-
 dbconnection.disconnectdb()
 
+menu.printPageBottom()
 

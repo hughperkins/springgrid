@@ -34,6 +34,8 @@ print "Content-type: text/html"
 print ""
 print ""
 
+menu.printPageTop()
+
 leaguename = formhelper.getValue('leaguename')
 
 compatibleoptions = dbconnection.querytolistwithparams( "select option_name "\
@@ -43,12 +45,7 @@ compatibleoptions = dbconnection.querytolistwithparams( "select option_name "\
    " and leagueoptions.option_id = aioptions.option_id ",
    ( leaguename, ) )
 
-print "<html>" \
-"<head>" \
-"<title>AILadder - View League '" + leaguename + "'</title>" \
-"</head>" \
-"<body>" \
-"<h3>AILadder - View League '" + leaguename + "'</h3>"
+print "<h3>AILadder - View League '" + leaguename + "'</h3>"
 
 print "<p>This page can configure the options that will be used for this league.</p>"
 print "<p>Try to make sure not to add two incompatible options ;-)</p>"
@@ -86,12 +83,10 @@ if roles.isInRole(roles.leagueadmin):
    "<tr><td></td><td><input type='submit' value='Add' /></td></tr>" \
    "</table>" \
    "<input type='hidden' name='leaguename' value='" + leaguename + "' />" \
-   "</form>" \
+   "</form>"
 
-
-print "</body>" \
-"</html>"
 
 dbconnection.disconnectdb()
 
+menu.printPageBottom()
 

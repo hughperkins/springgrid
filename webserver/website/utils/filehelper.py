@@ -1,8 +1,6 @@
-#!/usr/bin/python
-
 # Copyright Hugh Perkins 2009
 # hughperkins@gmail.com http://manageddreams.com
-#
+# 
 # This program is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by the
 # Free Software Foundation; either version 2 of the License, or
@@ -21,44 +19,38 @@
 # http://www.opensource.org/licenses/gpl-license.php
 #
 
-# handles user login
+import io
 
-import cgitb; cgitb.enable()
-import cgi
+# return contents of filepath as string
+def readFile( filepath ):
+   filehandle = io.open( filepath, "r" )
+   filecontents = ""
+   line = filehandle.readline()
+   while( line != "" ):
+      filecontents = filecontents + line
+      line = filehandle.readline()
+   filehandle.close()
+   return filecontents
 
-from utils import *
-from core import *
+# write contents string to filepath
+def writeFile( filepath, contents ):
+   filehandle = io.open( filepath, "w" )
+   filehandle.write( contents )
+   filehandle.close()
 
-dbconnection.connectdb()
+def test():
+   teststring = u"blah\nfoo\nhello world!T^*6789"
+   filepath = "/tmp/foo.txt"
+   writeFile( filepath, teststring )
+   newstring = readFile( filepath )
+   if newstring != teststring:
+      print "FAIL"
+      return
+
+   print "PASS"
 
 
-# loginhelper.processCookie()
-
-#if loginhelper.gusername != "":
-#   print "Content-type: text/html"
-#   print ""
-#   print ""
-#   print loginhelper.loginhtml
-#else:
-username = formhelper.getValue('username')
-password = formhelper.getValue('password')
-if username == None or password == None or username == '' or password == '':
-   print "Content-type: text/html"
-   print ""
-   print ""
-   menu.printPageTop()
-   print "<h4>Logon error: Please fill in the username and password fields.</h4>"
-else:
-   loginhelper.logonUser( username, password )
-   print "Content-type: text/html"
-   print loginhelper.cookie.output()
-   print ""
-   print ""
-   menu.printPageTop()
-   print loginhelper.loginhtml
-
-dbconnection.disconnectdb()
-
-menu.printPageBottom()
+if __name__ == "__main__":
+   test()
 
 

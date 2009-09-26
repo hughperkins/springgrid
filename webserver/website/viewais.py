@@ -24,6 +24,7 @@
 import cgitb; cgitb.enable()
 
 from utils import *
+from core import *
 
 dbconnection.connectdb()
 
@@ -33,15 +34,13 @@ print "Content-type: text/html"
 print ""
 print ""
 
+menu.printPageTop()
+
 ais = dbconnection.querytomaplist( "select ai_name, ai_version, ai_downloadurl from ais", ('ai_name','ai_version', 'ai_downloadurl' ) )
 
-print "<html>" \
-"<head>" \
-"<title>AILadder - AI List</title>" \
-"</head>" \
-"<body>" \
-"<h3>AILadder - AI List</h3>" \
-"<table border='1' padding='3'>" \
+print "<h3>AILadder - AI List</h3>"
+
+print "<table border='1' padding='3'>" \
 "<tr><td>AI Name</td><td>AI Version</td><td>Compatible Options</td><td>Download url</td></tr>"
 
 for ai in ais:
@@ -81,11 +80,13 @@ if loginhelper.gusername != '':
    "<tr><td>Download url</td><td><input name='downloadurl'</td></tr>" \
    "<tr><td></td><td><input type='submit' value='Add' /></td></tr>" \
    "</table>" \
-   "</form>" \
+   "</form>" 
 
 
-print "</body>" \
-"</html>"
+#print "</body>" \
+#"</html>"
+
+menu.printPageBottom()
 
 dbconnection.disconnectdb()
 

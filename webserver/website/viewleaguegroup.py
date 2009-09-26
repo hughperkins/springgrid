@@ -24,6 +24,7 @@
 import cgitb; cgitb.enable()
 
 from utils import *
+from core import *
 
 dbconnection.connectdb()
 
@@ -32,6 +33,8 @@ loginhelper.processCookie()
 print "Content-type: text/html"
 print ""
 print ""
+
+menu.printPageTop()
 
 leaguegroupname = formhelper.getValue('leaguegroupname')
 
@@ -48,12 +51,7 @@ while row != None:
    leagues.append( row[0])
    row = dbconnection.cursor.fetchone()
 
-print "<html>" \
-"<head>" \
-"<title>AILadder - View league group " + leaguegroupname + "</title>" \
-"</head>" \
-"<body>" \
-"<h3>AILadder - View league group " + leaguegroupname + "</h3>" \
+print "<h3>AILadder - View league group " + leaguegroupname + "</h3>" \
 "<p>A league is a specific game configuration used for testing AIs "\
 " against each other</p>"\
 "<p>For example, a league could be a specific map, mod, and certain options,"\
@@ -100,11 +98,9 @@ if loginhelper.gusername != '':
    print "<tr><td></td><td><input type='submit' value='Add' /></td></tr>" \
    "</table>" \
    "<input type='hidden' name='leaguegroupname' value='" + leaguegroupname + "' />"\
-   "</form>" \
-
-print "</body>" \
-"</html>"
+   "</form>"
 
 dbconnection.disconnectdb()
 
+menu.printPageBottom()
 

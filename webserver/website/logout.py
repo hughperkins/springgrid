@@ -27,6 +27,7 @@ import cgitb; cgitb.enable()
 import cgi
 
 from utils import *
+from core import *
 
 dbconnection.connectdb()
 
@@ -38,7 +39,12 @@ if loginhelper.gusername != "":
 print "Content-type: text/html"
 print ""
 print ""
+
+menu.printPageTop()
+
 print "<h4>Logged out.</h4>"
+
+menu.printPageBottom()
 
 dbconnection.disconnectdb()
 

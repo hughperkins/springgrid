@@ -31,12 +31,15 @@
 import cgitb; cgitb.enable()
 
 from utils import *
+from core import *
 
 dbconnection.connectdb()
 
 print "Content-type: text/html"
 print ""
 print ""
+
+menu.printPageTop()
 
 ainames = dbconnection.querytolist("select distinct ai_name from ais")
 # just get all aiversions for now, otherwise we need ajax and stuff...
@@ -46,12 +49,7 @@ mods = dbconnection.querytolist("select distinct mod_name from mods")
 
 options = dbconnection.querytolist("select option_name from aioptions")
 
-print "<html>" \
-"<head>" \
-"<title>AILadder - submit game request</title>" \
-"</head>" \
-"<body>" \
-"<h3>AILadder - submit game request</h3>" \
+print "<h3>AILadder - submit game request</h3>" \
 "<form action='submitrequest.py' method='post'>" \
 "<table border='1' padding='3'>" \
 "<tr><td>AI0 name</td><td>" + htmlformshelper.listToDropdown("ai0name", ainames) + "</td></tr>" \
@@ -68,9 +66,9 @@ print "</td></tr>"
 
 print "<tr><td></td><td><input type='submit' value='Submit Request' /></td></tr>" \
 "</table>" \
-"</form>" \
-"</body>" \
-"</html>"
+"</form>"
 
 dbconnection.disconnectdb()
+
+menu.printPageBottom()
 

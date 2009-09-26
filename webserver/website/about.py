@@ -21,44 +21,27 @@
 # http://www.opensource.org/licenses/gpl-license.php
 #
 
-# handles user login
-
 import cgitb; cgitb.enable()
-import cgi
 
-from utils import *
+
 from core import *
 
-dbconnection.connectdb()
+print "Content-type: text/html"
+print ""
+print ""
+
+menu.printPageTop()
 
 
-# loginhelper.processCookie()
+print '<h3>AILadder - About</h3>'
 
-#if loginhelper.gusername != "":
-#   print "Content-type: text/html"
-#   print ""
-#   print ""
-#   print loginhelper.loginhtml
-#else:
-username = formhelper.getValue('username')
-password = formhelper.getValue('password')
-if username == None or password == None or username == '' or password == '':
-   print "Content-type: text/html"
-   print ""
-   print ""
-   menu.printPageTop()
-   print "<h4>Logon error: Please fill in the username and password fields.</h4>"
-else:
-   loginhelper.logonUser( username, password )
-   print "Content-type: text/html"
-   print loginhelper.cookie.output()
-   print ""
-   print ""
-   menu.printPageTop()
-   print loginhelper.loginhtml
-
-dbconnection.disconnectdb()
+print '<table border="1" cellpadding="3">'
+print '<tr><td>Version:</td><td>0.1</td></tr>'
+print '<tr><td>License:</td><td>GPL v2</td></tr>'
+print '<tr><td>Authors:</td><td><a href="http://manageddreams.com">Hugh Perkins</a></td></tr>'
+print '<tr><td>Download url:</td><td><a href="http://manageddreams.com/ailadder/download/AILadder.tar.bz2">http://manageddreams.com/ailadder/download/AILadder.tar.bz2</a></td></tr>'
+print '<tr><td>Source-code:</td><td><a href="http://github.com/hughperkins/ailadder">http://github.com/hughperkins/ailadder</a></td></tr>'
+print '</table>'
 
 menu.printPageBottom()
-
 

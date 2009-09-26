@@ -36,6 +36,8 @@ print "Content-type: text/html"
 print ""
 print ""
 
+menu.printPageTop()
+
 def go():
    if loginhelper.gusername == '':
       print "Please login first before using this page."
@@ -43,12 +45,7 @@ def go():
 
    accounts = dbconnection.querytomaplist( "select username, userfullname from accounts", ('username','userfullname' ) )
 
-   print "<html>" \
-   "<head>" \
-   "<title>AILadder - Account List</title>" \
-   "</head>" \
-   "<body>" \
-   "<h3>AILadder - Account List</h3>" \
+   print "<h3>AILadder - Account List</h3>" \
    "<table border='1' padding='3'>" \
    "<tr><td>username</td><td>User full name</td><td>Delete</td></tr>"
 
@@ -78,14 +75,12 @@ def go():
       "<tr><td>User password</td><td><input type='password' name='userpassword'</td></tr>" \
       "<tr><td></td><td><input type='submit' value='Add' /></td></tr>" \
       "</table>" \
-      "</form>" \
+      "</form>"
 
 
 go()
 
-print "</body>" \
-"</html>"
-
 dbconnection.disconnectdb()
 
+menu.printPageBottom()
 

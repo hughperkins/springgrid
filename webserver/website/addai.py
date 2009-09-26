@@ -35,9 +35,11 @@ dbconnection.connectdb()
 
 loginhelper.processCookie()
 
-print "Content-type: text/plain"
+print "Content-type: text/html"
 print ""
 print ""
+
+menu.printPageTop()
 
 if not roles.isInRole(roles.aiadmin):
    print "You must be logged in as an aiadmin"
@@ -63,5 +65,7 @@ else:
       print "Please fill in the fields and try again"
 
 dbconnection.disconnectdb()
+
+menu.printPageBottom()
 
 

@@ -21,44 +21,23 @@
 # http://www.opensource.org/licenses/gpl-license.php
 #
 
-# handles user login
+# set the headers (cookies etc), the page body, then call outputPage()
 
-import cgitb; cgitb.enable()
-import cgi
+headers = ""
+htmlcontents = ""
 
-from utils import *
-from core import *
+def addHeader( header ):
+   global headers
+   headers = headers + header + "\n"
 
-dbconnection.connectdb()
+def writeLine( line ):
+   global htmlcontents
+   htmlcontents = htmlcontents + line + "\n"
 
-
-# loginhelper.processCookie()
-
-#if loginhelper.gusername != "":
-#   print "Content-type: text/html"
-#   print ""
-#   print ""
-#   print loginhelper.loginhtml
-#else:
-username = formhelper.getValue('username')
-password = formhelper.getValue('password')
-if username == None or password == None or username == '' or password == '':
-   print "Content-type: text/html"
+def outputPage():
+   global headers, htmlcontents
+   print headers
    print ""
    print ""
-   menu.printPageTop()
-   print "<h4>Logon error: Please fill in the username and password fields.</h4>"
-else:
-   loginhelper.logonUser( username, password )
-   print "Content-type: text/html"
-   print loginhelper.cookie.output()
-   print ""
-   print ""
-   menu.printPageTop()
-   print loginhelper.loginhtml
-
-dbconnection.disconnectdb()
-
-menu.printPageBottom()
-
+   print htmlcontents
 

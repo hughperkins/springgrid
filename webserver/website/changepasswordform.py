@@ -21,7 +21,7 @@
 # http://www.opensource.org/licenses/gpl-license.php
 #
 
-# lets a user add a single ai to the database
+# lets a user add a single account to the database
 #
 # This is mostly for bootstrapping, to make the website immediately useful
 
@@ -41,29 +41,13 @@ print ""
 
 menu.printPageTop()
 
-if not roles.isInRole(roles.aiadmin):
-   print "You must be logged in as an aiadmin"
-else:
-   ainame = formhelper.getValue("ainame")
-   aiversion = formhelper.getValue("aiversion")
-   aioption = formhelper.getValue("aioption")
-
-   if aiversion != None and ainame != None and aioption != None and ainame != "" and aiversion != "" and aioption != "":
-      rows = dbconnection.cursor.execute( "delete ai_allowedoptions.* from ai_allowedoptions, ais, aioptions "\
-         " where ais.ai_name = %s "\
-         " and ais.ai_version = %s "\
-         " and aioptions.option_name = %s "
-         " and ai_allowedoptions.ai_id = ais.ai_id "\
-         " and ai_allowedoptions.option_id = aioptions.option_id ",
-         ( ainame, aiversion, aioption ) )
-      if rows == 1:
-         print "Option removed ok"
-      else:
-         print "Something went wrong.  Please check your values and try again."
-   else:
-      print "Please fill in the fields and try again"
-
-dbconnection.disconnectdb()
+print '<form action="changepassword.py" method="post"'
+print '<table border="1" cellpadding="3">'
+print '<tr><td>New password:</td><td><input type="password" name="password"/></td></tr>'
+print '<tr><td>Confirm password:</td><td><input type="password" name="confirmpassword"/></td></tr>'
+print '<tr><td></td><td><input type="submit" value="Change password"/></td></tr>'
+print '</table>'
+print '</form>'
 
 menu.printPageBottom()
 

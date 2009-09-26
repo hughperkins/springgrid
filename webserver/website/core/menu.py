@@ -21,44 +21,33 @@
 # http://www.opensource.org/licenses/gpl-license.php
 #
 
-# handles user login
-
-import cgitb; cgitb.enable()
-import cgi
-
 from utils import *
-from core import *
 
-dbconnection.connectdb()
+def printPageTop():
+   print getPageTop()
 
+def getPageTop():
+   page = "<html>"\
+    "<head>"\
+    "<title>AILadder</title>"\
+    "</head>"\
+    "<body>"
+#    "<table border='0' cellpadding='20' >"\
+#    "<tr><td>"\
+#    "" + filehelper.readFile("menu2.html") + ""\
+#    "</td></tr><tr><td>"
+#    "<td valign='top'>"
 
-# loginhelper.processCookie()
+   page = page + filehelper.readFile("menu.html")
+   return page
 
-#if loginhelper.gusername != "":
-#   print "Content-type: text/html"
-#   print ""
-#   print ""
-#   print loginhelper.loginhtml
-#else:
-username = formhelper.getValue('username')
-password = formhelper.getValue('password')
-if username == None or password == None or username == '' or password == '':
-   print "Content-type: text/html"
-   print ""
-   print ""
-   menu.printPageTop()
-   print "<h4>Logon error: Please fill in the username and password fields.</h4>"
-else:
-   loginhelper.logonUser( username, password )
-   print "Content-type: text/html"
-   print loginhelper.cookie.output()
-   print ""
-   print ""
-   menu.printPageTop()
-   print loginhelper.loginhtml
+def printPageBottom():
+   print getPageBottom()
 
-dbconnection.disconnectdb()
-
-menu.printPageBottom()
+def getPageBottom():
+   return ""\
+    "</div>"\
+    "</body>"\
+    "</html>"
 
 

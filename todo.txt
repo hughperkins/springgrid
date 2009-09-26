@@ -2,7 +2,7 @@ todo:
 - add subscription to each league for each ai
 - add scheduler, to queue up matchrequests for each league
 - add results calculator
-- add cheating / no-cheating option, and enforce in engine
+- enforce no-cheating option in calcengine
 - some way of passing options through to ai (via script.txt?)
 - store passwords as salted hashes
 - implement game timeout in calcengine
@@ -32,6 +32,7 @@ not sure if actually necessary (so: to test/investigate):
 - add gameendstring to per-mod config
 
 done:
+- add cheating / no-cheating option
 - add change password form
 - roles
 - fix dates on old python
@@ -61,4 +62,12 @@ then in supported optiosn for one ai, which can play with both cheating on and o
 .. by default, an ai is assumed to be able to handle all unset options?
 
 .. oh, could just create two options?:
+
+Addendum:
+- specific AI, HughAI, now has startscript option "maphack=yes/no"
+   - so, could add for HughAI, in the AILadder config:
+      - state that it is possible to change maphack to different values
+      - state that it is possible to run with maphack true, or maphack false
+      - or.... maybe can have different configuration sets for HughAI
+         - each configuration set can have different compatible league options, for example 'cheatingallowed'
 

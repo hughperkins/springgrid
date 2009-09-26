@@ -35,9 +35,11 @@ dbconnection.connectdb()
 
 loginhelper.processCookie()
 
-print "Content-type: text/plain"
+print "Content-type: text/html"
 print ""
 print ""
+
+menu.printPageTop()
 
 if not roles.isInRole(roles.leagueadmin):
    print "You must be logged in as a leagueadmin"
@@ -62,4 +64,5 @@ else:
 
 dbconnection.disconnectdb()
 
+menu.printPageBottom()
 

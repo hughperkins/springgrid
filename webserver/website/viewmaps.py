@@ -24,6 +24,7 @@
 import cgitb; cgitb.enable()
 
 from utils import *
+from core import *
 
 dbconnection.connectdb()
 
@@ -33,14 +34,11 @@ print "Content-type: text/html"
 print ""
 print ""
 
+menu.printPageTop()
+
 maps = dbconnection.querytomaplist( "select map_name, map_hash, map_url from maps", ('map_name','map_hash', 'map_url' ) )
 
-print "<html>" \
-"<head>" \
-"<title>AILadder - Map List</title>" \
-"</head>" \
-"<body>" \
-"<h3>AILadder - Map List</h3>" \
+print "<h3>AILadder - Map List</h3>" \
 "<table border='1' padding='3'>" \
 "<tr><td>Map name</td><td>Map hash</td><td>Map download url</td></tr>"
 
@@ -66,12 +64,10 @@ if loginhelper.gusername != '':
    "<tr><td>Map download url</td><td><input name='mapurl'</td></tr>" \
    "<tr><td></td><td><input type='submit' value='Add' /></td></tr>" \
    "</table>" \
-   "</form>" \
+   "</form>"
 
-
-print "</body>" \
-"</html>"
 
 dbconnection.disconnectdb()
 
+menu.printPageBottom()
 
