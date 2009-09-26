@@ -4,5 +4,6 @@ calcengine/springdummy/infolog.txt
 calcengine/springdummy/spring
 webserver/website/config.py
 *.pyc
-*.cgi
+updatesite.cgi
+reloaddb.cgi
 
