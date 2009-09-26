@@ -59,15 +59,15 @@ def logonUser(username, password):
    global cookiereference
 
    gusername = ""
-   dbconnection.cursor.execute( "select password from accounts where username=%s", ( username, ) )
-   row = dbconnection.cursor.fetchone()
-   if row == None:
+   rows = dbconnection.cursor.execute( "select username from accounts where username=%s and passwordhash = md5(concat(%s, passwordsalt))", ( username, password, ) )
+#   row = dbconnection.cursor.fetchone()
+   if rows != 1:
       loginhtml =  "<h4>Logon error: Please check your username and password.</h4>"
       return
 
-   if row[0] != password:
-      loginhtml = "<h4>Logon error: Please check your username and password.</h4>"
-      return
+#   if row[0] != password:
+ #     loginhtml = "<h4>Logon error: Please check your username and password.</h4>"
+  #    return
 
    cookiereference = str( GenerateRef() )
 

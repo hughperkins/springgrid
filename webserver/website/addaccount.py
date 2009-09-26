@@ -52,9 +52,10 @@ else:
    if username != None and userfullname != None and userpassword != None and username != '' and userfullname != '' and userpassword != '':
       if useremailaddress == None:
          useremailaddress = ''
-      rows = dbconnection.cursor.execute( "insert into accounts ( username, userfullname, useremailaddress, password ) "\
-         " values ( %s, %s, %s, %s )",
-         ( username, userfullname, useremailaddress, userpassword, ) )
+      passwordsalt = stringhelper.getRandomString(60)
+      rows = dbconnection.cursor.execute( "insert into accounts ( username, userfullname, useremailaddress, passwordsalt, passwordhash ) "\
+         " values ( %s, %s, %s, %s, md5(concat( %s, %s ) ) )",
+         ( username, userfullname, useremailaddress, passwordsalt, userpassword, passwordsalt ) )
       if rows == 1:
          print "Added ok"
       else:

@@ -21,6 +21,9 @@
 # http://www.opensource.org/licenses/gpl-license.php
 #
 
+import string
+import random
+
 # eats first n chars of string, and returns as int
 def eatAsInt( targetstring, n ):
    intstring = targetstring[0:n]
@@ -28,6 +31,11 @@ def eatAsInt( targetstring, n ):
    remainingstring = targetstring[n:]
    #print remainingstring
    return ( int(intstring), remainingstring )
+
+def getRandomString(length):
+   if length == 0:
+      return ''
+   return string.letters[random.randrange(0,52)] + getRandomString( length - 1 )
 
 # self test function
 def test():

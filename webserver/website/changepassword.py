@@ -49,7 +49,7 @@ else:
 
    if password != None and confirmpassword != None and password != '' and confirmpassword != '' and password == confirmpassword:
       rows = dbconnection.cursor.execute( "update accounts "\
-         " set password = %s "\
+         " set passwordhash = md5( concat( %s, passwordsalt ) ) "\
          " where username = %s ",
          ( password, loginhelper.getUsername(), ) )
       if rows == 1:

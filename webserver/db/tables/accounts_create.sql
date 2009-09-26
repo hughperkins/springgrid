@@ -29,7 +29,8 @@ create table accounts (
    username varchar(255) not null,
    userfullname varchar(255) not null default '',
    useremailaddress varchar(255) not null default '',
-   password varchar(255) not null,
+   passwordsalt varchar(255) not null,
+   passwordhash varchar(255) not null,
 
    primary key (account_id)
 );
