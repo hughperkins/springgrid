@@ -51,7 +51,7 @@ print "<p>This page can configure the options that will be used for this league.
 print "<p>Try to make sure not to add two incompatible options ;-)</p>"
 
 print "<table border='1' padding='3'>" \
-"<tr><td>Assigned options</td><td></td></tr>"
+"<tr class='tablehead'><td>Assigned options</td><td></td></tr>"
 
 for option in compatibleoptions:
    print "<tr>"

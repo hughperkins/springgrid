@@ -48,7 +48,7 @@ rows = dbconnection.querytomaplist( "select "\
 
 print "<h3>AILadder - Calc Engine List</h3>" \
 "<table border='1' padding='3'>" \
-"<tr><td>Calc Engine Name</td><td>Calc Engine Owner Name:</td><td>Shared secret (only visible for your own calcengines)</td></tr>"
+"<tr class='tablehead'><td>Calc Engine Name</td><td>Calc Engine Owner Name:</td><td>Shared secret (only visible for your own calcengines)</td></tr>"
 
 for row in rows:
    print "<tr>"

@@ -67,8 +67,8 @@ requests = dbconnection.querytomaplist( "select matchrequestqueue.matchrequest_i
    ( 'matchrequestid','ai0name', 'ai0version', 'ai1name', 'ai1version', 'mapname', 'modname', 'calcenginename', 'matchresult', ) )
 
 print "<h3>AILadder - Match results</h3>" \
-"<table border='1' padding='3'>" \
-"<tr>"
+"<table>" \
+"<tr class='tablehead'>"
 print "<td>matchrequestid</td>"
 print "<td>ai0name</td>"
 print "<td>ai0version</td>"

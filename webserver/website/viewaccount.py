@@ -47,7 +47,7 @@ rows = dbconnection.querytolistwithparams( "select role_name "\
 
 print "<h3>AILadder - View account " + username + "</h3>" \
 "<table border='1' padding='3'>" \
-"<tr><td>Role:</td><td></td></tr>"
+"<tr class='tablehead'><td>Role:</td><td></td></tr>"
 
 for row in rows:
    print "<tr>"

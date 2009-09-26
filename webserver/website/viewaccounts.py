@@ -47,7 +47,7 @@ def go():
 
    print "<h3>AILadder - Account List</h3>" \
    "<table border='1' padding='3'>" \
-   "<tr><td>username</td><td>User full name</td><td>Delete</td></tr>"
+   "<tr class='tablehead'><td>username</td><td>User full name</td><td>Delete</td></tr>"
 
    for account in accounts:
       print "<tr>"

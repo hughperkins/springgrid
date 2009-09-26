@@ -52,7 +52,7 @@ print "<h3>AILadder - View leagues</h3>" \
 " like say cheating on, or cheating off</p>"\
 "<p>You can group leagues together in leaguegroups.</p>"\
 "<table border='1' padding='3'>" \
-"<tr><td>League Name:</td><td>Mod Name</td><td>Map Name</td><td>Assigned options</td></tr>"
+"<tr class='tablehead'><td>League Name:</td><td>Mod Name</td><td>Map Name</td><td>Assigned options</td></tr>"
 
 for row in rows:
    print "<tr>"

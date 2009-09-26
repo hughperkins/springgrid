@@ -41,7 +41,7 @@ ais = dbconnection.querytomaplist( "select ai_name, ai_version, ai_downloadurl f
 print "<h3>AILadder - AI List</h3>"
 
 print "<table border='1' padding='3'>" \
-"<tr><td>AI Name</td><td>AI Version</td><td>Compatible Options</td><td>Download url</td></tr>"
+"<tr class='tablehead'><td>AI Name</td><td>AI Version</td><td>Compatible Options</td><td>Download url</td></tr>"
 
 for ai in ais:
    print "<tr>"

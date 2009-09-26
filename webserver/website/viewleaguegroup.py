@@ -58,7 +58,7 @@ print "<h3>AILadder - View league group " + leaguegroupname + "</h3>" \
 " like say cheating on, or cheating off</p>"\
 "<p>You can group leagues together in leaguegroups.</p>"\
 "<table border='1' padding='3'>" \
-"<tr><td>Member league:</td></tr>"
+"<tr class='tablehead'><td>Member league:</td></tr>"
 
 for league in leagues:
    print "<tr>"

@@ -40,7 +40,7 @@ maps = dbconnection.querytomaplist( "select map_name, map_hash, map_url from map
 
 print "<h3>AILadder - Map List</h3>" \
 "<table border='1' padding='3'>" \
-"<tr><td>Map name</td><td>Map hash</td><td>Map download url</td></tr>"
+"<tr class='tablehead'><td>Map name</td><td>Map hash</td><td>Map download url</td></tr>"
 
 for map in maps:
    print "<tr><td>" + map['map_name'] + "</td><td>" + map['map_hash'] + "</td><td><a href='" + map['map_url'] + "'>" + map['map_url'] + "</a></td></tr>"
