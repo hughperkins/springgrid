@@ -46,7 +46,7 @@ cookie = Cookie.SimpleCookie()
 saltlength = 200
 
 def GenerateRef():
-   return random.randint(0,1000000)
+   return stringhelper.getRandomPrintableString(40)
 
 def isLoggedOn():
    global gusername
@@ -77,7 +77,7 @@ def logonUser(username, password):
       loginhtml =  "<h4>Logon error: Please check your username and password.</h4>"
       return
 
-   cookiereference = str( GenerateRef() )
+   cookiereference = GenerateRef()
 
    cookie = Cookie.SimpleCookie()
    cookie["cookiereference"] = cookiereference
