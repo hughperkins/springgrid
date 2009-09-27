@@ -1,9 +1,21 @@
+div.header {
+   position: absolute;
+   top: 20px;
+   left: 50px;
+}
 div.mainmenu {
     position: absolute;
     z-index: 1;
-    top: 20px;
+    top: 50px;
     left: 50px;
 }
+div.contents {
+   position: absolute;
+
+   top: 90px;
+   left: 60px;
+}
+
 div.menu {
    float: left;   
    width: 175px;
@@ -46,12 +58,6 @@ div.menuitem:hover {
    padding: 10px;
    font-weight: bold;   
    background-color: aaf;
-}
-div.contents {
-   position: absolute;
-
-   top: 60px;
-   left: 60px;
 }
 
 table {

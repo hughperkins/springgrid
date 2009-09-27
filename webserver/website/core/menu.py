@@ -26,19 +26,68 @@ from utils import *
 def printPageTop():
    print getPageTop()
 
+def additem( title, link ):
+   return '<a href="' + link + '"><div class="menuitem">' + title + '</div></a>'
+
+def addmenu( title, itemlist ):
+   html = ''
+   html = html + '<div class="menu">'
+   html = html + '<div class="popuptitle">' + title + '</div>'
+   html = html + '<div class="popup">'
+   for item in itemlist:
+      html = html + item
+   html = html + '</div>'
+   html = html + '</div>'
+   return html
+
 def getPageTop():
    page = "<html>"\
     "<head>"\
     "<title>AILadder</title>"\
     "</head>"\
     "<body>"
-#    "<table border='0' cellpadding='20' >"\
-#    "<tr><td>"\
-#    "" + filehelper.readFile("menu2.html") + ""\
-#    "</td></tr><tr><td>"
-#    "<td valign='top'>"
 
-   page = page + filehelper.readFile("menu.html")
+   page = page + '<link rel="stylesheet" rev="stylesheet" href="style.css">'
+
+   page = page + '<div class="header">'
+   #if loginhelper.isLoggedOn():
+   #   page = page + loginhelper.getUsername()
+   page = page + '</div>'
+
+   page = page + '<div class="mainmenu">'
+
+   accountitems = []
+   if loginhelper.isLoggedOn():
+      accountitems = ( additem( 'Change Password', 'changepasswordform.py' ),
+      additem( 'Logout', 'logout.py' ) )
+      page = page + addmenu( 'User: ' + loginhelper.getUsername(), accountitems )
+   else:
+      accountitems = ( additem( 'Login', 'loginform.py' ) )
+      page = page + addmenu( 'Login', accountitems )
+
+   page = page + addmenu( 'League', ( additem( 'View league group results', 'viewleaguegroupresults.py' ),
+      additem( 'View league results', 'viewleagueresults.py' ),
+      additem( 'View match results', 'viewresults.py' ) ) )
+
+   page = page + addmenu( 'Runner', ( additem( 'View request queue', 'viewrequests.py' ),
+      additem( 'Add request to queue', 'submitrequestform.py' ) ) )
+
+   page = page + addmenu( 'Configuration', ( additem( 'Setup notes', 'setupnotes.py' ),
+      additem( 'View league groups', 'viewleaguegroups.py' ),
+      additem( 'View leagues', 'viewleagues.py' ),
+      additem( 'View available calc engines', 'viewcalcengines.py' ),
+      additem( 'View available maps', 'viewmaps.py' ),
+      additem( 'View available mods', 'viewmods.py' ),
+      additem( 'View available ais', 'viewais.py' ),
+      additem( 'View accounts', 'viewaccounts.py' ) ) )
+
+   page = page + addmenu( 'About', ( additem( 'About', 'about.py' ) ) )
+
+   page = page + '</div>'
+
+   page = page + '<div class="contents">'
+
+#   page = page + filehelper.readFile("menu.html")
    return page
 
 def printPageBottom():
