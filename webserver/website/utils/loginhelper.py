@@ -43,6 +43,8 @@ loginhtml = ""
 cookiereference = 0
 cookie = Cookie.SimpleCookie()
 
+saltlength = 200
+
 def GenerateRef():
    return random.randint(0,1000000)
 
@@ -53,6 +55,11 @@ def isLoggedOn():
 def getUsername():
    global gusername
    return gusername
+
+# returns a salt string
+def createSalt():
+   global saltlength
+   return stringhelper.getRandomPrintableString(saltlength)
 
 # returns True if password correct, otherwise false
 def validateUsernamePassword( username, password ):
@@ -83,7 +90,7 @@ def logonUser(username, password):
    loginhtml = "<p>Logged in as: " + gusername + "</p>"
 
 def changePassword( username, password ):
-   passwordsalt = stringhelper.getRandomString(200)
+   passwordsalt = createSalt()
    rows = dbconnection.cursor.execute( "update accounts "\
       " set passwordsalt = %s, "\
       " passwordhash = md5( concat( %s, %s ) ) "\

@@ -52,7 +52,7 @@ else:
    if username != None and userfullname != None and userpassword != None and username != '' and userfullname != '' and userpassword != '':
       if useremailaddress == None:
          useremailaddress = ''
-      passwordsalt = stringhelper.getRandomString(200)
+      passwordsalt = loginhelper.createSalt()
       rows = dbconnection.cursor.execute( "insert into accounts ( username, userfullname, useremailaddress, passwordsalt, passwordhash ) "\
          " values ( %s, %s, %s, %s, md5(concat( %s, %s ) ) )",
          ( username, userfullname, useremailaddress, passwordsalt, userpassword, passwordsalt ) )
