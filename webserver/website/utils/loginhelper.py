@@ -21,7 +21,6 @@
 
 # functions for login, cookies etc...
 
-import cgitb; cgitb.enable()
 import Cookie
 import MySQLdb
 import random

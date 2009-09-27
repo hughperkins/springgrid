@@ -48,7 +48,7 @@ print "<h3>AILadder - Calc Engine List</h3>" \
 
 for row in rows:
    print "<tr>"
-   print "<td>" + row['calcenginename'] + "</td>"
+   print "<td><a href='viewcalcengine.py?calcenginename=" + row['calcenginename'] + "'>" + row['calcenginename'] + "</a></td>"
    print "<td>" + row['userfullname'] + "</td>"
    if row['username'] == loginhelper.gusername:
       print "<td>" + row['sharedsecret'] + "</td>"
@@ -61,7 +61,7 @@ for row in rows:
       " and calcengine_assignedoptions.calcengine_id = calcengines.calcengine_id "\
       " and calcengine_options.calcengine_option_id = calcengine_assignedoptions.calcengine_option_id ",
       ( row['calcenginename'], ) )
-   print "<td>" + ''.join( options ) + "</td>"
+   print "<td>" + ' '.join( options ) + "</td>"
 
    print "</tr>"
 

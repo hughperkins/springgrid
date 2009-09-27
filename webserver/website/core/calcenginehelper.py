@@ -45,6 +45,18 @@ def validatesharedsecret(lcalcenginename, sharedsecret):
       return True
    return False
 
+def getOwnerUsername(calcenginename):
+   rows = dbconnection.cursor.execute("select username from "\
+      " calcengines, accounts " \
+      " where calcengines.calcengine_owneraccountid = account_id "\
+      " and calcengines.calcengine_name = %s ",
+      ( calcenginename ) )
+   if rows == 0:
+      return ''
+   row = dbconnection.cursor.fetchone()
+   if row == None:
+      return
+   return row[0]
 
 
 

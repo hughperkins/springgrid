@@ -2,11 +2,15 @@
 from core import *
 from utils import *
 
-tester.test()
-dates.test()
-stringhelper.test()
+def test():
+   tester.test()
+   dates.test()
+   stringhelper.test()
 
-dbconnection.connectdb()
-roles.test()
-dbconnection.disconnectdb()
+   dbconnection.connectdb()
+   roles.test()
+   dbconnection.disconnectdb()
+
+if __name__ == '__main__':
+   test()
 
