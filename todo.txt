@@ -1,3 +1,6 @@
+what is being worked on at the moment:
+- making calcengine download things (mods, maps, ais...) automatically
+
 todo:
 - add subscription to each league for each ai
 - add scheduler, to queue up matchrequests for each league

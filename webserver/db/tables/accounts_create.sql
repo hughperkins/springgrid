@@ -19,11 +19,6 @@
 # http://www.opensource.org/licenses/gpl-license.php
 #
 
-# accounts for admin and stuff
-
-# passwords in clear for now, until someone changes that, or shows me
-# how to change that, or both...
-
 create table accounts (
    account_id integer not null auto_increment,
    username varchar(255) not null,
