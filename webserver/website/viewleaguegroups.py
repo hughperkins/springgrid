@@ -33,9 +33,8 @@ loginhelper.processCookie()
 menu.printPageTop()
 
 rows = dbconnection.querytomaplist( "select "\
-   "     leaguegroup_name "\
-   " from leaguegroups ",
-   ('leaguegroupname', ) )
+   "     leaguegroup_name as leaguegroupname "\
+   " from leaguegroups " )
 
 print "<h3>AILadder - View league groups</h3>" \
 "<p>A league is a specific game configuration used for testing AIs "\

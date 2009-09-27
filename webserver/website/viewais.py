@@ -32,7 +32,7 @@ loginhelper.processCookie()
 
 menu.printPageTop()
 
-ais = dbconnection.querytomaplist( "select ai_name, ai_version, ai_downloadurl from ais", ('ai_name','ai_version', 'ai_downloadurl' ) )
+ais = dbconnection.querytomaplist( "select ai_name, ai_version, ai_downloadurl from ais" )
 
 print "<h3>AILadder - AI List</h3>"
 

@@ -32,7 +32,7 @@ loginhelper.processCookie()
 
 menu.printPageTop()
 
-maps = dbconnection.querytomaplist( "select map_name, map_hash, map_url from maps", ('map_name','map_hash', 'map_url' ) )
+maps = dbconnection.querytomaplist( "select map_name, map_hash, map_url from maps" )
 
 print "<h3>AILadder - Map List</h3>" \
 "<table border='1' padding='3'>" \

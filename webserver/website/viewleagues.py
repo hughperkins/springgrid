@@ -33,13 +33,12 @@ loginhelper.processCookie()
 menu.printPageTop()
 
 rows = dbconnection.querytomaplist( "select "\
-   "    league_name, "\
-   "    mod_name, "\
-   "    map_name "\
+   "    league_name as leaguename, "\
+   "    mod_name as modname, "\
+   "    map_name as mapname "\
    " from leagues, maps, mods " \
    " where leagues.map_id = maps.map_id "\
-   " and leagues.mod_id = mods.mod_id ",
-   ('leaguename', 'modname', 'mapname' ) )
+   " and leagues.mod_id = mods.mod_id " )
 
 print "<h3>AILadder - View leagues</h3>" \
 "<p>A league is a specific game configuration used for testing AIs "\

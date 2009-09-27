@@ -32,15 +32,15 @@ loginhelper.processCookie()
 
 menu.printPageTop()
 
-requests = dbconnection.querytomaplist( "select matchrequestqueue.matchrequest_id, " \
-      "ai0.ai_name, "\
-      "ai0.ai_version, "\
-      "ai1.ai_name, "\
-      "ai1.ai_version, "\
-      "map_name, "\
-      "mod_name, " \
+requests = dbconnection.querytomaplist( "select matchrequestqueue.matchrequest_id as matchrequestid, " \
+      "ai0.ai_name as ai0name, "\
+      "ai0.ai_version as ai0version, "\
+      "ai1.ai_name as ai1name, "\
+      "ai1.ai_version as ai1version, "\
+      "map_name as mapname, "\
+      "mod_name as modname, " \
       "matchrequests_inprogress.datetimeassigned, "\
-      "calcengine_name "\
+      "calcengine_name as calcenginename "\
       "from ais as ai0, "\
       "   ais as ai1, "\
       "   maps, "\
@@ -55,8 +55,7 @@ requests = dbconnection.querytomaplist( "select matchrequestqueue.matchrequest_i
       "   and maps.map_id = matchrequestqueue.map_id "\
       "   and mods.mod_id = matchrequestqueue.mod_id "\
       "   and not exists ( select * from matchresults " \
-             " where matchresults.matchrequest_id = matchrequestqueue.matchrequest_id )",
-   ( 'matchrequestid','ai0name', 'ai0version', 'ai1name', 'ai1version', 'mapname', 'modname', 'datetimeassigned', 'calcenginename', ) )
+             " where matchresults.matchrequest_id = matchrequestqueue.matchrequest_id )" )
 
 print "<h3>AILadder - Match requests</h3>" \
 "<table border='1' padding='3'>" \

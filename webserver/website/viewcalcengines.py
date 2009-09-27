@@ -33,14 +33,13 @@ loginhelper.processCookie()
 menu.printPageTop()
 
 rows = dbconnection.querytomaplist( "select "\
-   "    calcengine_name, "\
+   "    calcengine_name as calcenginename, "\
    "    username, "\
    "    userfullname, "\
-   "    calcengine_sharedsecret "\
+   "    calcengine_sharedsecret as sharedsecret "\
    " from calcengines, " \
    "    accounts "\
-   " where calcengines.calcengine_owneraccountid = accounts.account_id ",
-   ('calcenginename','username','userfullname', 'sharedsecret' ) )
+   " where calcengines.calcengine_owneraccountid = accounts.account_id " )
 
 print "<h3>AILadder - Calc Engine List</h3>" \
 "<table border='1' padding='3'>" \

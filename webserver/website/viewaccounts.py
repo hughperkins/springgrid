@@ -37,7 +37,7 @@ def go():
       print "Please login first before using this page."
       return
 
-   accounts = dbconnection.querytomaplist( "select username, userfullname from accounts", ('username','userfullname' ) )
+   accounts = dbconnection.querytomaplist( "select username, userfullname from accounts" )
 
    print "<h3>AILadder - Account List</h3>" \
    "<table border='1' padding='3'>" \
