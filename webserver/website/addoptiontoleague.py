@@ -35,10 +35,6 @@ dbconnection.connectdb()
 
 loginhelper.processCookie()
 
-print "Content-type: text/html"
-print ""
-print ""
-
 menu.printPageTop()
 
 if not roles.isInRole(roles.leagueadmin):

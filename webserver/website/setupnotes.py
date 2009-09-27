@@ -26,10 +26,6 @@ import cgitb; cgitb.enable()
 from utils import *
 from core import *
 
-print "Content-type: text/html"
-print ""
-print ""
-
 menu.printPageTop()
 
 print "<pre>"

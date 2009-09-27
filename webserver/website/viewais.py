@@ -30,10 +30,6 @@ dbconnection.connectdb()
 
 loginhelper.processCookie()
 
-print "Content-type: text/html"
-print ""
-print ""
-
 menu.printPageTop()
 
 ais = dbconnection.querytomaplist( "select ai_name, ai_version, ai_downloadurl from ais", ('ai_name','ai_version', 'ai_downloadurl' ) )

@@ -30,10 +30,6 @@ dbconnection.connectdb()
 
 loginhelper.processCookie()
 
-print "Content-type: text/html"
-print ""
-print ""
-
 menu.printPageTop()
 
 requests = dbconnection.querytomaplist( "select matchrequestqueue.matchrequest_id, " \

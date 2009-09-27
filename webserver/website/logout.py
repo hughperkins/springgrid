@@ -36,10 +36,6 @@ loginhelper.processCookie()
 if loginhelper.gusername != "":
    loginhelper.logoutUser()
 
-print "Content-type: text/html"
-print ""
-print ""
-
 menu.printPageTop()
 
 print "<h4>Logged out.</h4>"

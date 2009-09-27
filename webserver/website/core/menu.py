@@ -23,8 +23,8 @@
 
 from utils import *
 
-def printPageTop():
-   print getPageTop()
+def printPageTop( headers = 'Content-type: text/html\n\n' ):
+   print getPageTop( headers )
 
 def additem( title, link ):
    return '<a href="' + link + '"><div class="menuitem">' + title + '</div></a>'
@@ -40,8 +40,9 @@ def addmenu( title, itemlist ):
    html = html + '</div>'
    return html
 
-def getPageTop():
-   page = "<html>"\
+def getPageTop( headers = 'Content-type: text/html\n\n' ):
+   page = headers + "\n\n"
+   page = page + "<html>"\
     "<head>"\
     "<title>AILadder</title>"\
     "</head>"\

@@ -30,10 +30,6 @@ dbconnection.connectdb()
 
 loginhelper.processCookie()
 
-print "Content-type: text/html"
-print ""
-print ""
-
 menu.printPageTop()
 
 maps = dbconnection.querytomaplist( "select map_name, map_hash, map_url from maps", ('map_name','map_hash', 'map_url' ) )

@@ -30,10 +30,6 @@ dbconnection.connectdb()
 
 loginhelper.processCookie()
 
-print "Content-type: text/html"
-print ""
-print ""
-
 menu.printPageTop()
 
 mods = dbconnection.querytomaplist( "select mod_name, mod_hash, mod_url from mods", ('mod_name','mod_hash', 'mod_url' ) )

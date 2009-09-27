@@ -26,15 +26,9 @@ import cgitb; cgitb.enable()
 from utils import *
 from core import *
 
-# quick and nasty form to create user accounts...
-
 dbconnection.connectdb()
 
 loginhelper.processCookie()
-
-print "Content-type: text/html"
-print ""
-print ""
 
 menu.printPageTop()
 

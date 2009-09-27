@@ -21,6 +21,8 @@
 # http://www.opensource.org/licenses/gpl-license.php
 #
 
+# This page is called by the calcengines, and returns xml
+
 # used to upload the result of a game to the webserver from the calcengine
 
 import cgitb; cgitb.enable()

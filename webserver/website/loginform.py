@@ -31,9 +31,6 @@ from core import *
 
 dbconnection.connectdb()
 
-print "Content-type: text/html"
-print ""
-print ""
 menu.printPageTop()
 
 print "<h3>AI Ladder - login</h3>"

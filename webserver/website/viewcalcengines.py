@@ -30,10 +30,6 @@ dbconnection.connectdb()
 
 loginhelper.processCookie()
 
-print "Content-type: text/html"
-print ""
-print ""
-
 menu.printPageTop()
 
 rows = dbconnection.querytomaplist( "select "\
@@ -48,7 +44,7 @@ rows = dbconnection.querytomaplist( "select "\
 
 print "<h3>AILadder - Calc Engine List</h3>" \
 "<table border='1' padding='3'>" \
-"<tr class='tablehead'><td>Calc Engine Name</td><td>Calc Engine Owner Name:</td><td>Shared secret (only visible for your own calcengines)</td></tr>"
+"<tr class='tablehead'><td>Calc Engine Name</td><td>Calc Engine Owner Name:</td><td>Shared secret (only visible for your own calcengines)</td><td>Options</td></tr>"
 
 for row in rows:
    print "<tr>"
@@ -58,6 +54,15 @@ for row in rows:
       print "<td>" + row['sharedsecret'] + "</td>"
    else:
       print "<td></td>"
+
+   options = dbconnection.querytolistwithparams( "select calcengine_option_name "\
+      " from calcengine_options, calcengine_assignedoptions, calcengines "\
+      " where calcengines.calcengine_name = %s "\
+      " and calcengine_assignedoptions.calcengine_id = calcengines.calcengine_id "\
+      " and calcengine_options.calcengine_option_id = calcengine_assignedoptions.calcengine_option_id ",
+      ( row['calcenginename'], ) )
+   print "<td>" + ''.join( options ) + "</td>"
+
    print "</tr>"
 
 print "</table>"

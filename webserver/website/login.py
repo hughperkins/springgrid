@@ -31,30 +31,20 @@ from core import *
 
 dbconnection.connectdb()
 
-
-# loginhelper.processCookie()
-
-#if loginhelper.gusername != "":
-#   print "Content-type: text/html"
-#   print ""
-#   print ""
-#   print loginhelper.loginhtml
-#else:
 username = formhelper.getValue('username')
 password = formhelper.getValue('password')
 if username == None or password == None or username == '' or password == '':
-   print "Content-type: text/html"
-   print ""
-   print ""
    menu.printPageTop()
    print "<h4>Logon error: Please fill in the username and password fields.</h4>"
 else:
    loginhelper.logonUser( username, password )
-   print "Content-type: text/html"
-   print loginhelper.cookie.output()
-   print ""
-   print ""
-   menu.printPageTop()
+
+   headers = "Content-type: text/html\n"
+   # adding the cookie into the headers keeps hte cookie there magically
+   # for the rest of the session
+   headers = headers + loginhelper.cookie.output() + "\n"
+   menu.printPageTop( headers )
+
    print loginhelper.loginhtml
 
 dbconnection.disconnectdb()

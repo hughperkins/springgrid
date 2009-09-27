@@ -1,7 +1,17 @@
 #!/usr/bin/python
 
-print "Content-type: text/plain"
-print ""
-print ""
+from core import *
+from utils import *
+
+dbconnection.connectdb()
+
+loginhelper.processCookie()
+
+menu.printPageTop()
+
 print "Page under construction."
+
+menu.printPageBottom()
+
+dbconnection.disconnectdb()
 

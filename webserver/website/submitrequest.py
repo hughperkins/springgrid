@@ -52,10 +52,6 @@ mapname = formhelper.getValue("mapname")
 modname = formhelper.getValue("modname")
 # matchrequest.modhash = formhelper.getValue("modhash")
 
-print "Content-type: text/html"
-print ""
-print ""
-
 dbconnection.connectdb()
 
 loginhelper.processCookie()

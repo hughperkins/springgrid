@@ -35,10 +35,6 @@ from core import *
 
 dbconnection.connectdb()
 
-print "Content-type: text/html"
-print ""
-print ""
-
 menu.printPageTop()
 
 ainames = dbconnection.querytolist("select distinct ai_name from ais")
