@@ -40,6 +40,11 @@ def addmenu( title, itemlist ):
    html = html + '</div>'
    return html
 
+bodycontent = ''
+
+def addBodyContent( html ):
+  bodycontent = bodycontent + html;
+
 def getPageTop( headers = 'Content-type: text/html\n\n' ):
    page = headers + "\n\n"
    page = page + "<html>"\
@@ -87,6 +92,8 @@ def getPageTop( headers = 'Content-type: text/html\n\n' ):
    page = page + '</div>'
 
    page = page + '<div class="contents">'
+
+   page = page + bodycontent
 
 #   page = page + filehelper.readFile("menu.html")
    return page

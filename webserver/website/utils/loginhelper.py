@@ -40,13 +40,13 @@ gusername = ""  # first call loginhelper.processCookie().  If the user
                 # testing gusername != '' is sufficient to check if the user
                 # is logged in
 loginhtml = ""
-cookiereference = 0
+cookiereference = ''
 cookie = Cookie.SimpleCookie()
 
 saltlength = 200
 
 def GenerateRef():
-   return stringhelper.getRandomPrintableString(40)
+   return stringhelper.getRandomAlphaNumericString(40)
 
 def isLoggedOn():
    global gusername
@@ -101,23 +101,29 @@ def changePassword( username, password ):
 def processCookie():
   global cookie, cookiereference, gusername, loginhtml
 
+  gusername = ''
   cookie = Cookie.SimpleCookie( os.environ.get("HTTP_COOKIE"))
-  refnum = 0
   c = cookie.output( "Cookie: " )
-  if(c):
-     if cookie.has_key( "cookiereference" ):
-        cookiereference = cookie["cookiereference"].value
+  if(not c):
+     return
+
+  if not cookie.has_key( "cookiereference" ):
+      return
+
+  cookiereference = str( cookie["cookiereference"].value )
 
   dbconnection.cursor.execute("select username from cookies where cookiereference=%s", (cookiereference,))
   row = dbconnection.cursor.fetchone()
-  if row != None:
-     gusername = row[0]
-      
-  if gusername != "": 
-     loginhtml = "<p>Logged in as: " + gusername + "</p>"
-  else:  
-     cookie = Cookie.SimpleCookie()
-     cookiereference = 0
+
+  if row == None:
+     return
+
+  gusername = row[0]
+
+  if gusername == '':
+     return
+
+  loginhtml = "<p>Logged in as: " + gusername + "</p>"
 
 def logoutUser():
    global cookie, cookiereference, gusername, loginhtml

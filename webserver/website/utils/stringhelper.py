@@ -32,9 +32,15 @@ def eatAsInt( targetstring, n ):
    #print remainingstring
    return ( int(intstring), remainingstring )
 
+def getRandomAlphaNumericString(length):
+   randomstring = ''
+   alphanumericchars = string.letters + string.digits
+   while len(randomstring) < length:
+      randomstring = randomstring + alphanumericchars[random.randrange(0,len(alphanumericchars))]
+   return randomstring
+
 def getRandomPrintableString(length):
    randomstring = ''
-#   alphanumericchars = string.letters + string.
    while len(randomstring) < length:
       randomstring = randomstring + string.printable[random.randrange(0,len(string.printable))]
    return randomstring
