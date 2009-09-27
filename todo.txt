@@ -1,5 +1,5 @@
 what is being worked on at the moment:
-- making calcengine download things (mods, maps, ais...) automatically
+- making calcengine download things (mods, maps, ais...) automatically.  dev: hugh
 
 todo:
 - add subscription to each league for each ai
