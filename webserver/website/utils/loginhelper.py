@@ -31,6 +31,8 @@ import os
 import os.path
 
 import dbconnection
+
+import stringhelper
    
 gusername = ""  # first call loginhelper.processCookie().  If the user
                 # is already logged in after that, then gusername will no
@@ -52,6 +54,11 @@ def getUsername():
    global gusername
    return gusername
 
+# returns True if password correct, otherwise false
+def validateUsernamePassword( username, password ):
+   rows = dbconnection.cursor.execute( "select username from accounts where username=%s and passwordhash = md5(concat(%s, passwordsalt))", ( username, password, ) )
+   return ( rows == 1 )
+
 def logonUser(username, password):
    global gusername
    global loginhtml
@@ -59,15 +66,9 @@ def logonUser(username, password):
    global cookiereference
 
    gusername = ""
-   rows = dbconnection.cursor.execute( "select username from accounts where username=%s and passwordhash = md5(concat(%s, passwordsalt))", ( username, password, ) )
-#   row = dbconnection.cursor.fetchone()
-   if rows != 1:
+   if not validateUsernamePassword( username, password ):
       loginhtml =  "<h4>Logon error: Please check your username and password.</h4>"
       return
-
-#   if row[0] != password:
- #     loginhtml = "<h4>Logon error: Please check your username and password.</h4>"
-  #    return
 
    cookiereference = str( GenerateRef() )
 
@@ -81,13 +82,14 @@ def logonUser(username, password):
    gusername = username
    loginhtml = "<p>Logged in as: " + gusername + "</p>"
 
-# def ChangePassword( cursor, form, sLogin ):
-#    global loginhtml
-#    sNewPassword = form["NewPassword"].value
-#    query = "update accounts set s_password = '" + sNewPassword + "' where s_login = '" + sLogin + "'"
-   # print query
-#    cursor.execute( query )
-#    loginhtml = loginhtml + "<p>Password updated</p>"
+def changePassword( username, password ):
+   passwordsalt = stringhelper.getRandomString(200)
+   rows = dbconnection.cursor.execute( "update accounts "\
+      " set passwordsalt = %s, "\
+      " passwordhash = md5( concat( %s, %s ) ) "\
+      " where username = %s ",
+      ( passwordsalt, password, passwordsalt, username, ) )
+   return (rows == 1 )
 
 def processCookie():
   global cookie, cookiereference, gusername, loginhtml

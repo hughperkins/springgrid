@@ -41,23 +41,34 @@ print ""
 
 menu.printPageTop()
 
-if not loginhelper.isLoggedOn():
-   print "Please log in first."
-else:
+def go():
+   if not loginhelper.isLoggedOn():
+      print "Please log in first."
+      return
+
+   oldpassword = formhelper.getValue('oldpassword')
    password = formhelper.getValue('password')
    confirmpassword = formhelper.getValue('confirmpassword')
 
-   if password != None and confirmpassword != None and password != '' and confirmpassword != '' and password == confirmpassword:
-      rows = dbconnection.cursor.execute( "update accounts "\
-         " set passwordhash = md5( concat( %s, passwordsalt ) ) "\
-         " where username = %s ",
-         ( password, loginhelper.getUsername(), ) )
-      if rows == 1:
-         print "Password changed ok"
-      else:
-         print "Something went wrong.  Please check your values and try again."
-   else:
+   if password == None or confirmpassword == None or password == '' or confirmpassword == '' or oldpassword == None or oldpassword == '':
       print "Please fill in the fields and try again"
+      return
+
+   if password != confirmpassword:
+      print "Confirmation password doesn't match new password"
+      return
+      
+   # check oldpassword
+   if not loginhelper.validateUsernamePassword( loginhelper.getUsername(), oldpassword ):
+      print "Please check your old password and try again"
+      return
+
+   if loginhelper.changePassword( loginhelper.getUsername(), password ):
+      print "Password changed ok"
+   else:
+      print "Something went wrong.  Please check your values and try again."
+
+go()
 
 menu.printPageBottom()
 

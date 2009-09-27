@@ -43,6 +43,7 @@ menu.printPageTop()
 
 print '<form action="changepassword.py" method="post"'
 print '<table border="1" cellpadding="3">'
+print '<tr><td>Old password:</td><td><input type="password" name="oldpassword"/></td></tr>'
 print '<tr><td>New password:</td><td><input type="password" name="password"/></td></tr>'
 print '<tr><td>Confirm password:</td><td><input type="password" name="confirmpassword"/></td></tr>'
 print '<tr><td></td><td><input type="submit" value="Change password"/></td></tr>'
