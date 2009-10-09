@@ -6,7 +6,7 @@ dbname=$3
 dbhost=$4
 
 echo ""
-echo "Note that this is deprecrated.  Please cd into the website directory and run 'python websetupdb.py' instead"
+echo "Note that this is deprecrated.  Please cd into the website directory and run 'python consolesetupdb.py' instead"
 echo ""
 
 if [[ x$dbhost == x ]]; then {

@@ -26,8 +26,10 @@ password=$2
 dbname=$3
 dbhost=$4
 
+scriptdir=$(dirname $0)
+
 echo ""
-echo "Note that this is deprecrated.  Please cd into the website directory and run 'python websetupdb.py' instead"
+echo "Note that this is deprecrated.  Please cd into the website directory and run 'python consolesetupdb.py' instead"
 echo ""
 
 if [[ x$dbhost == x ]]; then {
@@ -36,9 +38,10 @@ if [[ x$dbhost == x ]]; then {
    exit 1
 } fi
 
-for sqlfile in $(ls *_create.sql); do {
-      # echo $sqlfile
-      mysql -u $user --password=$password --host=$dbhost $dbname <$sqlfile
-} done;
+cd tables
+./createall.sh $1 $2 $3 $4 2>&1
+
+cd ../staticdata
+./adddata.sh $1 $2 $3 $4 2>&1
 
 

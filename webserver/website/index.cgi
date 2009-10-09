@@ -21,8 +21,19 @@
 # http://www.opensource.org/licenses/gpl-license.php
 #
 
-print "Content-type: text/html"
-print "Location: viewais.py"
-print ""
-print ""
+try:
+   # if we can import config, then we already configured the website and set up the database
+   import config
+   print "Content-type: text/html"
+   print "Location: viewais.py"
+   print ""
+   print ""
+except:
+   # otherwise, go to configuration page
+   print "Content-type: text/html"
+   print "Location: setupform.py"
+   print ""
+   print ""
+   
+
 

@@ -23,21 +23,29 @@ import sys
 import os
 import MySQLdb
 
-import config
+try:
+   import config
+except:
+   pass
+   # Just ignore, but it means we haven't been configured yet
+   #print "Warning: config file not found"
 
 connection = None
 cursor = None
 dictcursor = None # This should probably be your cursor of choice...
 
-def connectdb():
+def connectdbwiththesecredentials( dbuser, dbpassword, dbname, dbhost ):
    global connection, cursor, dictcursor
-   connection = MySQLdb.connect( host = config.dbhost,
-     user = config.dbuser,
-     passwd = config.dbpassword,
-     db = config.dbname )
+   connection = MySQLdb.connect( host = dbhost,
+     user = dbuser,
+     passwd = dbpassword,
+     db = dbname )
    cursor = connection.cursor()
    dictcursor = connection.cursor(MySQLdb.cursors.DictCursor)
    return cursor
+
+def connectdb():
+   return connectdbwiththesecredentials(config.dbuser, config.dbpassword, config.dbname, config.dbhost )
 
 def disconnectdb():
    global connection, cursor, dictcursor

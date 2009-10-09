@@ -1,7 +1,7 @@
-dbhost = "localhost"
-dbname = "ailadder"
-dbuser = ""
-dbpassword = ""
+dbhost = "DBHOST"
+dbname = "DBNAME"
+dbuser = "DBUSER"
+dbpassword = "DBPASS"
 
 gametimeoutminutes = 30
 requestinprogresstimeoutminutes = 60

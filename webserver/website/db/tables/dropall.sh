@@ -21,27 +21,25 @@
 # http://www.opensource.org/licenses/gpl-license.php
 #
 
+
 user=$1
 password=$2
 dbname=$3
 dbhost=$4
 
-scriptdir=$(dirname $0)
-
 echo ""
-echo "Note that this is deprecrated.  Please cd into the website directory and run 'python websetupdb.py' instead"
+echo "Note that this is deprecrated.  Please cd into the website directory and run 'python consolesetupdb.py' instead"
 echo ""
-
+   
 if [[ x$dbhost == x ]]; then {
    echo Usage:
    echo $0 [user] [password] [dbname] [hostname]
    exit 1
 } fi
 
-cd tables
-./createall.sh $1 $2 $3 $4 2>&1
-
-cd ../staticdata
-./adddata.sh $1 $2 $3 $4 2>&1
+for sqlfile in $(ls *_drop.sql); do {
+      # echo $sqlfile
+      mysql -u $user --password=$password --host=$dbhost $dbname <$sqlfile
+} done;
 
 
