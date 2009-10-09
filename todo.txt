@@ -34,6 +34,12 @@ not sure if actually necessary (so: to test/investigate):
 - add gameendstring to per-mod config
 
 done:
+- moved sh scripts to py script
+- moved css to separate file
+- added options to calcengines in db and website
+- improved logon/logoff visual behavior
+- moved header stuff from each page into menu
+- improved cookie security
 - store passwords as salted hashes
 - add cheating / no-cheating option
 - add change password form

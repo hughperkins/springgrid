@@ -26,6 +26,10 @@ password=$2
 dbname=$3
 dbhost=$4
 
+echo ""
+echo "Note that this is deprecrated.  Please cd into the website directory and run 'python websetupdb.py' instead"
+echo ""
+
 if [[ x$dbhost == x ]]; then {
    echo Usage:
    echo $0 [user] [password] [dbname] [hostname]

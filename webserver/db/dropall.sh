@@ -29,6 +29,10 @@ dbhost=$4
 
 scriptdir=$(dirname $0)
 
+echo ""
+echo "Note that this is deprecrated.  Please cd into the website directory and run 'python websetupdb.py' instead"
+echo ""
+
 if [[ x$dbhost == x ]]; then {
    echo Usage:
    echo $0 [user] [password] [dbname] [hostname]

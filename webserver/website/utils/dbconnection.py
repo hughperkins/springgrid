@@ -74,4 +74,8 @@ def querytomaplist( querysql ):
    dictcursor.execute( querysql )
    return dictcursor.fetchall()
 
+# do nextset() until no more sets
+def nextAllSets(cursor):
+   while cursor.nextset() != None:
+      pass
 
