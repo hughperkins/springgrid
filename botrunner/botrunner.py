@@ -357,8 +357,9 @@ def registermaps():
       #print unitsync.GetMapArchiveName(1)
       archivechecksum = unitsync.GetArchiveChecksum( archivename )
       requestparams = urllib.urlencode({'mapname': mapname, 'maparchivechecksum': archivechecksum, 'botrunnername': config.botrunnername, 'sharedsecret': config.sharedsecret })
-      serverrequesthandle = urllib.urlopen( config.websiteurl + "/botrunner_registersupportedmap", requestparams )
+      serverrequesthandle = urllib.urlopen( config.websiteurl + "/botrunner_registersupportedmap.py", requestparams )
       serverrequestarray = serverrequesthandle.readlines()
+      print "\n".join( serverrequestarray )
 
 def registermods():
    for i in xrange( unitsync.GetPrimaryModCount() ):
@@ -368,7 +369,7 @@ def registermods():
       modarchive = unitsync.GetPrimaryModArchive(0)
       modarchivechecksum = unitsync.GetArchiveChecksum( modarchive )
       requestparams = urllib.urlencode({'modname': modname, 'modarchivechecksum': modarchivechecksum, 'botrunnername': config.botrunnername, 'sharedsecret': config.sharedsecret })
-      serverrequesthandle = urllib.urlopen( config.websiteurl + "/botrunner_registersupportedmod", requestparams )
+      serverrequesthandle = urllib.urlopen( config.websiteurl + "/botrunner_registersupportedmod.py", requestparams )
       serverrequestarray = serverrequesthandle.readlines()
 
 def registerais():
@@ -384,7 +385,7 @@ def registerais():
       if shortname != '' and version != '':
          print "registering ai " + shortname + " version " + version + " ..."
       requestparams = urllib.urlencode({'ainame': shortname, 'aiversion': version, 'botrunnername': config.botrunnername, 'sharedsecret': config.sharedsecret })
-      serverrequesthandle = urllib.urlopen( config.websiteurl + "/botrunner_registersupportedai", requestparams )
+      serverrequesthandle = urllib.urlopen( config.websiteurl + "/botrunner_registersupportedai.py", requestparams )
       serverrequestarray = serverrequesthandle.readlines()
 
 def go():

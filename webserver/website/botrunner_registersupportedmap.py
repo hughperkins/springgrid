@@ -49,6 +49,8 @@ def addmapifdoesntexist(mapname, maparchivechecksum):
       if rows != 1:
          printfailresponse("error adding to db")
          return False
+      
+      return True
 
    row = dbconnection.dictcursor.fetchone()
    if row["map_archivechecksum"] != maparchivechecksum:
