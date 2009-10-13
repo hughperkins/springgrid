@@ -43,7 +43,7 @@ for mod in mods:
 
 print "</table>"
 
-if loginhelper.gusername != '':
+if loginhelper.gusername != '' and False:
 
    print "<p />"
    print "<hr />"
