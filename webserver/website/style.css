@@ -68,9 +68,13 @@ tr.tablehead td {
    background-color: aaf;
    font-weight: bold;
 }
-td {
+tr {
    padding: 3px;
    border: solid 1px;
    background-color: lightblue;
 }
+tr.inprogress {
+   background-color: lightgreen;
+}
+
 

@@ -73,7 +73,10 @@ print "<td>datetimeassigned</td>"
 print "</tr>"
 
 for request in requests:
-   print "<tr>"
+   if request['botrunnername'] != None:
+      print "<tr class='inprogress'>"
+   else:
+      print "<tr>"
    print "<td>" + str(request['matchrequestid']) + "</td>"
    print "<td>" + request['ai0name'] + "</td>"
    print "<td>" + request['ai0version'] + "</td>"
