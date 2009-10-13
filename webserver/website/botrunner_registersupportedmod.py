@@ -49,6 +49,8 @@ def addmodifdoesntexist(modname, modarchivechecksum):
       if rows != 1:
          printfailresponse("error adding to db")
          return False
+      
+      return True
 
    row = dbconnection.dictcursor.fetchone()
    if row["mod_archivechecksum"] != modarchivechecksum:
