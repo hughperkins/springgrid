@@ -23,6 +23,8 @@ import sys
 import os
 import MySQLdb
 
+import filehelper
+
 try:
    import config
 except:
@@ -43,6 +45,25 @@ def connectdbwiththesecredentials( dbuser, dbpassword, dbname, dbhost ):
    cursor = connection.cursor()
    dictcursor = connection.cursor(MySQLdb.cursors.DictCursor)
    return cursor
+
+def executesqlfile(sqlfilepath):
+   global dictcursor
+   #first load file, then remove any bits of lines from '#' onwards, then join together
+   # then split on the ";" then execute each bit one by one
+   sqlcontents = filehelper.readFile(sqlfilepath)
+   sqllines = sqlcontents.split("\n")
+   sqlwithoutcomments = ''
+   for line in sqllines:
+      linewithoutcomments = line.split("#")[0] # this supposes there is no # in data and so on, but there probably isn't in our data for now....
+      sqlwithoutcomments = sqlwithoutcomments + " " + linewithoutcomments
+   #print sqlwithoutcomments
+   sqlstatements = sqlwithoutcomments.split(";")
+   for sqlstatement in sqlstatements:
+      trimmedsqlstatement = sqlstatement.strip()
+      if trimmedsqlstatement != '':
+         #print trimmedsqlstatement
+         dictcursor.execute(trimmedsqlstatement)
+         nextAllSets(dictcursor)
 
 def connectdb():
    return connectdbwiththesecredentials(config.dbuser, config.dbpassword, config.dbname, config.dbhost )

@@ -32,9 +32,10 @@ def createtables(user,name,dbname,dbhost):
    for sqlfilename in os.listdir(scriptdir):
       if sqlfilename.find("_create.sql") != -1:
          #print sqlfilename
-         filecontents = filehelper.readFile( scriptdir + "/" + sqlfilename )
+         #filecontents = filehelper.readFile( scriptdir + "/" + sqlfilename )
          try:
-            dbconnection.cursor.execute( filecontents )
+            dbconnection.executesqlfile(scriptdir + "/" + sqlfilename)
+            #dbconnection.cursor.execute( filecontents )
          except:
             # just print, and carry on
             print "Exception: " + str( sys.exc_value )
@@ -44,9 +45,10 @@ def droptables(user,name,dbname, dbhost):
    for sqlfilename in os.listdir(scriptdir):
       if sqlfilename.find("_drop.sql") != -1:
          #print sqlfilename
-         filecontents = filehelper.readFile( scriptdir + "/" + sqlfilename )
+         #filecontents = filehelper.readFile( scriptdir + "/" + sqlfilename )
          try:
-            dbconnection.cursor.execute( filecontents )
+            dbconnection.executesqlfile(scriptdir + "/" + sqlfilename)
+            #dbconnection.cursor.execute( filecontents )
          except:
             # just print, and carry on
             print "Exception: " + str( sys.exc_value )
