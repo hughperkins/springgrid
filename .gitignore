@@ -1,13 +1,24 @@
-calcengine/config.py
-calcengine/config.pyc
-calcengine/springdummy/infolog.txt
-calcengine/springdummy/spring
-webserver/website/config.py
+# make sure configs are not included:
+config.py
+config.pyc
+
+infolog.txt
+
+# exclude all compiled modules
 *.pyc
+
+# various scripts that should not be included
 updatesite.cgi
 reloaddb.cgi
-config.py
+
+# logfiles
 *.log
 *log.txt
+
+#spring...
 spring
+spring-headlessstubs
+
+# personal test files:
+testunitsync.py
 
