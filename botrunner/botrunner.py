@@ -321,6 +321,24 @@ def  setupConfig():
    # and import it...
    import config
 
+def registermaps():
+   for i in xrange( unitsync.GetMapCount() ):
+      mapname = unitsync.GetMapName(i)
+      print "registering map " + mapname + " ..."
+      unitsync.GetMapArchiveCount(mapname)
+      archivename = unitsync.GetMapArchiveName(0)
+      #print unitsync.GetMapArchiveName(1)
+      archivechecksum = unitsync.GetArchiveChecksum( archivename )
+      requestparams = urllib.urlencode({'mapname': mapname, 'maparchivechecksum': archivechecksum, 'botrunnername': config.botrunnername, 'sharedsecret': config.sharedsecret })
+      serverrequesthandle = urllib.urlopen( config.websiteurl + "/botrunner_registersupportedmap", requestparams )
+      serverrequestarray = serverrequesthandle.readlines()
+
+def registermods():
+   pass
+
+def registerais():
+   pass
+
 def go():
    global config
    # check for config, question user if doesn't exist
@@ -329,6 +347,11 @@ def go():
       print "Configuration found, using"
    except:
       setupConfig()
+
+   registermaps()
+   registermods()
+   registerais()
+
    while True:
       print "Checking for new request..."
       serverrequest = requestgamefromwebserver()

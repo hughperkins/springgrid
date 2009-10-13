@@ -29,9 +29,11 @@ from utils import dbconnection
 scriptdir = os.path.dirname( os.path.realpath( __file__ ) )
 
 def create(user,password,dbname,hostname):
+   print "creating all..."
    setupdb.createall(user,password,dbname,hostname)
 
 def drop(user,password,dbname,hostname):
+   print "dropping all..."
    setupdb.dropall(user,password,dbname,hostname)
 
 def usage():
@@ -61,6 +63,11 @@ def main():
    elif action == 'drop':
       dbconnection.connectdbwiththesecredentials(username, password, dbname, hostname )
       drop(username,password,dbname,hostname)
+      dbconnection.disconnectdb()
+   elif action == 'reload':
+      dbconnection.connectdbwiththesecredentials(username, password, dbname, hostname )
+      drop(username,password,dbname,hostname)
+      create(username,password,dbname,hostname)
       dbconnection.disconnectdb()
    else:
       usage()

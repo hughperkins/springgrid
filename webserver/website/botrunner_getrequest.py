@@ -72,7 +72,7 @@ def sendrequesttoengine( requestitem ):
    print "mod='" + requestitem.modname + "' "
    print "modhash='" + requestitem.modhash + "' "
    print "map='" + requestitem.mapname + "' "
-   print "maphash='" + requestitem.maphash + "' "
+   print "maparchivechecksum='" + requestitem.maparchivechecksum + "' "
    print "ai0='" + requestitem.ai0name + "' "
    print "ai0version='" + requestitem.ai0version + "' "
    print "ai1='" + requestitem.ai1name + "' "

@@ -36,28 +36,41 @@ def printfailresponse(reason ):
 def printsuccessresponse():
    print "<response success='true' />"
 
+def addmapifdoesntexist(mapname, maparchivechecksum):
+   rows = dbconnection.cursor.execute("select map_archivechecksum from maps where map_name = %s", (mapname) )
+   if rows == 0:
+      try:
+         rows = dbconnection.cursor.execute( "insert into maps ( map_name, map_archivechecksum ) "\
+            " values ( %s, %s )", ( mapname, maparchivechecksum) )
+      except:
+         printfailresponse("error adding to db: " + str( sys.exc_value ) )
+         return False
+
+      if rows != 1:
+         printfailresponse("error adding to db")
+         return False
+
+   if rows.fetchone()["map_archivechecksum"] != maparchivechecksum:
+      printfailresponse("map archive checksum doesn't match the one already on the website.")
+      return False
+
+   return True
+
 def go():
    if not botrunnerhelper.botrunnerauthorized():
       printfailresponse("Not authenticated")
       return 
 
    mapname = formhelper.getValue("mapname")
-   if mapname == None  or mapname == '':
-      printfailresponse("mapname not supplied")
+   maparchivechecksum = formhelper.getValue("maparchivechecksum")
+   if mapname == None  or mapname == '' or maparchivechecksum == None or maparchivechecksum == '':
+      printfailresponse("not all fields supplied")
       return
 
-   rows = dbconnection.cursor.execute("select * from maps where map_name = %s", (mapname) )
-   if rows == 0:
-      try:
-         rows = dbconnection.cursor.execute( "insert into maps ( map_name ) "\
-            " values ( %s )", ( mapname) )
-      except:
-         printfailresponse("error adding to db: " + str( sys.exc_value ) )
-         return
+   if not addmapifdoesntexist(mapname, maparchivechecksum):
+      return
 
-      if rows != 1:
-         printfailresponse("error adding to db")
-         return
+   # Now, register the map as supported map
 
    printsuccessresponse()
 

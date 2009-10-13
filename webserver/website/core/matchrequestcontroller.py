@@ -55,7 +55,7 @@ def getcompatibleitemfromqueue( botrunnerdescription ):
    # now we've archived the old requests, we just pick a request
    # in the future, we'll pick a compatible request.  In the future ;-)
    # also, we need to handle options.  In the future ;-)
-   dbconnection.cursor.execute("select matchrequestqueue.matchrequest_id, ai0.ai_name, ai0.ai_version, ai1.ai_name, ai1.ai_version, map_name, map_hash, mod_name, mod_hash " \
+   dbconnection.dictcursor.execute("select matchrequestqueue.matchrequest_id, ai0.ai_name as ai0name, ai0.ai_version as ai0version, ai1.ai_name as ai1name, ai1.ai_version as ai1version, map_name, map_archivechecksum, mod_name, mod_hash " \
       "from ais as ai0," \
       " ais as ai1, " \
       " maps, " \
@@ -78,15 +78,15 @@ def getcompatibleitemfromqueue( botrunnerdescription ):
    if row != None:
       # we got a row
       matchrequest = MatchRequest()
-      matchrequest.matchrequest_id = row[0]
-      matchrequest.ai0name = row[1]
-      matchrequest.ai0version = row[2]
-      matchrequest.ai1name = row[3]
-      matchrequest.ai1version = row[4]
-      matchrequest.mapname = row[5]
-      matchrequest.maphash = row[6]
-      matchrequest.modname = row[7]
-      matchrequest.modhash = row[8]
+      matchrequest.matchrequest_id = row['matchrequest_id']
+      matchrequest.ai0name = row['ai0name']
+      matchrequest.ai0version = row['ai0version']
+      matchrequest.ai1name = row['ai1name']
+      matchrequest.ai1version = row['ai1version']
+      matchrequest.mapname = row['map_name']
+      matchrequest.maparchivechecksum = row['map_archivechecksum']
+      matchrequest.modname = row['mod_name']
+      matchrequest.modhash = row['mod_hash']
       return matchrequest
    else:
       # no rows left. great!

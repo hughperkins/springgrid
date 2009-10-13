@@ -1,2 +1,3 @@
-insert into maps ( map_name, map_hash ) values
-('SmallDivide.smf', '3901729851' );
+# insert into maps ( map_name ) values
+# ('SmallDivide.smf', '3901729851' );
+
