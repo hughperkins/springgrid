@@ -116,9 +116,7 @@ def rungame( serverrequest ):
 
    scriptcontents = scripttemplatecontents
    scriptcontents = scriptcontents.replace("%MAP%", serverrequest.map )
-   scriptcontents = scriptcontents.replace("%MAPHASH%", serverrequest.maphash )
    scriptcontents = scriptcontents.replace("%MOD%", serverrequest.mod )
-   scriptcontents = scriptcontents.replace("%MODHASH%", serverrequest.modhash )
    scriptcontents = scriptcontents.replace("%AI0%", serverrequest.ai0 )
    scriptcontents = scriptcontents.replace("%AI0VERSION%", serverrequest.ai0version )
    scriptcontents = scriptcontents.replace("%AI1%", serverrequest.ai1 )
@@ -136,6 +134,7 @@ def rungame( serverrequest ):
    # popen = subprocess.Popen(["./spring", "script.txt"])
    popen = subprocess.Popen( [ "spring", writabledatadirectory + "/script.txt"])
    finished = False
+   starttimeseconds = time.time()
    while not finished:
       print "waiting for game to terminate..."
       if os.path.exists( writabledatadirectory + "/infolog.txt" ):
@@ -165,8 +164,14 @@ def rungame( serverrequest ):
             popen.kill()
             return gameresult
 
-      # could also check for spring exiting here (== draw)
-      # and timeout (== draw)
+      # check timeout (== draw)
+      if ( time.time() - starttime ) > serverrequest.gametimeoutminutes * 60:
+         # timeout
+         print "Game timed out"
+         gameresult.winningai = -1
+         gameresult.resultstring = "gametimeout"
+         popen.kill()
+         return gameresult
 
       if popen.poll() != None:
          # spring finished / died / crashed

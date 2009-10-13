@@ -2,8 +2,7 @@ what is being worked on at the moment:
 - making it easy to run botrunner
 
 todo:
-- make sure versions in match creator match ai
-- implement game timeout in botrunner
+- get start positions from unitsync
 - add possibility to describe which maps and mods a botrunner supports
 - show botrunners that connected within last 5 minutes so in green in botrunners table (maybe with status?)
 - add 'last ping time' to botrunner table, or to another table, maybe also 'current status'
@@ -15,7 +14,6 @@ todo:
 - implement game timeout in botrunner
 - upload logfile after game, per-ai, or at least the infolog.txt
 - be able to configure arm vs core vs ... vs random
-- add start positions to map
 
 list of options to handle:
 - can an ai cheat?
@@ -39,6 +37,8 @@ not sure if actually necessary (so: to test/investigate):
 - add gameendstring to per-mod config
 
 done:
+- implement game timeout in botrunner
+- ai name and version combined together in submitrequest form now
 - botrunner tells websites about what mods it has now
 - botrunner tells websites about what maps it has now
 - detect spring-headlessstubs
