@@ -35,7 +35,7 @@ import tarfile
 
 import urllib2_file
 
-from unitsync import unitsync
+from unitsync import unitsync as unitsyncpkg
 
 config = None
 
@@ -43,7 +43,7 @@ scriptdir = os.path.dirname( os.path.realpath( __file__ ) )
 
 if os.name == 'posix': location = '/usr/lib/spring/unitsync.so'
 elif os.name == 'nt': location = 'unitsync.dll'
-unitsync = unitsync.Unitsync(location)
+unitsync = unitsyncpkg.Unitsync(location)
 
 unitsync.Init(True,1)
 
@@ -122,6 +122,19 @@ def rungame( serverrequest ):
    scriptcontents = scriptcontents.replace("%AI1%", serverrequest.ai1 )
    scriptcontents = scriptcontents.replace("%AI1VERSION%", serverrequest.ai1version )
 
+   map_info = unitsyncpkg.MapInfo()
+   unitsync.GetMapInfoEx(str(serverrequest.map), map_info, 1)
+   team0startpos = map_info.StartPos[0]
+   team1startpos = map_info.StartPos[1]
+   # we always play team 0 on startpos0 ,and team1 on startpos1, for repeatability
+   # it is for hte website to decide which team should go on which side, not the
+   # botrunner
+   print team0startpos
+   scriptcontents = scriptcontents.replace("%TEAM0STARTPOSX%", str( team0startpos.x ) )   
+   scriptcontents = scriptcontents.replace("%TEAM0STARTPOSZ%", str( team0startpos.y ) )   
+   scriptcontents = scriptcontents.replace("%TEAM1STARTPOSX%", str( team1startpos.x ) )   
+   scriptcontents = scriptcontents.replace("%TEAM1STARTPOSZ%", str( team1startpos.y ) )   
+
    scriptpath = writabledatadirectory + "/script.txt"
    writeFile( scriptpath, scriptcontents )
 
@@ -165,7 +178,7 @@ def rungame( serverrequest ):
             return gameresult
 
       # check timeout (== draw)
-      if ( time.time() - starttime ) > serverrequest.gametimeoutminutes * 60:
+      if ( time.time() - starttimeseconds ) > serverrequest.gametimeoutminutes * 60:
          # timeout
          print "Game timed out"
          gameresult.winningai = -1

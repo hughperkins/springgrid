@@ -79,8 +79,8 @@
 	[TEAM0]
 	{
 		TeamLeader=2;
-		StartPosX=600;
-		StartPosZ=600;
+		StartPosX=%TEAM0STARTPOSX%;
+		StartPosZ=%TEAM0STARTPOSZ%;
 		AllyTeam=1;
 		RGBColor=0.976471 1 0;
 		Side=ARM;
@@ -89,8 +89,8 @@
 	[TEAM1]
 	{
 		TeamLeader=2;
-		StartPosX=3600;
-		StartPosZ=3600;
+		StartPosX=%TEAM1STARTPOSX%;
+		StartPosZ=%TEAM1STARTPOSZ%;
 		AllyTeam=2;
 		RGBColor=0.509804 0.498039 1;
 		Side=ARM;

@@ -1,12 +1,9 @@
 what is being worked on at the moment:
 - making it easy to run botrunner
 
-bugs:
-- botrunner doesn't retrieve any requests at the moment :-O
-
 todo:
-- get start positions from unitsync
-- add possibility to describe which maps and mods a botrunner supports
+- add possibility to describe which maps and mods a botrunner supports on website, and take
+  into account when botrunner makes requests to the website
 - show botrunners that connected within last 5 minutes so in green in botrunners table (maybe with status?)
 - add 'last ping time' to botrunner table, or to another table, maybe also 'current status'
 - add subscription to each league for each ai
@@ -17,6 +14,10 @@ todo:
 - implement game timeout in botrunner
 - upload logfile after game, per-ai, or at least the infolog.txt
 - be able to configure arm vs core vs ... vs random
+
+low:
+- botrunner gets list of current maps, mods and ais from website, and only registers
+  ones that don't exist already
 
 list of options to handle:
 - can an ai cheat?
@@ -40,6 +41,7 @@ not sure if actually necessary (so: to test/investigate):
 - add gameendstring to per-mod config
 
 done:
+- get start positions from unitsync
 - implement game timeout in botrunner
 - ai name and version combined together in submitrequest form now
 - botrunner tells websites about what mods it has now
