@@ -45,6 +45,8 @@ unitsync = unitsync.Unitsync(location)
 
 unitsync.Init(True,1)
 
+writabledatadirectory = unitsync.GetWritableDataDirectory()
+
 class ServerRequest():
    def __init__( self ):
      pass     
@@ -106,6 +108,7 @@ def writeFile( filepath, contents ):
    filehandle.close()
 
 def rungame( serverrequest ):
+   global writabledatadirectory
    gameresult = GameResult()
    scripttemplatecontents = readFile( scriptdir + "/" + config.scripttemplatefilename )
 
@@ -119,21 +122,22 @@ def rungame( serverrequest ):
    scriptcontents = scriptcontents.replace("%AI1%", serverrequest.ai1 )
    scriptcontents = scriptcontents.replace("%AI1VERSION%", serverrequest.ai1version )
 
-   writeFile( config.springgamedir + "/script.txt", scriptcontents )
+   scriptpath = writabledatadirectory + "/script.txt"
+   writeFile( scriptpath, scriptcontents )
 
-   if os.path.exists( config.springgamedir + "/infolog.txt" ):
-      os.remove( config.springgamedir + "/infolog.txt" )
+   if os.path.exists( writabledatadirectory + "/infolog.txt" ):
+      os.remove( writabledatadirectory + "/infolog.txt" )
 
-   os.chdir( config.springgamedir )
+   #os.chdir( config.springgamedir )
    # os.exec( "./spring script.txt" )
    # subprocess.call(["./spring", "script.txt"])
    # popen = subprocess.Popen(["./spring", "script.txt"])
-   popen = subprocess.Popen([config.springgamedir + "/spring", "script.txt"])
+   popen = subprocess.Popen( [ "spring", writabledatadirectory + "/script.txt"])
    finished = False
    while not finished:
       print "waiting for game to terminate..."
-      if os.path.exists( config.springgamedir + "/infolog.txt" ):
-         infologcontents = readFile( config.springgamedir + "/infolog.txt" )
+      if os.path.exists( writabledatadirectory + "/infolog.txt" ):
+         infologcontents = readFile( writabledatadirectory + "/infolog.txt" )
          # print infologcontents
          ai0endstring = serverrequest.gameendstring.replace("%TEAMNUMBER%", "0")
          ai1endstring = serverrequest.gameendstring.replace("%TEAMNUMBER%", "1")
@@ -175,6 +179,8 @@ def rungame( serverrequest ):
    return gameresult
 
 def uploadresulttoserver( serverrequest, gameresult ):
+   global writabledatadirectory
+
    # upload gameresult and serverrequest to server...
    # ...
 
@@ -194,15 +200,15 @@ def uploadresulttoserver( serverrequest, gameresult ):
       pass
    else:
       # first tar.bz2 it
-      tarhandle = tarfile.open(config.springgamedir + "/thisreplay.tar.bz2", "w:bz2" )
-      os.chdir( config.springgamedir + "/demos" )  # cd in, so that we don't embed the paths
+      tarhandle = tarfile.open(writabledatadirectory + "/thisreplay.tar.bz2", "w:bz2" )
+      os.chdir( writabledatadirectory + "/demos" )  # cd in, so that we don't embed the paths
                    # in the tar file...
       tarhandle.add( thisreplayfilename )
       tarhandle.close()
 
    # ok, let's do the upload... if we don't have a replay, we won't send the replay
    if thisreplayfilename != '':
-      replayfilehandle = open( config.springgamedir + "/thisreplay.tar.bz2", 'r' )
+      replayfilehandle = open( writabledatadirectory + "/thisreplay.tar.bz2", 'r' )
 
 #      requestparams = urllib.urlencode({
       requestparams = {
@@ -227,8 +233,10 @@ demosdirectorylistingbeforegame = None
 # replays), and then any new one will be assumed to be the one from the
 # game we just played
 def snapshotdemosdirectory():
+   global writabledatadirectory
+
    listing = []
-   for filename in os.listdir( config.springgamedir + "/demos" ):
+   for filename in os.listdir( writabledatadirectory + "/demos" ):
       listing.append(filename)
    return listing
 
