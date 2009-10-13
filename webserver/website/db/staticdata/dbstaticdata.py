@@ -23,7 +23,6 @@
 
 import os
 import sys
-import io
 
 from utils import *
 
