@@ -52,6 +52,18 @@ def archiveoldrequests():
 # we need to only take things that arent in the inprogress queue of course...
 def getcompatibleitemfromqueue( botrunnerdescription ):
    archiveoldrequests()
+
+   # Also, remove any requests that this engine was supposedly processing
+   # for which there are no results
+   dbconnection.dictcursor.execute("delete matchrequests_inprogress.* from "\
+      " matchrequestqueue, matchrequests_inprogress, botrunners "\
+      " where matchrequestqueue.matchrequest_id = matchrequests_inprogress.matchrequest_id " \
+      " and not exists (select * from matchresults "\
+      "    where matchresults.matchrequest_id = matchrequestqueue.matchrequest_id ) "\
+      " and matchrequests_inprogress.botrunner_id = botrunners.botrunner_id " \
+      " and botrunner_name = %s ",
+      ( botrunnerdescription ) )
+
    # now we've archived the old requests, we just pick a request
    # in the future, we'll pick a compatible request.  In the future ;-)
    # also, we need to handle options.  In the future ;-)
