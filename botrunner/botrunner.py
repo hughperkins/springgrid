@@ -384,9 +384,13 @@ def registermaps():
       #print unitsync.GetMapArchiveName(1)
       archivechecksum = unitsync.GetArchiveChecksum( archivename )
       requestparams = urllib.urlencode({'mapname': mapname, 'maparchivechecksum': archivechecksum, 'botrunnername': config.botrunnername, 'sharedsecret': config.sharedsecret })
-      serverrequesthandle = urllib.urlopen( config.websiteurl + "/botrunner_registersupportedmap.py", requestparams )
-      serverrequestarray = serverrequesthandle.readlines()
-      print "\n".join( serverrequestarray )
+      regMapUrl = config.websiteurl + "/botrunner_registersupportedmap.py"
+      try:
+         serverrequesthandle = urllib.urlopen( regMapUrl, requestparams )
+         serverrequestarray = serverrequesthandle.readlines()
+         print "\n".join( serverrequestarray )
+      except:
+         print "\n" + "Failed registering map " + mapname + " on " + regMapUrl
 
 def registermods():
    for i in xrange( unitsync.GetPrimaryModCount() ):
@@ -396,9 +400,13 @@ def registermods():
       modarchive = unitsync.GetPrimaryModArchive(0)
       modarchivechecksum = unitsync.GetArchiveChecksum( modarchive )
       requestparams = urllib.urlencode({'modname': modname, 'modarchivechecksum': modarchivechecksum, 'botrunnername': config.botrunnername, 'sharedsecret': config.sharedsecret })
-      serverrequesthandle = urllib.urlopen( config.websiteurl + "/botrunner_registersupportedmod.py", requestparams )
-      serverrequestarray = serverrequesthandle.readlines()
-      print "\n".join( serverrequestarray )
+      regModUrl = config.websiteurl + "/botrunner_registersupportedmod.py"
+      try:
+         serverrequesthandle = urllib.urlopen( regModUrl, requestparams )
+         serverrequestarray = serverrequesthandle.readlines()
+         print "\n".join( serverrequestarray )
+      except:
+         print "\n" + "Failed registering mod " + modname + " on " + regModUrl
 
 def registerais():
    for i in xrange( unitsync.GetSkirmishAICount() ):
@@ -409,12 +417,16 @@ def registerais():
             shortname = unitsync.GetInfoValue(j)
          if unitsync.GetInfoKey(j) == "version":
             version = unitsync.GetInfoValue(j)
-         
+
       if shortname != '' and version != '':
          print "registering ai " + shortname + " version " + version + " ..."
       requestparams = urllib.urlencode({'ainame': shortname, 'aiversion': version, 'botrunnername': config.botrunnername, 'sharedsecret': config.sharedsecret })
-      serverrequesthandle = urllib.urlopen( config.websiteurl + "/botrunner_registersupportedai.py", requestparams )
-      serverrequestarray = serverrequesthandle.readlines()
+      regAIUrl = config.websiteurl + "/botrunner_registersupportedai.py"
+      try:
+         serverrequesthandle = urllib.urlopen( regAIUrl, requestparams )
+         serverrequestarray = serverrequesthandle.readlines()
+      except:
+         print "\n" + "Failed registering AI " + shortname + " " + version + " on " + regAIUrl
 
 def go():
    global config, unitsync, writabledatadirectory
