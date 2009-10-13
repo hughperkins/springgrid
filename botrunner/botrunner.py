@@ -371,6 +371,7 @@ def registermods():
       requestparams = urllib.urlencode({'modname': modname, 'modarchivechecksum': modarchivechecksum, 'botrunnername': config.botrunnername, 'sharedsecret': config.sharedsecret })
       serverrequesthandle = urllib.urlopen( config.websiteurl + "/botrunner_registersupportedmod.py", requestparams )
       serverrequestarray = serverrequesthandle.readlines()
+      print "\n".join( serverrequestarray )
 
 def registerais():
    for i in xrange( unitsync.GetSkirmishAICount() ):

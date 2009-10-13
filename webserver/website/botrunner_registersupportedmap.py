@@ -3,7 +3,7 @@
 # Copyright Hugh Perkins 2009
 # hughperkins@gmail.com http://manageddreams.com
 #
-# This program is free software; you can redistribute it and/or modify it
+# This program is free software; you can redistribute it and/or mapify it
 # under the terms of the GNU General Public License as published by the
 # Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
@@ -64,6 +64,7 @@ def go():
       printfailresponse("Not authenticated")
       return 
 
+   botrunnername = formhelper.getValue("botrunnername")
    mapname = formhelper.getValue("mapname")
    maparchivechecksum = formhelper.getValue("maparchivechecksum")
    if mapname == None  or mapname == '' or maparchivechecksum == None or maparchivechecksum == '':
@@ -74,6 +75,21 @@ def go():
       return
 
    # Now, register the map as supported map
+   rows = dbconnection.dictcursor.execute("select * from botrunners, botrunner_supportedmaps, maps " \
+      " where botrunners.botrunner_id = botrunner_supportedmaps.botrunner_id "\
+      " and botrunners.botrunner_name = %s "\
+      " and botrunner_supportedmaps.map_id = maps.map_id "\
+      " and maps.map_name = %s ",
+      ( botrunnername, mapname ) )
+   #print rows
+   if rows == 0:
+      dbconnection.dictcursor.execute("insert into botrunner_supportedmaps "\
+         " ( botrunner_id, map_id ) "\
+         " select botrunner_id, map_id "\
+         " from botrunners, maps "\
+         " where botrunners. botrunner_name = %s "\
+         " and maps.map_name = %s ",
+         ( botrunnername, mapname ) )
 
    printsuccessresponse()
 

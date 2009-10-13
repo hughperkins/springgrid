@@ -87,6 +87,34 @@ for option in options:
 
 print "</table>"
 
+print "<h3>Supported Maps</h3>"
+
+maps = dbconnection.querytolistwithparams( "select map_name "\
+   " from maps, botrunner_supportedmaps, botrunners "\
+   " where botrunners   .botrunner_id = botrunner_supportedmaps.botrunner_id "\
+   " and maps.map_id = botrunner_supportedmaps.map_id "\
+   " and botrunners.botrunner_name = %s ",
+   ( botrunnername ) )
+print "<table>"
+print "<tr class='tablehead'><td>Map</td>"
+for map in maps:
+   print "<tr class='success'><td>" + map + "</td>"
+print "</table>"
+
+print "<h3>Supported Mods</h3>"
+
+mods = dbconnection.querytolistwithparams( "select mod_name "\
+   " from mods, botrunner_supportedmods, botrunners "\
+   " where botrunners   .botrunner_id = botrunner_supportedmods.botrunner_id "\
+   " and mods.mod_id = botrunner_supportedmods.mod_id "\
+   " and botrunners.botrunner_name = %s ",
+   ( botrunnername ) )
+print "<table>"
+print "<tr class='tablehead'><td>Mod</td>"
+for mod in mods:
+   print "<tr class='success'><td>" + mod + "</td>"
+print "</table>"
+
 if row['username'] == loginhelper.getUsername():
 
    print "<p />"

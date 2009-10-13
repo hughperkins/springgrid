@@ -62,6 +62,7 @@ def go():
       printfailresponse("Not authenticated")
       return 
 
+   botrunnername = formhelper.getValue("botrunnername")
    modname = formhelper.getValue("modname")
    modarchivechecksum = formhelper.getValue("modarchivechecksum")
    if modname == None  or modname == '' or modarchivechecksum == None or modarchivechecksum == '':
@@ -72,6 +73,21 @@ def go():
       return
 
    # Now, register the mod as supported mod
+   rows = dbconnection.dictcursor.execute("select * from botrunners, botrunner_supportedmods, mods " \
+      " where botrunners.botrunner_id = botrunner_supportedmods.botrunner_id "\
+      " and botrunners.botrunner_name = %s "\
+      " and botrunner_supportedmods.mod_id = mods.mod_id "\
+      " and mods.mod_name = %s ",
+      ( botrunnername, modname ) )
+   #print rows
+   if rows == 0:
+      dbconnection.dictcursor.execute("insert into botrunner_supportedmods "\
+         " ( botrunner_id, mod_id ) "\
+         " select botrunner_id, mod_id "\
+         " from botrunners, mods "\
+         " where botrunners. botrunner_name = %s "\
+         " and mods.mod_name = %s ",
+         ( botrunnername, modname ) )
 
    printsuccessresponse()
 
