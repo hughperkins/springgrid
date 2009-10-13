@@ -92,11 +92,6 @@ def sendnothing():
 
 testing = False
 
-print "Content-type: text/xml"
-print ""
-print ""
-dbconnection.connectdb()
-
 def go():
    if testing or botrunnerhelper.botrunnerauthorized():
       botrunnerdescription = getbotrunnerdescription(botrunnerhelper.botrunnername)
@@ -109,7 +104,12 @@ def go():
    else:
       print "<request summary='unauthorized' />"
 
-go()
+print "Content-type: text/xml\n\n"
 
+dbconnection.connectdb()
+try:
+   go()
+except:
+   print '<request summary="Exception: ' + str( sys.exc_value ).replace('"', "'" ) + '" />'
 dbconnection.disconnectdb()
 

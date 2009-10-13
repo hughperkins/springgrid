@@ -73,7 +73,7 @@ def getcompatibleitemfromqueue( botrunnerdescription ):
 #matchrequests_inprogress.matchrequest_id = matchrequestqueue.matchrequest_id " \
 #      " and not exists (select * from matchrequests_inprogress where " \
  #     "                     matchrequests_inprogress.matchrequest_id = matchrequestqueue.matchrequest_id ) " )
-   row = dbconnection.cursor.fetchone()
+   row = dbconnection.dictcursor.fetchone()
    # just take the first one...
    if row != None:
       # we got a row
@@ -140,4 +140,4 @@ def storeresult( botrunnername, matchrequest_id, result ):
 #   # remove inprogress marker
  #  dbconnection.cursor.execute("delete from matchrequests_inprogress "\
   #     " where matchrequest_id = %s ", ( matchrequest_id,) )
-
+1
