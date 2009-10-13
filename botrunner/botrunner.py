@@ -109,7 +109,7 @@ def doping( status ):
    serverrequestarray = serverrequesthandle.readlines()
 
 def rungame( serverrequest ):
-   global writabledatadirectory
+   global config, writabledatadirectory
    gameresult = GameResult()
    scripttemplatecontents = readFile( scriptdir + "/" + config.scripttemplatefilename )
 
@@ -141,10 +141,7 @@ def rungame( serverrequest ):
       os.remove( writabledatadirectory + "/infolog.txt" )
 
    #os.chdir( config.springgamedir )
-   # os.exec( "./spring script.txt" )
-   # subprocess.call(["./spring", "script.txt"])
-   # popen = subprocess.Popen(["./spring", "script.txt"])
-   popen = subprocess.Popen( [ "spring", writabledatadirectory + "/script.txt"])
+   popen = subprocess.Popen( [ config.springPath, writabledatadirectory + "/script.txt"])
    finished = False
    starttimeseconds = time.time()
    doping("playing game " + serverrequest.ai0 + " vs " + serverrequest.ai1 + " on " + serverrequest.map + " " + serverrequest.mod )
@@ -276,30 +273,31 @@ def getValueFromUser(questiontouser):
       #if confirmation == 'y':
       #   return uservalue
 
-def getSpringExeName():
-   try:
-      popen = subprocess.Popen( [ "spring-headlessstubs", "--version"])
-      popen.wait()
-      if getConfirmation("spring-headlessstubs found.  Do you want to use?"):
-         return "spring-headlessstubs"
-   except:
-      print "spring-headlessstubs not found"
+def getSpringPath():
+   if os.name == 'posix':
+      examplePaths = '\t- /usr/games/spring\n\t- /usr/games/spring-headlessstubs'
+   elif os.name == 'nt':
+      examplePaths = '\t- C:\Program Files\Spring\spring.exe\n\t- C:\Program Files\Spring\spring-headlessstubs.exe'
+   print "Common paths for the Spring executable are:"
+   print examplePaths
 
    try:
-      popen = subprocess.Popen( [ "spring", "--version"])
+      thePath = askForPathToFile("the Spring executable")
+      popen = subprocess.Popen( [ thePath, "--version"])
       popen.wait()
-      return "spring"
+      return thePath
    except:
-      print "spring not found"
+      print "Spring executable not found!"
       return ''
 
 def getUnitSyncPath():
    if os.name == 'posix':
-      examplePath = '/usr/lib/spring/unitsync.so'
+      examplePaths = '\t- /usr/lib/spring/unitsync.so'
    elif os.name == 'nt':
-      examplePath = 'C:\Program Files\Spring\unitsync.dll'
+      examplePaths = '\t- C:\Program Files\Spring\unitsync.dll'
+   print "Common paths for UnitSync are:"
+   print examplePaths
    try:
-      print "A common path for UnitSync is: " + examplePath
       thePath = askForPathToFile("UnitSync")
       return thePath
    except:
@@ -335,19 +333,24 @@ def  setupConfig():
    print "Let's get you set up..."
    gotdata = False
    while not gotdata:
+      print ""
       weburl = getValueFromUser("Which webserver to you want to subscribe to?  Examples:\n   - manageddreams.com/ailadder\n   - manageddreams.com/ailadderstaging\n   - localhost/ailadder")
+      print ""
       if weburl.lower().find("http://") == -1:
          weburl = "http://" + weburl
       botrunnername = getValueFromUser("What name do you want to give to your botrunner?  This name will be shown on the website.")
+      print ""
       botrunnersharedsecret = getValueFromUser("What sharedsecret do you want to use with this botrunner?  This will be used to authenticate your botrunner to the website.")
-      springexe = getSpringExeName()
-      if springexe == '':
-         print "Spring not found.  Please check that it is installed"
+      print ""
+      springPath = getSpringPath()
+      if springPath == '':
+         print "Spring executable not found. Please check that it is installed"
          return False
-      print "Spring exe found: " + springexe
+      print "Spring executable found: " + springPath
+      print ""
       unitsyncPath = getUnitSyncPath()
       if unitsyncPath == '':
-         print "UnitSync not found.  Please check that it is installed"
+         print "UnitSync not found. Please check that it is installed"
          return False
       print "UnitSync found: " + unitsyncPath
       print ""
@@ -355,7 +358,7 @@ def  setupConfig():
       print "   target web server: " + weburl
       print "   botrunner name: " + botrunnername
       print "   botrunner shared secret: " + botrunnersharedsecret
-      print "   spring exe name: " + springexe
+      print "   spring executable path: " + springPath
       print "   UnitSync path: " + unitsyncPath
       print ""
       if getConfirmation( "Is this correct?" ):
@@ -367,7 +370,7 @@ def  setupConfig():
    newconfig = newconfig.replace( "WEBSITEURL", weburl )
    newconfig = newconfig.replace( "BOTRUNNERNAME", botrunnername )
    newconfig = newconfig.replace( "SHAREDSECRET", botrunnersharedsecret )
-   newconfig = newconfig.replace( "SPRINGEXE", springexe )
+   newconfig = newconfig.replace( "SPRINGPATH", springPath )
    newconfig = newconfig.replace( "UNITSYNCPATH", unitsyncPath )
    writeFile( scriptdir + "/config.py", newconfig )
 

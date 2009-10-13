@@ -11,10 +11,10 @@ websiteurl = "WEBSITEURL"
 
 sleepthislongwhennothingtodoseconds = 60
 
-# "spring" or "spring-headlessstubs"
-springexe="SPRINGEXE"
+# full path to "spring(.exe)" or "spring-headlessstubs(.exe)"
+springpath="SPRINGPATH"
 
-# full path to unitsync.dll|(lib)unitsync.so
+# full path to unitsync.dll or (lib)unitsync.so
 unitsyncPath="UNITSYNCPATH"
 
 #######################################################################3
