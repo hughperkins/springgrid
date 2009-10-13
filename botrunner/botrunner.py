@@ -257,6 +257,8 @@ except:
    gotdata = False
    while not gotdata:
       weburl = getValueFromUser("Which  webserver to you want to subscribe to?  Example: http://manageddreams.com/ailadder")
+      if weburl.lower().find("http://") == -1:
+         weburl = "http://" + weburl
       botrunnername = getValueFromUser("What name do you want to give to your botrunner?  This name will be shown on the website.")
       botrunnersharedsecret = getValueFromUser("What sharedsecret do you want to use with this botrunner?  This will be used to authenticate your botrunner to the website.")
       print ""
@@ -274,8 +276,8 @@ except:
    templatecontents = readFile(scriptdir + "/config.py.template")
    newconfig = templatecontents
    newconfig = newconfig.replace( "WEBSITEURL", weburl )
-   newconfig = newconfig.replace( "SHAREDSECRET", botrunnername )
-   newconfig = newconfig.replace( "BOTRUNNERNAME", botrunnersharedsecret )
+   newconfig = newconfig.replace( "BOTRUNNERNAME", botrunnername )
+   newconfig = newconfig.replace( "SHAREDSECRET", botrunnersharedsecret )
    writeFile( scriptdir + "/config.py", newconfig )
 
    # and import it...

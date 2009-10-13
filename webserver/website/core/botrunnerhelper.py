@@ -35,15 +35,22 @@ def botrunnerauthorized():
 
 def validatesharedsecret(lbotrunnername, sharedsecret):
    global botrunnername
-   dbconnection.cursor.execute("select botrunner_sharedsecret from botrunners where botrunner_name=%s", (lbotrunnername,) )
-   row = dbconnection.cursor.fetchone()
-   if row == None:
-      return False
-   actualsharedsecret = row[0]
-   if actualsharedsecret == sharedsecret:
-      botrunnername = lbotrunnername
+   rows = dbconnection.cursor.execute("select botrunner_sharedsecret from botrunners where botrunner_name=%s", (lbotrunnername,) )
+   if rows == 0:  # Never seen this botrunner before, just add it
+      dbconnection.cursor.execute("insert into botrunners (botrunner_name, botrunner_sharedsecret ) "\
+         " values ( %s, %s ) ",
+         ( botrunnername, sharedsecret ) )
+      # if this fails, return true anyway
       return True
-   return False
+   elif rows >= 1:
+      row = dbconnection.cursor.fetchone()
+      if row == None:
+         return False
+      actualsharedsecret = row[0]
+      if actualsharedsecret == sharedsecret:
+         botrunnername = lbotrunnername
+         return True
+      return False
 
 def getOwnerUsername(botrunnername):
    rows = dbconnection.cursor.execute("select username from "\
