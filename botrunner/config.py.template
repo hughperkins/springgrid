@@ -14,6 +14,9 @@ sleepthislongwhennothingtodoseconds = 60
 # "spring" or "spring-headlessstubs"
 springexe="SPRINGEXE"
 
+# full path to unitsync.dll|(lib)unitsync.so
+unitsyncPath="UNITSYNCPATH"
+
 #######################################################################3
 # stuff under this line probably doesn't need modifying, in general
 

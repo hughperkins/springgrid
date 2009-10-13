@@ -38,16 +38,10 @@ import urllib2_file
 from unitsync import unitsync as unitsyncpkg
 
 config = None
+unitsync = None
+writabledatadirectory = None
 
 scriptdir = os.path.dirname( os.path.realpath( __file__ ) )
-
-if os.name == 'posix': location = '/usr/lib/spring/unitsync.so'
-elif os.name == 'nt': location = 'unitsync.dll'
-unitsync = unitsyncpkg.Unitsync(location)
-
-unitsync.Init(True,1)
-
-writabledatadirectory = unitsync.GetWritableDataDirectory()
 
 class ServerRequest():
    def __init__( self ):
@@ -299,6 +293,19 @@ def getSpringExeName():
       print "spring not found"
       return ''
 
+def getUnitSyncPath():
+   if os.name == 'posix':
+      examplePath = '/usr/lib/spring/unitsync.so'
+   elif os.name == 'nt':
+      examplePath = 'C:\Program Files\Spring\unitsync.dll'
+   try:
+      print "A common path for UnitSync is: " + examplePath
+      thePath = askForPathToFile("UnitSync")
+      return thePath
+   except:
+      print "UnitSync not found"
+      return ''
+
 # returns True for confirmed, otherwise False
 def getConfirmation( confirmationquestion ):
    print confirmationquestion + " (y to confirm)"
@@ -306,6 +313,18 @@ def getConfirmation( confirmationquestion ):
    if confirmation == 'y':
       return True
    return False
+
+# returns the entered file path or ""
+def askForPathToFile( pathName ):
+   while True:
+      print "Please enter the full path to " + pathName + ":"
+      thePath = sys.stdin.readline().strip()
+      if os.path.exists(thePath):
+         return thePath
+      else:
+         print "The specified file \"" + thePath + "\" does not exist, please try again."
+         continue
+   return ''
 
 def  setupConfig():
    global config
@@ -316,7 +335,7 @@ def  setupConfig():
    print "Let's get you set up..."
    gotdata = False
    while not gotdata:
-      weburl = getValueFromUser("Which  webserver to you want to subscribe to?  Examples:\n   - manageddreams.com/ailadder\n   - manageddreams.com/ailadderstaging\n   - localhost/ailadder")
+      weburl = getValueFromUser("Which webserver to you want to subscribe to?  Examples:\n   - manageddreams.com/ailadder\n   - manageddreams.com/ailadderstaging\n   - localhost/ailadder")
       if weburl.lower().find("http://") == -1:
          weburl = "http://" + weburl
       botrunnername = getValueFromUser("What name do you want to give to your botrunner?  This name will be shown on the website.")
@@ -324,14 +343,20 @@ def  setupConfig():
       springexe = getSpringExeName()
       if springexe == '':
          print "Spring not found.  Please check that it is installed"
-         return
-      print "Spring exe found: " + springexe 
+         return False
+      print "Spring exe found: " + springexe
+      unitsyncPath = getUnitSyncPath()
+      if unitsyncPath == '':
+         print "UnitSync not found.  Please check that it is installed"
+         return False
+      print "UnitSync found: " + unitsyncPath
       print ""
       print "You have input:"
       print "   target web server: " + weburl
       print "   botrunner name: " + botrunnername
       print "   botrunner shared secret: " + botrunnersharedsecret
       print "   spring exe name: " + springexe
+      print "   UnitSync path: " + unitsyncPath
       print ""
       if getConfirmation( "Is this correct?" ):
          gotdata = True
@@ -343,10 +368,12 @@ def  setupConfig():
    newconfig = newconfig.replace( "BOTRUNNERNAME", botrunnername )
    newconfig = newconfig.replace( "SHAREDSECRET", botrunnersharedsecret )
    newconfig = newconfig.replace( "SPRINGEXE", springexe )
+   newconfig = newconfig.replace( "UNITSYNCPATH", unitsyncPath )
    writeFile( scriptdir + "/config.py", newconfig )
 
    # and import it...
    import config
+   return True
 
 def registermaps():
    for i in xrange( unitsync.GetMapCount() ):
@@ -390,13 +417,21 @@ def registerais():
       serverrequestarray = serverrequesthandle.readlines()
 
 def go():
-   global config
+   global config, unitsync, writabledatadirectory
    # check for config, question user if doesn't exist
    try:
       import config
       print "Configuration found, using"
    except:
-      setupConfig()
+      ok = setupConfig()
+      if not ok:
+         return
+
+   unitsync = unitsyncpkg.Unitsync(config.unitsyncPath)
+
+   unitsync.Init(True,1)
+
+   writabledatadirectory = unitsync.GetWritableDataDirectory()
 
    registermaps()
    registermods()
@@ -415,6 +450,6 @@ def go():
          print "Nothing to do.  Sleeping..."
          doping("sleeping")
          time.sleep(config.sleepthislongwhennothingtodoseconds)
-   
+
 go()
 
