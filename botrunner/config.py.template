@@ -11,6 +11,9 @@ websiteurl = "WEBSITEURL"
 
 sleepthislongwhennothingtodoseconds = 60
 
+# "spring" or "spring-headlessstubs"
+springexe="SPRINGEXE"
+
 #######################################################################3
 # stuff under this line probably doesn't need modifying, in general
 

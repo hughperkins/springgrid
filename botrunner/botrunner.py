@@ -37,6 +37,8 @@ import urllib2_file
 
 from unitsync import unitsync
 
+config = None
+
 scriptdir = os.path.dirname( os.path.realpath( __file__ ) )
 
 if os.name == 'posix': location = '/usr/lib/spring/unitsync.so'
@@ -253,31 +255,58 @@ def getValueFromUser(questiontouser):
       #if confirmation == 'y':
       #   return uservalue
 
-# check for config, question user if doesn't exist
-try:
-   import config
-   print "Configuration found, using"
-except:
+def getSpringExeName():
+   try:
+      popen = subprocess.Popen( [ "spring-headlessstubs", "--version"])
+      popen.wait()
+      if getConfirmation("spring-headlessstubs found.  Do you want to use?"):
+         return "spring-headlessstubs"
+   except:
+      print "spring-headlessstubs not found"
+
+   try:
+      popen = subprocess.Popen( [ "spring", "--version"])
+      popen.wait()
+      return "spring"
+   except:
+      print "spring not found"
+      return ''
+
+# returns True for confirmed, otherwise False
+def getConfirmation( confirmationquestion ):
+   print confirmationquestion + " (y to confirm)"
+   confirmation = sys.stdin.readline().strip().lower()
+   if confirmation == 'y':
+      return True
+   return False
+
+def  setupConfig():
+   global config
+
    print ""
    print "Welcome to botrunner."
    print ""
    print "Let's get you set up..."
    gotdata = False
    while not gotdata:
-      weburl = getValueFromUser("Which  webserver to you want to subscribe to?  Example: http://manageddreams.com/ailadder")
+      weburl = getValueFromUser("Which  webserver to you want to subscribe to?  Examples:\n   - manageddreams.com/ailadder\n   - manageddreams.com/ailadderstaging\n   - localhost/ailadder")
       if weburl.lower().find("http://") == -1:
          weburl = "http://" + weburl
       botrunnername = getValueFromUser("What name do you want to give to your botrunner?  This name will be shown on the website.")
       botrunnersharedsecret = getValueFromUser("What sharedsecret do you want to use with this botrunner?  This will be used to authenticate your botrunner to the website.")
+      springexe = getSpringExeName()
+      if springexe == '':
+         print "Spring not found.  Please check that it is installed"
+         return
+      print "Spring exe found: " + springexe 
       print ""
       print "You have input:"
       print "   target web server: " + weburl
       print "   botrunner name: " + botrunnername
       print "   botrunner shared secret: " + botrunnersharedsecret
+      print "   spring exe name: " + springexe
       print ""
-      print "Is this correct? (y to confirm)"
-      confirmation = sys.stdin.readline().strip().lower()
-      if confirmation == 'y':
+      if getConfirmation( "Is this correct?" ):
          gotdata = True
 
    # that's all we need, let's create the config file...
@@ -286,21 +315,32 @@ except:
    newconfig = newconfig.replace( "WEBSITEURL", weburl )
    newconfig = newconfig.replace( "BOTRUNNERNAME", botrunnername )
    newconfig = newconfig.replace( "SHAREDSECRET", botrunnersharedsecret )
+   newconfig = newconfig.replace( "SPRINGEXE", springexe )
    writeFile( scriptdir + "/config.py", newconfig )
 
    # and import it...
    import config
 
-while True:
-   print "Checking for new request..."
-   serverrequest = requestgamefromwebserver()
-   if serverrequest != None:
-      # we have a request to process
-      demosdirectorylistingbeforegame = snapshotdemosdirectory()
-      result = rungame( serverrequest )
-      uploadresulttoserver( serverrequest, result )
-   else:
-      # else, sleep...
-      print "Nothing to do.  Sleeping..."
-      time.sleep(config.sleepthislongwhennothingtodoseconds)
+def go():
+   global config
+   # check for config, question user if doesn't exist
+   try:
+      import config
+      print "Configuration found, using"
+   except:
+      setupConfig()
+   while True:
+      print "Checking for new request..."
+      serverrequest = requestgamefromwebserver()
+      if serverrequest != None:
+         # we have a request to process
+         demosdirectorylistingbeforegame = snapshotdemosdirectory()
+         result = rungame( serverrequest )
+         uploadresulttoserver( serverrequest, result )
+      else:
+         # else, sleep...
+         print "Nothing to do.  Sleeping..."
+         time.sleep(config.sleepthislongwhennothingtodoseconds)
    
+go()
+
