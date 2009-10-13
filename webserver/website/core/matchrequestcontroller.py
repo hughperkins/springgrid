@@ -72,15 +72,24 @@ def getcompatibleitemfromqueue( botrunnerdescription ):
       " ais as ai1, " \
       " maps, " \
       " mods, " \
+      " botrunners, "\
+      " botrunner_supportedmaps, "\
+      " botrunner_supportedmods, "\
       " matchrequestqueue " \
       " where ai0.ai_id = ai0_id " \
       " and ai1.ai_id = ai1_id " \
+      " and mods.mod_id = botrunner_supportedmods.mod_id " \
+      " and maps.map_id = botrunner_supportedmaps.map_id "\
+      " and botrunners.botrunner_id = botrunner_supportedmods.botrunner_id "\
+      " and botrunners.botrunner_id = botrunner_supportedmaps.botrunner_id "\
+      " and botrunners.botrunner_name = %s "\
       " and maps.map_id = matchrequestqueue.map_id " \
       " and mods.mod_id = matchrequestqueue.mod_id " \
       " and not exists (select * from matchrequests_inprogress "\
       " where matchrequests_inprogress.matchrequest_id = matchrequestqueue.matchrequest_id ) " \
       " and not exists (select * from matchresults "\
-      " where matchresults.matchrequest_id = matchrequestqueue.matchrequest_id ) " )
+      " where matchresults.matchrequest_id = matchrequestqueue.matchrequest_id ) ",
+      ( botrunnerdescription ) )
 #      " left join matchrequests_inprogress on       " 
 #matchrequests_inprogress.matchrequest_id = matchrequestqueue.matchrequest_id " \
 #      " and not exists (select * from matchrequests_inprogress where " \
