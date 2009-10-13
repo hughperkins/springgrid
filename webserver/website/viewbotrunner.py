@@ -38,14 +38,15 @@ dbconnection.dictcursor.execute( "select "\
    "    username, "\
    "    userfullname, "\
    "    botrunner_sharedsecret "\
-   " from botrunners, " \
-   "    accounts "\
-   " where botrunners.botrunner_owneraccountid = accounts.account_id "\
-   " and botrunners.botrunner_name = %s ",
+   " from botrunners " \
+   "  left join accounts "\
+   " on botrunners.botrunner_owneraccountid = accounts.account_id "\
+   " where botrunners.botrunner_name = %s "\
+,
    (botrunnername ) )
 row = dbconnection.dictcursor.fetchone()
 
-isbotrunnerowner = ( loginhelper.isLoggedOn() and row['username'] == loginhelper.getUsername() )
+isbotrunnerowner = ( loginhelper.isLoggedOn() and row['username'] != None and row['username'] == loginhelper.getUsername() )
 
 options = dbconnection.querytolistwithparams( "select botrunner_option_name "\
       " from botrunner_options, botrunner_assignedoptions, botrunners "\
@@ -57,7 +58,10 @@ options = dbconnection.querytolistwithparams( "select botrunner_option_name "\
 print "<h3>AILadder - Bot Runner '" + botrunnername + "'</h3>" \
 "<table border='1' padding='3'>"
 
-print "<tr><td>Bot runner owner: </td><td>" + row['userfullname'] + "</td></tr>"
+if row['userfullname'] != None:
+   print "<tr><td>Bot runner owner: </td><td>" + row['userfullname'] + "</td></tr>"
+else:
+   print "<tr><td>Bot runner owner: </td></tr>"
 if isbotrunnerowner:
    print "<tr><td>Shared secret: </td><td>" + row['botrunner_sharedsecret'] + "</td></tr>"
 else:

@@ -37,9 +37,9 @@ rows = dbconnection.querytomaplist( "select "\
    "    username, "\
    "    userfullname, "\
    "    botrunner_sharedsecret as sharedsecret "\
-   " from botrunners, " \
-   "    accounts "\
-   " where botrunners.botrunner_owneraccountid = accounts.account_id " )
+   " from botrunners " \
+   " left join accounts on  "\
+   "    botrunners.botrunner_owneraccountid = accounts.account_id " )
 
 print "<h3>AILadder - Bot Runner List</h3>" \
 "<table border='1' padding='3'>" \
@@ -48,8 +48,11 @@ print "<h3>AILadder - Bot Runner List</h3>" \
 for row in rows:
    print "<tr>"
    print "<td><a href='viewbotrunner.py?botrunnername=" + row['botrunnername'] + "'>" + row['botrunnername'] + "</a></td>"
-   print "<td>" + row['userfullname'] + "</td>"
-   if row['username'] == loginhelper.gusername:
+   if row['userfullname'] != None:
+      print "<td>" + row['userfullname'] + "</td>"
+   else:
+      print "<td></td>"
+   if row['username'] != None and row['username'] == loginhelper.gusername:
       print "<td>" + row['sharedsecret'] + "</td>"
    else:
       print "<td></td>"

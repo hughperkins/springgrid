@@ -2,7 +2,6 @@ what is being worked on at the moment:
 - making it easy to run botrunner
 
 todo:
-- detect spring-headless
 - show botrunners that connected within last 5 minutes so in green in botrunners table (maybe with status?)
 - add 'last ping time' to botrunner table, or to another table, maybe also 'current status'
 - add subscription to each league for each ai
@@ -37,6 +36,7 @@ not sure if actually necessary (so: to test/investigate):
 - add gameendstring to per-mod config
 
 done:
+- detect spring-headlessstubs
 - get spring directory detected automatically using unitsync et al
 - botrunner's subscribe automatically now, no need to pre-register the botrunner
 - renamed calcengine to botrunner
