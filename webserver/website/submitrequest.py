@@ -43,10 +43,12 @@ from core import *
 
 # get request from form
 #matchrequest = matchrequestcontroller.MatchRequest()
-ai0name = formhelper.getValue("ai0name")
-ai0version = formhelper.getValue("ai0version")
-ai1name = formhelper.getValue("ai1name")
-ai1version = formhelper.getValue("ai1version")
+ai0nameversion = formhelper.getValue("ai0nameversion")
+ai0name = ai0nameversion.split("|")[0]
+ai0version = ai0nameversion.split("|")[1]
+ai1nameversion = formhelper.getValue("ai1nameversion")
+ai1name = ai1nameversion.split("|")[0]
+ai1version = ai1nameversion.split("|")[1]
 mapname = formhelper.getValue("mapname")
 # matchrequest.maphash = formhelper.getValue("maphash")
 modname = formhelper.getValue("modname")
@@ -67,9 +69,13 @@ if loginhelper.isLoggedOn():
    # can't retrieve it reliably
    # if someone beats us to it on that id, we'll get a unique
    # row violation, which is ok
-   dbconnection.cursor.execute("select max(matchrequest_id) "\
+   matchrequestid = 1
+   rows = dbconnection.dictcursor.execute("select max(matchrequest_id) as max "\
       " from matchrequestqueue " )
-   matchrequestid = dbconnection.cursor.fetchone()[0] + 1
+   if rows > 0:
+      row = dbconnection.dictcursor.fetchone()
+      if row['max'] != None:
+         matchrequestid = row['max'] + 1
    rows = dbconnection.cursor.execute("insert into matchrequestqueue (matchrequest_id, ai0_id, ai1_id, map_id, mod_id) " \
       " select %s, ai0.ai_id, ai1.ai_id, map_id, mod_id " \
       " from ais ai0, ais ai1, maps, mods " \

@@ -27,3 +27,13 @@ for i in xrange( unitsync.GetPrimaryModCount() ):
    print unitsync.GetPrimaryModArchive(0)
    print unitsync.GetArchiveChecksum( unitsync.GetPrimaryModArchive(0))
 
+#print unitsync.GetSkirmishAICount()
+for i in xrange( unitsync.GetSkirmishAICount() ):
+#   print unitsync.GetSkirmishAIInfoCount(i)
+   for j in xrange( unitsync.GetSkirmishAIInfoCount(i) ):
+      #print unitsync.GetInfoKey(j)
+      if unitsync.GetInfoKey(j) == "shortName":
+         print "short name: " + unitsync.GetInfoValue(j)
+      if unitsync.GetInfoKey(j) == "version":
+         print "version: " + unitsync.GetInfoValue(j)
+

@@ -55,7 +55,7 @@ def getcompatibleitemfromqueue( botrunnerdescription ):
    # now we've archived the old requests, we just pick a request
    # in the future, we'll pick a compatible request.  In the future ;-)
    # also, we need to handle options.  In the future ;-)
-   dbconnection.dictcursor.execute("select matchrequestqueue.matchrequest_id, ai0.ai_name as ai0name, ai0.ai_version as ai0version, ai1.ai_name as ai1name, ai1.ai_version as ai1version, map_name, map_archivechecksum, mod_name, mod_hash " \
+   dbconnection.dictcursor.execute("select matchrequestqueue.matchrequest_id, ai0.ai_name as ai0name, ai0.ai_version as ai0version, ai1.ai_name as ai1name, ai1.ai_version as ai1version, map_name, map_archivechecksum, mod_name, mod_archivechecksum " \
       "from ais as ai0," \
       " ais as ai1, " \
       " maps, " \
@@ -86,7 +86,7 @@ def getcompatibleitemfromqueue( botrunnerdescription ):
       matchrequest.mapname = row['map_name']
       matchrequest.maparchivechecksum = row['map_archivechecksum']
       matchrequest.modname = row['mod_name']
-      matchrequest.modhash = row['mod_hash']
+      matchrequest.modarchivechecksum = row['mod_archivechecksum']
       return matchrequest
    else:
       # no rows left. great!

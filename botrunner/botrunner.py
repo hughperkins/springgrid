@@ -87,8 +87,8 @@ def requestgamefromwebserver():
    serverrequest.ai1version = serverrequestdom.documentElement.getAttribute("ai1version")
    serverrequest.map = serverrequestdom.documentElement.getAttribute("map")
    serverrequest.mod = serverrequestdom.documentElement.getAttribute("mod")
-   serverrequest.maphash = serverrequestdom.documentElement.getAttribute("maphash")
-   serverrequest.modhash = serverrequestdom.documentElement.getAttribute("modhash")
+   serverrequest.maparchivechecksum = serverrequestdom.documentElement.getAttribute("maparchivechecksum")
+   serverrequest.modarchivechecksum = serverrequestdom.documentElement.getAttribute("modarchivechecksum")
    serverrequest.cheatingallowed = StringToBoolean( serverrequestdom.documentElement.getAttribute("cheatingallowed") )
    serverrequest.gametimeoutminutes = StringToInteger( serverrequestdom.documentElement.getAttribute("gametimeoutminutes") )
    serverrequest.gameendstring = serverrequestdom.documentElement.getAttribute("gameendstring")
@@ -345,7 +345,20 @@ def registermods():
       serverrequestarray = serverrequesthandle.readlines()
 
 def registerais():
-   pass
+   for i in xrange( unitsync.GetSkirmishAICount() ):
+      shortname = ''
+      version = ''
+      for j in xrange( unitsync.GetSkirmishAIInfoCount(i) ):
+         if unitsync.GetInfoKey(j) == "shortName":
+            shortname = unitsync.GetInfoValue(j)
+         if unitsync.GetInfoKey(j) == "version":
+            version = unitsync.GetInfoValue(j)
+         
+      if shortname != '' and version != '':
+         print "registering ai " + shortname + " version " + version + " ..."
+      requestparams = urllib.urlencode({'ainame': shortname, 'aiversion': version, 'botrunnername': config.botrunnername, 'sharedsecret': config.sharedsecret })
+      serverrequesthandle = urllib.urlopen( config.websiteurl + "/botrunner_registersupportedai", requestparams )
+      serverrequestarray = serverrequesthandle.readlines()
 
 def go():
    global config

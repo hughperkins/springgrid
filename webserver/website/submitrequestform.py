@@ -37,21 +37,25 @@ dbconnection.connectdb()
 
 menu.printPageTop()
 
-ainames = dbconnection.querytolist("select distinct ai_name from ais")
+ais = dbconnection.querytomaplist("select distinct ai_name, ai_version from ais")
 # just get all aiversions for now, otherwise we need ajax and stuff...
-aiversions = dbconnection.querytolist("select distinct ai_version from ais")
+#aiversions = dbconnection.querytolist("select distinct ai_version from ais")
 maps = dbconnection.querytolist("select distinct map_name from maps")
 mods = dbconnection.querytolist("select distinct mod_name from mods")
 
 options = dbconnection.querytolist("select option_name from aioptions")
 
+aiitems = []
+aivalues = []
+for ai in ais:
+   aivalues.append( ai['ai_name'] + " " + ai['ai_version'] )
+   aiitems.append( ai['ai_name'] + "|" + ai['ai_version'] )
+
 print "<h3>AILadder - submit game request</h3>" \
 "<form action='submitrequest.py' method='post'>" \
 "<table border='1' padding='3'>" \
-"<tr><td>AI0 name</td><td>" + htmlformshelper.listToDropdown("ai0name", ainames) + "</td></tr>" \
-"<tr><td>AI0 version</td><td>" + htmlformshelper.listToDropdown("ai0version", aiversions) + "</td></tr>" \
-"<tr><td>AI1 name</td><td>" + htmlformshelper.listToDropdown("ai1name", ainames) + "</td></tr>" \
-"<tr><td>AI1 version</td><td>" + htmlformshelper.listToDropdown("ai1version", aiversions) + "</td></tr>" \
+"<tr><td>AI0 name</td><td>" + htmlformshelper.itemsandvaluesToDropdown("ai0nameversion", aiitems, aivalues ) + "</td></tr>" \
+"<tr><td>AI1 name</td><td>" + htmlformshelper.itemsandvaluesToDropdown("ai1nameversion", aiitems, aivalues  ) + "</td></tr>" \
 "<tr><td>Map</td><td>" + htmlformshelper.listToDropdown("mapname", maps) + "</td></tr>" \
 "<tr><td>Mod</td><td>" + htmlformshelper.listToDropdown("modname", mods) + "</td></tr>"
 

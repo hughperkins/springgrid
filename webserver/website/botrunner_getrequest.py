@@ -70,7 +70,7 @@ def sendrequesttoengine( requestitem ):
    print "<request "
    print "matchrequestid='" + str( requestitem.matchrequest_id ) + "' "
    print "mod='" + requestitem.modname + "' "
-   print "modhash='" + requestitem.modhash + "' "
+   print "modarchivechecksum='" + requestitem.modarchivechecksum + "' "
    print "map='" + requestitem.mapname + "' "
    print "maparchivechecksum='" + requestitem.maparchivechecksum + "' "
    print "ai0='" + requestitem.ai0name + "' "
