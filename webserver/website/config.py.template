@@ -7,4 +7,5 @@ gametimeoutminutes = 30
 requestinprogresstimeoutminutes = 60
 gameendstring = "] Team%TEAMNUMBER%"
 cheatingstring="] SkirmishAI (with team ID = %TEAMNUMBER%): Cheating enabled"
+pingtimeoutminutes = 10
 

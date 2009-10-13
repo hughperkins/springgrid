@@ -43,6 +43,9 @@ def dateStringToDateTime( datestring ):
 def dateTimeToDateString( datedatetime ):
    return datedatetime.strftime("%Y%m%d%H%M%S")
 
+def timedifftototalseconds( timediff ):
+   return timediff.days * 24 * 3600 + timediff.seconds
+
 # self test function
 def test():
    somedate = datetime.datetime(2009,5,3,2,6,17)

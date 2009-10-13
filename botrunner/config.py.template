@@ -20,4 +20,5 @@ springexe="SPRINGEXE"
 websiterequestpage = websiteurl + "/botrunner_getrequest.py"
 websitepostpage = websiteurl + "/botrunner_submitresult.py"
 scripttemplatefilename = "scripttemplate.txt"
+pingintervalminutes = 5
 

@@ -109,6 +109,11 @@ def writeFile( filepath, contents ):
    filehandle.write( contents )
    filehandle.close()
 
+def doping( status ):
+   requestparams = urllib.urlencode({'botrunnername': config.botrunnername, 'sharedsecret': config.sharedsecret, 'status': status })
+   serverrequesthandle = urllib.urlopen( config.websiteurl + "/botrunner_ping.py", requestparams )
+   serverrequestarray = serverrequesthandle.readlines()
+
 def rungame( serverrequest ):
    global writabledatadirectory
    gameresult = GameResult()
@@ -148,8 +153,12 @@ def rungame( serverrequest ):
    popen = subprocess.Popen( [ "spring", writabledatadirectory + "/script.txt"])
    finished = False
    starttimeseconds = time.time()
+   doping("playing game " + serverrequest.ai0 + " vs " + serverrequest.ai1 + " on " + serverrequest.map + " " + serverrequest.mod )
+   lastpingtimeseconds = time.time()
    while not finished:
       print "waiting for game to terminate..."
+      if time.time() - lastpingtimeseconds > config.pingintervalminutes * 60:
+         doping ("playing game " + serverrequest.ai0 + " vs " + serverrequest.ai1 + " on " + serverrequest.map + " " + serverrequest.mod )
       if os.path.exists( writabledatadirectory + "/infolog.txt" ):
          infologcontents = readFile( writabledatadirectory + "/infolog.txt" )
          # print infologcontents
@@ -402,6 +411,7 @@ def go():
       else:
          # else, sleep...
          print "Nothing to do.  Sleeping..."
+         doping("sleeping")
          time.sleep(config.sleepthislongwhennothingtodoseconds)
    
 go()

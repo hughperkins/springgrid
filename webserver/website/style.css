@@ -76,5 +76,8 @@ tr {
 tr.inprogress {
    background-color: lightgreen;
 }
+tr.success {
+   background-color: lightgreen;
+}
 
 

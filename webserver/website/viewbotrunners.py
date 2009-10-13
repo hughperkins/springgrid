@@ -22,9 +22,12 @@
 #
 
 import cgitb; cgitb.enable()
+import datetime
 
 from utils import *
 from core import *
+
+import config
 
 dbconnection.connectdb()
 
@@ -36,18 +39,34 @@ rows = dbconnection.querytomaplist( "select "\
    "    botrunner_name as botrunnername, "\
    "    username, "\
    "    userfullname, "\
-   "    botrunner_sharedsecret as sharedsecret "\
+   "    botrunner_sharedsecret as sharedsecret, "\
+   "    botrunner_lastpingtime, "\
+   "    botrunner_lastpingstatus "\
    " from botrunners " \
    " left join accounts on  "\
    "    botrunners.botrunner_owneraccountid = accounts.account_id " )
 
 print "<h3>AILadder - Bot Runner List</h3>" \
 "<table border='1' padding='3'>" \
-"<tr class='tablehead'><td>Bot Runner Name</td><td>Bot Runner Owner Name:</td><td>Shared secret (only visible for your own botrunners)</td><td>Options</td></tr>"
+"<tr class='tablehead'><td>Bot Runner Name</td><td>Last ping time</td><td>Last ping status</td><td>Bot Runner Owner Name:</td><td>Shared secret (only visible for your own botrunners)</td><td>Options</td></tr>"
 
 for row in rows:
-   print "<tr>"
+   pingtimeok = False
+   lastpingtimeddate = None
+   lastpingtime = row['botrunner_lastpingtime']
+   if lastpingtime != None:
+      lastpingtimedate = dates.dateStringToDateTime( lastpingtime )
+      secondssincelastping = dates.timedifftototalseconds( datetime.datetime.now() - lastpingtimedate )
+      if secondssincelastping < config.pingtimeoutminutes * 60:
+         pingtimeok = True
+
+   if pingtimeok:
+      print "<tr class='success'>"
+   else:
+      print "<tr>"
    print "<td><a href='viewbotrunner.py?botrunnername=" + row['botrunnername'] + "'>" + row['botrunnername'] + "</a></td>"
+   print "<td>" + str( lastpingtimedate ) + "</td>"
+   print "<td>" + str( row['botrunner_lastpingstatus'] ) + "</td>"
    if row['userfullname'] != None:
       print "<td>" + row['userfullname'] + "</td>"
    else:
