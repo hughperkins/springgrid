@@ -433,6 +433,14 @@ def go():
 
    writabledatadirectory = unitsync.GetWritableDataDirectory()
 
+   try:
+      doping("Connection Test!")
+      print "Connection test to server " + config.websiteurl + " was successfull."
+   except:
+      print "Connection test to server " + config.websiteurl + " failed!"
+      print "Please make sure it is a valid AI Ladder URL, and you can connect to it."
+      return
+
    registermaps()
    registermods()
    registerais()
