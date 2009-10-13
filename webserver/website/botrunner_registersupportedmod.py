@@ -21,7 +21,7 @@
 # http://www.opensource.org/licenses/gpl-license.php
 #
 
-# lets a botrunner add a single map to the database
+# lets a botrunner add a single mod to the database
 
 # import cgitb; cgitb.enable()
 import cgi
@@ -36,12 +36,12 @@ def printfailresponse(reason ):
 def printsuccessresponse():
    print "<response success='true' />"
 
-def addmapifdoesntexist(mapname, maparchivechecksum):
-   rows = dbconnection.dictcursor.execute("select map_archivechecksum from maps where map_name = %s", (mapname) )
+def addmodifdoesntexist(modname, modarchivechecksum):
+   rows = dbconnection.dictcursor.execute("select mod_archivechecksum from mods where mod_name = %s", (modname) )
    if rows == 0:
       try:
-         rows = dbconnection.dictcursor.execute( "insert into maps ( map_name, map_archivechecksum ) "\
-            " values ( %s, %s )", ( mapname, maparchivechecksum) )
+         rows = dbconnection.dictcursor.execute( "insert into mods ( mod_name, mod_archivechecksum ) "\
+            " values ( %s, %s )", ( modname, modarchivechecksum) )
       except:
          printfailresponse("error adding to db: " + str( sys.exc_value ) )
          return False
@@ -51,8 +51,8 @@ def addmapifdoesntexist(mapname, maparchivechecksum):
          return False
 
    row = dbconnection.dictcursor.fetchone()
-   if row["map_archivechecksum"] != maparchivechecksum:
-      printfailresponse("map archive checksum doesn't match the one already on the website.")
+   if row["mod_archivechecksum"] != modarchivechecksum:
+      printfailresponse("mod archive checksum doesn't match the one already on the website.")
       return False
 
    return True
@@ -62,16 +62,16 @@ def go():
       printfailresponse("Not authenticated")
       return 
 
-   mapname = formhelper.getValue("mapname")
-   maparchivechecksum = formhelper.getValue("maparchivechecksum")
-   if mapname == None  or mapname == '' or maparchivechecksum == None or maparchivechecksum == '':
+   modname = formhelper.getValue("modname")
+   modarchivechecksum = formhelper.getValue("modarchivechecksum")
+   if modname == None  or modname == '' or modarchivechecksum == None or modarchivechecksum == '':
       printfailresponse("not all fields supplied")
       return
 
-   if not addmapifdoesntexist(mapname, maparchivechecksum):
+   if not addmodifdoesntexist(modname, modarchivechecksum):
       return
 
-   # Now, register the map as supported map
+   # Now, register the mod as supported mod
 
    printsuccessresponse()
 

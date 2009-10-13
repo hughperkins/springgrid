@@ -20,3 +20,10 @@ for i in xrange( unitsync.GetMapCount() ):
    #print unitsync.GetMapArchiveName(1)
    print unitsync.GetArchiveChecksum( unitsync.GetMapArchiveName(0))
 
+print unitsync.GetPrimaryModCount()
+for i in xrange( unitsync.GetPrimaryModCount() ):
+   print unitsync.GetPrimaryModName(i)
+   print unitsync.GetPrimaryModArchiveCount(i)
+   print unitsync.GetPrimaryModArchive(0)
+   print unitsync.GetArchiveChecksum( unitsync.GetPrimaryModArchive(0))
+

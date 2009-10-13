@@ -334,7 +334,15 @@ def registermaps():
       serverrequestarray = serverrequesthandle.readlines()
 
 def registermods():
-   pass
+   for i in xrange( unitsync.GetPrimaryModCount() ):
+      modname = unitsync.GetPrimaryModName(i)
+      print "registering mod " + modname + " ..."
+      unitsync.GetPrimaryModArchiveCount(i)
+      modarchive = unitsync.GetPrimaryModArchive(0)
+      modarchivechecksum = unitsync.GetArchiveChecksum( modarchive )
+      requestparams = urllib.urlencode({'modname': modname, 'modarchivechecksum': modarchivechecksum, 'botrunnername': config.botrunnername, 'sharedsecret': config.sharedsecret })
+      serverrequesthandle = urllib.urlopen( config.websiteurl + "/botrunner_registersupportedmod", requestparams )
+      serverrequestarray = serverrequesthandle.readlines()
 
 def registerais():
    pass

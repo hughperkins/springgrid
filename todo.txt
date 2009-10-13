@@ -36,6 +36,8 @@ not sure if actually necessary (so: to test/investigate):
 - add gameendstring to per-mod config
 
 done:
+- botrunner tells websites about what mods it has now
+- botrunner tells websites about what maps it has now
 - detect spring-headlessstubs
 - get spring directory detected automatically using unitsync et al
 - botrunner's subscribe automatically now, no need to pre-register the botrunner
