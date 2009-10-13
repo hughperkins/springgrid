@@ -5,8 +5,6 @@
 	IsHost=1;
 	MyPlayerName=UnnamedPlayer;
 
-	ModHash=%MODHASH%;
-	MapHash=%MAPHASH%;
 	Mapname=%MAP%;
 	GameType=%MOD%;
 

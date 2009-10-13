@@ -32,34 +32,34 @@ loginhelper.processCookie()
 
 menu.printPageTop()
 
-calcenginename = formhelper.getValue("calcenginename")
+botrunnername = formhelper.getValue("botrunnername")
 
 dbconnection.dictcursor.execute( "select "\
    "    username, "\
    "    userfullname, "\
-   "    calcengine_sharedsecret "\
-   " from calcengines, " \
+   "    botrunner_sharedsecret "\
+   " from botrunners, " \
    "    accounts "\
-   " where calcengines.calcengine_owneraccountid = accounts.account_id "\
-   " and calcengines.calcengine_name = %s ",
-   (calcenginename ) )
+   " where botrunners.botrunner_owneraccountid = accounts.account_id "\
+   " and botrunners.botrunner_name = %s ",
+   (botrunnername ) )
 row = dbconnection.dictcursor.fetchone()
 
-iscalcengineowner = ( loginhelper.isLoggedOn() and row['username'] == loginhelper.getUsername() )
+isbotrunnerowner = ( loginhelper.isLoggedOn() and row['username'] == loginhelper.getUsername() )
 
-options = dbconnection.querytolistwithparams( "select calcengine_option_name "\
-      " from calcengine_options, calcengine_assignedoptions, calcengines "\
-      " where calcengines.calcengine_name = %s "\
-      " and calcengine_assignedoptions.calcengine_id = calcengines.calcengine_id "\
-      " and calcengine_options.calcengine_option_id = calcengine_assignedoptions.calcengine_option_id ",
-      ( calcenginename, ) )
+options = dbconnection.querytolistwithparams( "select botrunner_option_name "\
+      " from botrunner_options, botrunner_assignedoptions, botrunners "\
+      " where botrunners.botrunner_name = %s "\
+      " and botrunner_assignedoptions.botrunner_id = botrunners.botrunner_id "\
+      " and botrunner_options.botrunner_option_id = botrunner_assignedoptions.botrunner_option_id ",
+      ( botrunnername, ) )
 
-print "<h3>AILadder - Calc Engine '" + calcenginename + "'</h3>" \
+print "<h3>AILadder - Bot Runner '" + botrunnername + "'</h3>" \
 "<table border='1' padding='3'>"
 
-print "<tr><td>Calc engine owner: </td><td>" + row['userfullname'] + "</td></tr>"
-if iscalcengineowner:
-   print "<tr><td>Shared secret: </td><td>" + row['calcengine_sharedsecret'] + "</td></tr>"
+print "<tr><td>Bot runner owner: </td><td>" + row['userfullname'] + "</td></tr>"
+if isbotrunnerowner:
+   print "<tr><td>Shared secret: </td><td>" + row['botrunner_sharedsecret'] + "</td></tr>"
 else:
    print "<tr><td>Shared secret: </td><td>&lt;only visible to owner&gt;</td></tr>"
 
@@ -70,15 +70,15 @@ print "<h3>Assigned options</h3>"
 print "<table>"
 
 
-if iscalcengineowner:
+if isbotrunnerowner:
    print "<tr class='tablehead'><td>Option name</td><td></td></tr>"
 else:
    print "<tr class='tablehead'><td>Option name</td></tr>"
 
 for option in options:
    print "<tr><td>" + option + "</td>"
-   if iscalcengineowner:
-      print "<td><a href='deleteoptionfromcalcengine.py?calcenginename=" + calcenginename + "&optionname=" + option + "'>Delete option</a></td>"
+   if isbotrunnerowner:
+      print "<td><a href='deleteoptionfrombotrunner.py?botrunnername=" + botrunnername + "&optionname=" + option + "'>Delete option</a></td>"
    print "</tr>"
 
 print "</table>"
@@ -89,22 +89,22 @@ if row['username'] == loginhelper.getUsername():
    print "<hr />"
    print "<p />"
 
-   potentialoptions = dbconnection.querytolistwithparams( "select calcengine_option_name "\
-         " from calcengine_options where not exists( "\
-         " select * from calcengine_assignedoptions, calcengines "\
-         " where calcengines.calcengine_name = %s "\
-         " and calcengine_assignedoptions.calcengine_id = calcengines.calcengine_id "\
-         " and calcengine_options.calcengine_option_id = calcengine_assignedoptions.calcengine_option_id "
+   potentialoptions = dbconnection.querytolistwithparams( "select botrunner_option_name "\
+         " from botrunner_options where not exists( "\
+         " select * from botrunner_assignedoptions, botrunners "\
+         " where botrunners.botrunner_name = %s "\
+         " and botrunner_assignedoptions.botrunner_id = botrunners.botrunner_id "\
+         " and botrunner_options.botrunner_option_id = botrunner_assignedoptions.botrunner_option_id "
          " ) ",
-         ( calcenginename, ) )
+         ( botrunnername, ) )
 
    print "<h4>Add new options to engine:</h4>"
-   print "<form action='addoptiontocalcengine.py' method='post'>" \
+   print "<form action='addoptiontobotrunner.py' method='post'>" \
    "<table border='1' padding='3'>" \
    "<tr><td>Option to add:</td><td>" + htmlformshelper.listToDropdown( 'optionname', potentialoptions ) + "</td></tr>" \
    "<tr><td></td><td><input type='submit' value='Add' /></td></tr>" \
    "</table>" \
-   "<input type='hidden' name='calcenginename' value='" + calcenginename + "' />"\
+   "<input type='hidden' name='botrunnername' value='" + botrunnername + "' />"\
    "</form>"
 
 dbconnection.disconnectdb()

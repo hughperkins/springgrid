@@ -21,6 +21,10 @@
 # http://www.opensource.org/licenses/gpl-license.php
 #
 
+# lets a user add a single ai to the database
+#
+# This is mostly for bootstrapping, to make the website immediately useful
+
 import cgitb; cgitb.enable()
 import cgi
 
@@ -33,25 +37,37 @@ loginhelper.processCookie()
 
 menu.printPageTop()
 
-if loginhelper.gusername == '':
-   print "You must login first"
-else:
-   calcenginename = formhelper.getValue('calcenginename')
-   sharedsecret = formhelper.getValue('sharedsecret')
+def go():
+   botrunnername = formhelper.getValue('botrunnername')
+   optionname = formhelper.getValue('optionname')
 
-   if calcenginename != None and sharedsecret != None and calcenginename != '' and sharedsecret != '':
+   if not loginhelper.isLoggedOn():
+      print "Please logon first."
+      return
 
-      rows = dbconnection.cursor.execute( "insert into calcengines "\
-         "( calcengine_name,calcengine_owneraccountid, calcengine_sharedsecret ) "\
-         " select %s, account_id, %s from "\
-         " accounts where username = %s ",
-         ( calcenginename,sharedsecret, loginhelper.gusername, ) )
-      if rows == 1:
-         print "Added ok"
-      else:
-         print "Something went wrong.  Please check your values and try again."
-   else:
+   if botrunnername == None or optionname == None or botrunnername == '' or optionname == '':
       print "Please fill in the fields and try again"
+      return
+
+   botrunnerownername = botrunnerhelper.getOwnerUsername( botrunnername ) 
+   if botrunnerownername != loginhelper.getUsername():
+      print "You must be the botrunner owner"
+      return
+
+   rows = dbconnection.cursor.execute( "insert into botrunner_assignedoptions "\
+         "( botrunner_id, botrunner_option_id  ) "\
+         " select botrunner_id, botrunner_option_id "\
+         " from botrunners, botrunner_options "\
+         " where botrunners.botrunner_name = %s "\
+         " and botrunner_option_name = %s ",
+       ( botrunnername, optionname ) )
+   if rows != 1:
+      print "Something went wrong.  Please check your values and try again."
+      return
+
+   print "Added ok"
+
+go()
 
 dbconnection.disconnectdb()
 

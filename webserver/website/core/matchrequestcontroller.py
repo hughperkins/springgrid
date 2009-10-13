@@ -50,7 +50,7 @@ def archiveoldrequests():
 # can handle
 # for now, it just returns the first item in the queue
 # we need to only take things that arent in the inprogress queue of course...
-def getcompatibleitemfromqueue( calcenginedescription ):
+def getcompatibleitemfromqueue( botrunnerdescription ):
    archiveoldrequests()
    # now we've archived the old requests, we just pick a request
    # in the future, we'll pick a compatible request.  In the future ;-)
@@ -92,26 +92,26 @@ def getcompatibleitemfromqueue( calcenginedescription ):
       # no rows left. great!
       return None
 
-def markrequestasinprogress( requestitem, calcenginedescription ):
+def markrequestasinprogress( requestitem, botrunnerdescription ):
    dbconnection.cursor.execute("delete from matchrequests_inprogress "\
       "where matchrequest_id = %s", ( requestitem.matchrequest_id, ) )
    dbconnection.cursor.execute("insert into matchrequests_inprogress "\
-      "( matchrequest_id, calcengine_id, datetimeassigned ) "\
-      " select %s, calcengines.calcengine_id, %s "\
-      " from calcengines "\
-      " where calcengines.calcengine_name = %s",
-      ( requestitem.matchrequest_id, dates.dateTimeToDateString( datetime.datetime.now() ), calcenginedescription ) )
+      "( matchrequest_id, botrunner_id, datetimeassigned ) "\
+      " select %s, botrunners.botrunner_id, %s "\
+      " from botrunners "\
+      " where botrunners.botrunner_name = %s",
+      ( requestitem.matchrequest_id, dates.dateTimeToDateString( datetime.datetime.now() ), botrunnerdescription ) )
 
 # validate that an incoming result is for a match assigned to this server
 # return true if so, otherwise false
-def matchrequestvalidforthisserver( calcenginename, matchrequest_id ):
-   print calcenginename + " " + str(matchrequest_id)
+def matchrequestvalidforthisserver( botrunnername, matchrequest_id ):
+   print botrunnername + " " + str(matchrequest_id)
    rows = dbconnection.cursor.execute("select * from matchrequests_inprogress, "\
-      " calcengines "\
+      " botrunners "\
       " where matchrequest_id = %s " \
-      " and calcengines.calcengine_id = matchrequests_inprogress.calcengine_id "\
-      " and calcengine_name = %s ",
-      ( matchrequest_id, calcenginename, ) )
+      " and botrunners.botrunner_id = matchrequests_inprogress.botrunner_id "\
+      " and botrunner_name = %s ",
+      ( matchrequest_id, botrunnername, ) )
    return ( rows == 1 )
 
 def submitrequest( requestitem ):
@@ -129,7 +129,7 @@ def submitrequest( requestitem ):
           requestitem.mapname, requestitem.modname, ) )
    return ( rows == 1 )
 
-def storeresult( calcenginename, matchrequest_id, result ):
+def storeresult( botrunnername, matchrequest_id, result ):
    # delete any existing result, saves doing check first...
    dbconnection.cursor.execute("delete from matchresults where "\
       " matchrequest_id = %s ", ( matchrequest_id, ) )

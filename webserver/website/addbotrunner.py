@@ -21,10 +21,6 @@
 # http://www.opensource.org/licenses/gpl-license.php
 #
 
-# lets a user add a single ai to the database
-#
-# This is mostly for bootstrapping, to make the website immediately useful
-
 import cgitb; cgitb.enable()
 import cgi
 
@@ -37,37 +33,25 @@ loginhelper.processCookie()
 
 menu.printPageTop()
 
-def go():
-   calcenginename = formhelper.getValue('calcenginename')
-   optionname = formhelper.getValue('optionname')
+if loginhelper.gusername == '':
+   print "You must login first"
+else:
+   botrunnername = formhelper.getValue('botrunnername')
+   sharedsecret = formhelper.getValue('sharedsecret')
 
-   if not loginhelper.isLoggedOn():
-      print "Please logon first."
-      return
+   if botrunnername != None and sharedsecret != None and botrunnername != '' and sharedsecret != '':
 
-   if calcenginename == None or optionname == None or calcenginename == '' or optionname == '':
+      rows = dbconnection.cursor.execute( "insert into botrunners "\
+         "( botrunner_name,botrunner_owneraccountid, botrunner_sharedsecret ) "\
+         " select %s, account_id, %s from "\
+         " accounts where username = %s ",
+         ( botrunnername,sharedsecret, loginhelper.gusername, ) )
+      if rows == 1:
+         print "Added ok"
+      else:
+         print "Something went wrong.  Please check your values and try again."
+   else:
       print "Please fill in the fields and try again"
-      return
-
-   calcengineownername = calcenginehelper.getOwnerUsername( calcenginename ) 
-   if calcengineownername != loginhelper.getUsername():
-      print "You must be the calcengine owner"
-      return
-
-   rows = dbconnection.cursor.execute( "insert into calcengine_assignedoptions "\
-         "( calcengine_id, calcengine_option_id  ) "\
-         " select calcengine_id, calcengine_option_id "\
-         " from calcengines, calcengine_options "\
-         " where calcengines.calcengine_name = %s "\
-         " and calcengine_option_name = %s ",
-       ( calcenginename, optionname ) )
-   if rows != 1:
-      print "Something went wrong.  Please check your values and try again."
-      return
-
-   print "Added ok"
-
-go()
 
 dbconnection.disconnectdb()
 

@@ -40,7 +40,7 @@ requests = dbconnection.querytomaplist( "select matchrequestqueue.matchrequest_i
       "map_name as mapname, "\
       "mod_name as modname, " \
       "matchrequests_inprogress.datetimeassigned, "\
-      "calcengine_name as calcenginename "\
+      "botrunner_name as botrunnername "\
       "from ais as ai0, "\
       "   ais as ai1, "\
       "   maps, "\
@@ -48,8 +48,8 @@ requests = dbconnection.querytomaplist( "select matchrequestqueue.matchrequest_i
       "   matchrequestqueue "\
       " left join matchrequests_inprogress "\
       "   on matchrequests_inprogress.matchrequest_id = matchrequestqueue.matchrequest_id " \
-      " left join calcengines "\
-      "   on calcengines.calcengine_id = matchrequests_inprogress.calcengine_id"\
+      " left join botrunners "\
+      "   on botrunners.botrunner_id = matchrequests_inprogress.botrunner_id"\
       " where ai0.ai_id = matchrequestqueue.ai0_id "\
       "   and ai1.ai_id = matchrequestqueue.ai1_id "\
       "   and maps.map_id = matchrequestqueue.map_id "\
@@ -68,7 +68,7 @@ print "<td>ai1version</td>"
 print "<td>mapname</td>"
 print "<td>modname</td>"
 print "<td>options</td>"
-print "<td>calcenginename</td>"
+print "<td>botrunnername</td>"
 print "<td>datetimeassigned</td>"
 print "</tr>"
 
@@ -89,7 +89,7 @@ for request in requests:
       ( request['matchrequestid'], ) )
    print ' '.join( options )
    print "</td>"
-   print "<td>" + str(request['calcenginename']) + "</td>"
+   print "<td>" + str(request['botrunnername']) + "</td>"
    print "<td>" + str(request['datetimeassigned']) + "</td>"
    print "</tr>"
 

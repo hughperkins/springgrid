@@ -33,33 +33,33 @@ loginhelper.processCookie()
 menu.printPageTop()
 
 rows = dbconnection.querytomaplist( "select "\
-   "    calcengine_name as calcenginename, "\
+   "    botrunner_name as botrunnername, "\
    "    username, "\
    "    userfullname, "\
-   "    calcengine_sharedsecret as sharedsecret "\
-   " from calcengines, " \
+   "    botrunner_sharedsecret as sharedsecret "\
+   " from botrunners, " \
    "    accounts "\
-   " where calcengines.calcengine_owneraccountid = accounts.account_id " )
+   " where botrunners.botrunner_owneraccountid = accounts.account_id " )
 
-print "<h3>AILadder - Calc Engine List</h3>" \
+print "<h3>AILadder - Bot Runner List</h3>" \
 "<table border='1' padding='3'>" \
-"<tr class='tablehead'><td>Calc Engine Name</td><td>Calc Engine Owner Name:</td><td>Shared secret (only visible for your own calcengines)</td><td>Options</td></tr>"
+"<tr class='tablehead'><td>Bot Runner Name</td><td>Bot Runner Owner Name:</td><td>Shared secret (only visible for your own botrunners)</td><td>Options</td></tr>"
 
 for row in rows:
    print "<tr>"
-   print "<td><a href='viewcalcengine.py?calcenginename=" + row['calcenginename'] + "'>" + row['calcenginename'] + "</a></td>"
+   print "<td><a href='viewbotrunner.py?botrunnername=" + row['botrunnername'] + "'>" + row['botrunnername'] + "</a></td>"
    print "<td>" + row['userfullname'] + "</td>"
    if row['username'] == loginhelper.gusername:
       print "<td>" + row['sharedsecret'] + "</td>"
    else:
       print "<td></td>"
 
-   options = dbconnection.querytolistwithparams( "select calcengine_option_name "\
-      " from calcengine_options, calcengine_assignedoptions, calcengines "\
-      " where calcengines.calcengine_name = %s "\
-      " and calcengine_assignedoptions.calcengine_id = calcengines.calcengine_id "\
-      " and calcengine_options.calcengine_option_id = calcengine_assignedoptions.calcengine_option_id ",
-      ( row['calcenginename'], ) )
+   options = dbconnection.querytolistwithparams( "select botrunner_option_name "\
+      " from botrunner_options, botrunner_assignedoptions, botrunners "\
+      " where botrunners.botrunner_name = %s "\
+      " and botrunner_assignedoptions.botrunner_id = botrunners.botrunner_id "\
+      " and botrunner_options.botrunner_option_id = botrunner_assignedoptions.botrunner_option_id ",
+      ( row['botrunnername'], ) )
    print "<td>" + ' '.join( options ) + "</td>"
 
    print "</tr>"
@@ -72,12 +72,12 @@ if loginhelper.gusername != '':
    print "<hr />"
    print "<p />"
 
-   print "<h4>Register new calc engine:</h4>"
-   print "You will automatically be marked as 'owner' of this calcengine<p />"
-   print "<form action='addcalcengine.py' method='post'>" \
+   print "<h4>Register new bot runner:</h4>"
+   print "You will automatically be marked as 'owner' of this botrunner<p />"
+   print "<form action='addbotrunner.py' method='post'>" \
    "<table border='1' padding='3'>" \
-   "<tr><td>Calc engine name</td><td><input name='calcenginename'</td></tr>" \
-   "<tr><td>Calc engine shared secret</td><td><input name='sharedsecret'</td></tr>" \
+   "<tr><td>Bot runner name</td><td><input name='botrunnername'</td></tr>" \
+   "<tr><td>Bot runner shared secret</td><td><input name='sharedsecret'</td></tr>" \
    "<tr><td></td><td><input type='submit' value='Add' /></td></tr>" \
    "</table>" \
    "</form>"

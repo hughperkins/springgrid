@@ -1,13 +1,13 @@
 what is being worked on at the moment:
-- making calcengine download things (mods, maps, ais...) automatically.  dev: hugh
+- making botrunner download things (mods, maps, ais...) automatically.  dev: hugh
 
 todo:
 - add subscription to each league for each ai
 - add scheduler, to queue up matchrequests for each league
 - add results calculator
-- enforce no-cheating option in calcengine
+- enforce no-cheating option in botrunner
 - some way of passing options through to ai (via script.txt?)
-- implement game timeout in calcengine
+- implement game timeout in botrunner
 - upload logfile after game, per-ai, or at least the infolog.txt
 - be able to configure arm vs core vs ... vs random
 - add start positions to map
@@ -36,7 +36,7 @@ not sure if actually necessary (so: to test/investigate):
 done:
 - moved sh scripts to py script
 - moved css to separate file
-- added options to calcengines in db and website
+- added options to botrunners in db and website
 - improved logon/logoff visual behavior
 - moved header stuff from each page into menu
 - improved cookie security

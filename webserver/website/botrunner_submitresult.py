@@ -21,9 +21,9 @@
 # http://www.opensource.org/licenses/gpl-license.php
 #
 
-# This page is called by the calcengines, and returns xml
+# This page is called by the botrunners, and returns xml
 
-# used to upload the result of a game to the webserver from the calcengine
+# used to upload the result of a game to the webserver from the botrunner
 
 import cgitb; cgitb.enable()
 import sys
@@ -49,23 +49,23 @@ dbconnection.connectdb()
 
 def run():
    if testing:
-      calcenginehelper.calcenginename = 'test'
+      botrunnerhelper.botrunnername = 'test'
 
-   if testing or calcenginehelper.calcengineauthorized():
+   if testing or botrunnerhelper.botrunnerauthorized():
       matchrequest_id = int(formhelper.getValue('matchrequestid'))
       result = formhelper.getValue('result') # 'ai0won', 'draw', 'crashed', 'hung', ...
 
       # check if this matchrequest_id was actually assigned to this engine
       # otherwise ditch the result
-      if not matchrequestcontroller.matchrequestvalidforthisserver( calcenginehelper.calcenginename, matchrequest_id ):
+      if not matchrequestcontroller.matchrequestvalidforthisserver( botrunnerhelper.botrunnername, matchrequest_id ):
          print "<response response='invalid matchrequest_id' />"
          return
 
       # store the result, and remove from queue
       # if the replay upload fails, well, that's a shame, but it's not the end 
       # of the world...
-      # or we could get the calcengine to retry several times, to be decided.
-      matchrequestcontroller.storeresult( calcenginehelper.calcenginename, matchrequest_id, result )
+      # or we could get the botrunner to retry several times, to be decided.
+      matchrequestcontroller.storeresult( botrunnerhelper.botrunnername, matchrequest_id, result )
 
       # now to handle uploading the replay...
       formhelper.writeIncomingFileToDisk('replay', replaycontroller.getReplayPath(matchrequest_id)) # really, we should validate that this match was assigned to this server first...

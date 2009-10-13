@@ -6,4 +6,8 @@ webserver/website/config.py
 *.pyc
 updatesite.cgi
 reloaddb.cgi
+config.py
+*.log
+*log.txt
+spring
 

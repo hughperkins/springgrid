@@ -81,7 +81,7 @@ def getPageTop( headers = 'Content-type: text/html\n\n' ):
    page = page + addmenu( 'Configuration', ( additem( 'Setup notes', 'setupnotes.py' ),
       additem( 'View league groups', 'viewleaguegroups.py' ),
       additem( 'View leagues', 'viewleagues.py' ),
-      additem( 'View available calc engines', 'viewcalcengines.py' ),
+      additem( 'View available bot runners', 'viewbotrunners.py' ),
       additem( 'View available maps', 'viewmaps.py' ),
       additem( 'View available mods', 'viewmods.py' ),
       additem( 'View available ais', 'viewais.py' ),

@@ -33,10 +33,17 @@ import io
 from xml.dom import minidom
 import tarfile
 
-import config
 import urllib2_file
 
+from unitsync import unitsync
+
 scriptdir = os.path.dirname( os.path.realpath( __file__ ) )
+
+if os.name == 'posix': location = '/usr/lib/spring/unitsync.so'
+elif os.name == 'nt': location = 'unitsync.dll'
+unitsync = unitsync.Unitsync(location)
+
+unitsync.Init(True,1)
 
 class ServerRequest():
    def __init__( self ):
@@ -57,7 +64,7 @@ def StringToInteger( integerstring ):
    return int( integerstring )
 
 def requestgamefromwebserver():
-   requestparams = urllib.urlencode({'calcenginename': config.calcenginename, 'sharedsecret': config.sharedsecret })
+   requestparams = urllib.urlencode({'botrunnername': config.botrunnername, 'sharedsecret': config.sharedsecret })
    serverrequesthandle = urllib.urlopen( config.websiterequestpage, requestparams )
    serverrequestarray = serverrequesthandle.readlines()
    # print serverrequestarray
@@ -199,7 +206,7 @@ def uploadresulttoserver( serverrequest, gameresult ):
 
 #      requestparams = urllib.urlencode({
       requestparams = {
-          'calcenginename': config.calcenginename,
+          'botrunnername': config.botrunnername,
           'sharedsecret': config.sharedsecret,
           'matchrequestid': serverrequest.matchrequestid,
           'result': gameresult.resultstring,
@@ -224,6 +231,55 @@ def snapshotdemosdirectory():
    for filename in os.listdir( config.springgamedir + "/demos" ):
       listing.append(filename)
    return listing
+
+def getValueFromUser(questiontouser):
+   while True:
+      print questiontouser
+      inputline = sys.stdin.readline()
+      uservalue = inputline.strip()
+      if uservalue != '':
+         return uservalue
+      #print "You have input: " + uservalue
+      #print "Is this right? (y to confirm)"
+      #confirmation = sys.stdin.readline().strip().lower()
+      #if confirmation == 'y':
+      #   return uservalue
+
+# check for config, question user if doesn't exist
+try:
+   import config
+   print "Configuration found, using"
+except:
+   print ""
+   print "Welcome to botrunner."
+   print ""
+   print "Let's get you set up..."
+   gotdata = False
+   while not gotdata:
+      weburl = getValueFromUser("Which  webserver to you want to subscribe to?  Example: http://manageddreams.com/ailadder")
+      botrunnername = getValueFromUser("What name do you want to give to your botrunner?  This name will be shown on the website.")
+      botrunnersharedsecret = getValueFromUser("What sharedsecret do you want to use with this botrunner?  This will be used to authenticate your botrunner to the website.")
+      print ""
+      print "You have input:"
+      print "   target web server: " + weburl
+      print "   botrunner name: " + botrunnername
+      print "   botrunner shared secret: " + botrunnersharedsecret
+      print ""
+      print "Is this correct? (y to confirm)"
+      confirmation = sys.stdin.readline().strip().lower()
+      if confirmation == 'y':
+         gotdata = True
+
+   # that's all we need, let's create the config file...
+   templatecontents = readFile(scriptdir + "/config.py.template")
+   newconfig = templatecontents
+   newconfig = newconfig.replace( "WEBSITEURL", weburl )
+   newconfig = newconfig.replace( "SHAREDSECRET", botrunnername )
+   newconfig = newconfig.replace( "BOTRUNNERNAME", botrunnersharedsecret )
+   writeFile( scriptdir + "/config.py", newconfig )
+
+   # and import it...
+   import config
 
 while True:
    print "Checking for new request..."

@@ -19,14 +19,10 @@
 # http://www.opensource.org/licenses/gpl-license.php
 #
 
-# matchreqeusts that have been given to a botrunner to process
-# note: date/time is a string in format yyyymmddhhmmss
-# that way, we don't need db specific functions to handle them
-create table matchrequests_inprogress (
-   matchrequest_id integer not null,
+# options assigned to a botrunner
+create table botrunner_assignedoptions (
    botrunner_id integer not null,
-   datetimeassigned varchar(255) not null,
-
-   primary key (matchrequest_id)
+   botrunner_option_id integer not null,
+   primary key ( botrunner_id, botrunner_option_id )
 );
 

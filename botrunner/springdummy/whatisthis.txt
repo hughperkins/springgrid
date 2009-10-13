@@ -1,5 +1,5 @@
 springdummy can be built into a 'spring' executable, for use in testing
-the calcengine
+the botrunner
 springdummy will randomly do one of the following:
 
 - crash

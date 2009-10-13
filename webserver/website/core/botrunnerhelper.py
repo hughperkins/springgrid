@@ -24,33 +24,33 @@ import cgi
 from utils import *
 #from core import *
 
-calcenginename = ""
+botrunnername = ""
 
-def calcengineauthorized():
-   global calcenginename 
+def botrunnerauthorized():
+   global botrunnername 
 
-   calcenginename = formhelper.getValue("calcenginename")
+   botrunnername = formhelper.getValue("botrunnername")
    sharedsecret = formhelper.getValue("sharedsecret")
-   return validatesharedsecret( calcenginename, sharedsecret )
+   return validatesharedsecret( botrunnername, sharedsecret )
 
-def validatesharedsecret(lcalcenginename, sharedsecret):
-   global calcenginename
-   dbconnection.cursor.execute("select calcengine_sharedsecret from calcengines where calcengine_name=%s", (lcalcenginename,) )
+def validatesharedsecret(lbotrunnername, sharedsecret):
+   global botrunnername
+   dbconnection.cursor.execute("select botrunner_sharedsecret from botrunners where botrunner_name=%s", (lbotrunnername,) )
    row = dbconnection.cursor.fetchone()
    if row == None:
       return False
    actualsharedsecret = row[0]
    if actualsharedsecret == sharedsecret:
-      calcenginename = lcalcenginename
+      botrunnername = lbotrunnername
       return True
    return False
 
-def getOwnerUsername(calcenginename):
+def getOwnerUsername(botrunnername):
    rows = dbconnection.cursor.execute("select username from "\
-      " calcengines, accounts " \
-      " where calcengines.calcengine_owneraccountid = account_id "\
-      " and calcengines.calcengine_name = %s ",
-      ( calcenginename ) )
+      " botrunners, accounts " \
+      " where botrunners.botrunner_owneraccountid = account_id "\
+      " and botrunners.botrunner_name = %s ",
+      ( botrunnername ) )
    if rows == 0:
       return ''
    row = dbconnection.cursor.fetchone()

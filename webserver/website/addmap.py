@@ -41,14 +41,13 @@ if not roles.isInRole(roles.mapadmin):
    print "You must be logged in as a mapadmin"
 else:
    mapname = formhelper.getValue("mapname")
-   maphash = formhelper.getValue("maphash")
    mapurl = formhelper.getValue("mapurl")
 
-   if maphash != None and mapname != None and mapname != "" and maphash != "":
+   if mapname != None and mapname != "":
       if mapurl == None:
          mapurl = ''
-      rows = dbconnection.cursor.execute( "insert into maps ( map_name, map_hash, map_url ) "\
-         " values ( %s, %s, %s )", ( mapname, maphash, mapurl ) )
+      rows = dbconnection.cursor.execute( "insert into maps ( map_name,  map_url ) "\
+         " values ( %s, %s )", ( mapname, mapurl ) )
       if rows == 1:
          print "Added ok"
       else:

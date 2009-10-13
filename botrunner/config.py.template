@@ -1,0 +1,20 @@
+# note that the sharedsecret is stored in clear (think wep shared secrets)
+# so don't go using your favorite most secure password here...
+botrunnername="BOTRUNNERNAME"
+sharedsecret="SHAREDSECRET"
+
+# example websiteurls:
+# websiteurl =  "http://localhost/ailadder"
+# websiteurl =  "http://manageddreams.com/ailadder"
+# websiteurl =  "http://manageddreams.com/ailadderstaging"
+websiteurl = "WEBSITEURL"
+
+sleepthislongwhennothingtodoseconds = 60
+
+#######################################################################3
+# stuff under this line probably doesn't need modifying, in general
+
+websiterequestpage = websiteurl + "/botrunner_getrequest.py"
+websitepostpage = websiteurl + "/botrunner_submitresult.py"
+scripttemplatefilename = "scripttemplate.txt"
+

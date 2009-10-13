@@ -42,7 +42,7 @@ requests = dbconnection.querytomaplist( "select matchrequestqueue.matchrequest_i
       "ai1.ai_version as ai1version, "\
       "map_name as mapname, "\
       "mod_name as modname, " \
-      "calcengine_name as calcenginename, "\
+      "botrunner_name as botrunnername, "\
       "matchresult "\
       "from ais as ai0, "\
       "   ais as ai1, "\
@@ -51,11 +51,11 @@ requests = dbconnection.querytomaplist( "select matchrequestqueue.matchrequest_i
       "   matchrequestqueue, "\
       "   matchrequests_inprogress, "\
       "   matchresults, "\
-      "   calcengines "\
+      "   botrunners "\
       " where "\
       "   matchresults.matchrequest_id = matchrequestqueue.matchrequest_id " \
       "   and matchrequests_inprogress.matchrequest_id = matchrequestqueue.matchrequest_id " \
-      "   and calcengines.calcengine_id = matchrequests_inprogress.calcengine_id"\
+      "   and botrunners.botrunner_id = matchrequests_inprogress.botrunner_id"\
       "   and ai0.ai_id = matchrequestqueue.ai0_id "\
       "   and ai1.ai_id = matchrequestqueue.ai1_id "\
       "   and maps.map_id = matchrequestqueue.map_id "\
@@ -71,7 +71,7 @@ print "<td>ai1name</td>"
 print "<td>ai1version</td>"
 print "<td>mapname</td>"
 print "<td>modname</td>"
-print "<td>calcenginename</td>"
+print "<td>botrunnername</td>"
 print "<td>result</td>"
 print "<td>replay</td>"
 print "</tr>"
@@ -86,7 +86,7 @@ for request in requests:
    print "<td>" + request['ai1version'] + "</td>"
    print "<td>" + request['mapname'] + "</td>"
    print "<td>" + request['modname'] + "</td>"
-   print "<td>" + str(request['calcenginename']) + "</td>"
+   print "<td>" + str(request['botrunnername']) + "</td>"
    print "<td>" + str(request['matchresult']) + "</td>"
    print "<td>"
    if os.path.isfile( replaycontroller.getReplayPath(matchrequest_id) ):

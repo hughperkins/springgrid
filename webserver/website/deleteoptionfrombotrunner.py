@@ -38,29 +38,29 @@ loginhelper.processCookie()
 menu.printPageTop()
 
 def go():
-   calcenginename = formhelper.getValue('calcenginename')
+   botrunnername = formhelper.getValue('botrunnername')
    optionname = formhelper.getValue('optionname')
 
    if not loginhelper.isLoggedOn():
       print "Please logon first."
       return
 
-   if calcenginename == None or optionname == None or calcenginename == '' or optionname == '':
+   if botrunnername == None or optionname == None or botrunnername == '' or optionname == '':
       print "Please fill in the fields and try again"
       return
 
-   calcengineownername = calcenginehelper.getOwnerUsername( calcenginename ) 
-   if calcengineownername != loginhelper.getUsername():
-      print "You must be the calcengine owner"
+   botrunnerownername = botrunnerhelper.getOwnerUsername( botrunnername ) 
+   if botrunnerownername != loginhelper.getUsername():
+      print "You must be the botrunner owner"
       return
 
-   rows = dbconnection.cursor.execute( "delete calcengine_assignedoptions.* "\
-         " from calcengine_assignedoptions, calcengines, calcengine_options "\
-         " where calcengines.calcengine_name = %s "\
-         " and calcengine_option_name = %s "\
-         " and calcengine_assignedoptions.calcengine_id = calcengines.calcengine_id "\
-         " and calcengine_assignedoptions.calcengine_option_id = calcengine_options.calcengine_option_id ",
-       ( calcenginename, optionname ) )
+   rows = dbconnection.cursor.execute( "delete botrunner_assignedoptions.* "\
+         " from botrunner_assignedoptions, botrunners, botrunner_options "\
+         " where botrunners.botrunner_name = %s "\
+         " and botrunner_option_name = %s "\
+         " and botrunner_assignedoptions.botrunner_id = botrunners.botrunner_id "\
+         " and botrunner_assignedoptions.botrunner_option_id = botrunner_options.botrunner_option_id ",
+       ( botrunnername, optionname ) )
    if rows != 1:
       print "Something went wrong.  Please check your values and try again."
       return

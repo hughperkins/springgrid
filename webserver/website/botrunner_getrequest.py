@@ -23,18 +23,18 @@
 # ======================================================================================
 #
 
-# job of this is to deliver a request from the queue to a calcengine
+# job of this is to deliver a request from the queue to a botrunner
 # and somehow mark that that request is undergoing processing
 
 # inputs:
-# - name of calcengine
-# - calcengine sharedsecret
+# - name of botrunner
+# - botrunner sharedsecret
 
 # these will come in in 'post' values
 
-# as far as maps and mods that the calcengine can use:
+# as far as maps and mods that the botrunner can use:
 # - this info will be obtained from the database
-# - either the calcengine can signal that it will download things as it goes
+# - either the botrunner can signal that it will download things as it goes
 # - or the database will contain a list of maps and mods that each engine currently has
 # - for now, we'll just store a list of maps and mods supported by each engine in the database, and deal with the issue of downloading later
 #
@@ -46,7 +46,7 @@
 # - get an item from the queue
 # - check it's compatible with the engine
 # - mark the request as undergoing processing, with a date/time stamp
-# - create the appropriate xml to return the request to the calcengine
+# - create the appropriate xml to return the request to the botrunner
 
 import cgitb; cgitb.enable()
 import sys
@@ -62,9 +62,9 @@ from core import *
 
 # basically, we want to know what maps and stuff it supports
 # for now this is a placeholder...
-# should call something in calcenginecontroller, or similar
-def getcalcenginedescription(calcenginename):
-   return calcenginename
+# should call something in botrunnercontroller, or similar
+def getbotrunnerdescription(botrunnername):
+   return botrunnername
 
 def sendrequesttoengine( requestitem ):
    print "<request "
@@ -98,13 +98,13 @@ print ""
 dbconnection.connectdb()
 
 def go():
-   if testing or calcenginehelper.calcengineauthorized():
-      calcenginedescription = getcalcenginedescription(calcenginehelper.calcenginename)
-      requestitem = matchrequestcontroller.getcompatibleitemfromqueue(calcenginedescription)
+   if testing or botrunnerhelper.botrunnerauthorized():
+      botrunnerdescription = getbotrunnerdescription(botrunnerhelper.botrunnername)
+      requestitem = matchrequestcontroller.getcompatibleitemfromqueue(botrunnerdescription)
       if requestitem == None:
          print "<request summary='nothingtodo' />"
          return
-      matchrequestcontroller.markrequestasinprogress( requestitem, calcenginehelper.calcenginename )
+      matchrequestcontroller.markrequestasinprogress( requestitem, botrunnerhelper.botrunnername )
       sendrequesttoengine( requestitem )
    else:
       print "<request summary='unauthorized' />"

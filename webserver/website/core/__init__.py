@@ -2,6 +2,6 @@
 # import core.foo as foo
 
 # This lets us do 'from core import *':
-__all__ = ['roles', 'calcenginehelper','matchrequestcontroller',
+__all__ = ['roles', 'botrunnerhelper','matchrequestcontroller',
    'replaycontroller', 'menu']
 
