@@ -106,7 +106,18 @@ def go():
 
    sys.path.append("db")
    import setupdb
-   setupdb.createall(dbuser,dbpassword,dbname,dbhost)
+
+   # drop everything, and ignore exceptions
+   exceptions = setupdb.dropall(dbuser,dbpassword,dbname,dbhost)
+
+   # then create again...
+   exceptions = setupdb.createall(dbuser,dbpassword,dbname,dbhost)
+   if len(exceptions) > 0:
+      print "<h3>Exceptions report:</h3>"
+      print "<ul>"
+      for exceptionstring in exceptions:
+         print "<li>" + exceptionstring + "</li>"
+      print "</ul>"
 
    # Thats done.. now create the config file, first read the template:
    from utils import filehelper

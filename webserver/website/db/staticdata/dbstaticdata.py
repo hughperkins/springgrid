@@ -28,7 +28,9 @@ from utils import *
 
 scriptdir = os.path.dirname( os.path.realpath( __file__ ) )
 
+# returns list of exceptions
 def adddata(user,name,dbname,dbhost):
+   exceptions = []
    for sqlfilename in os.listdir(scriptdir):
       if sqlfilename.find(".sql") != -1:
          #print sqlfilename
@@ -38,9 +40,11 @@ def adddata(user,name,dbname,dbhost):
             #dbconnection.cursor.execute( filecontents )
          except:
             # just print, and carry on
-            print "Exception: " + str( sys.exc_value )
+            exceptions.append( str( sys.exc_value ) )
+            # print "Exception: " + str( sys.exc_value )
          dbconnection.nextAllSets(dbconnection.cursor)
-         
+   return exceptions         
+
 def usage():
    print "Usage: " + sys.argv[0] + " username password dbname dbhostname"
 

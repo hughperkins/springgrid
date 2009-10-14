@@ -26,19 +26,25 @@ import os
 
 scriptdir = os.path.dirname( os.path.realpath( __file__ ) )
 
+# returns list of exceptions
 def createall(user,password,dbname,dbhost):
+   exceptions = []
+
    sys.path.append(scriptdir + "/tables")
    import dbtables
-   dbtables.createtables(user,password,dbname,dbhost)
+   exceptions = exceptions + dbtables.createtables(user,password,dbname,dbhost)
 
    sys.path.append(scriptdir + "/staticdata")
    import dbstaticdata
-   dbstaticdata.adddata(user,password,dbname,dbhost)
+   exceptions = exceptions + dbstaticdata.adddata(user,password,dbname,dbhost)
+   
+   return exceptions
 
+# returns list of exceptions
 def dropall(user,password,dbname,dbhost):
    sys.path.append(scriptdir + "/tables")
    import dbtables
-   dbtables.droptables(user,password,dbname,dbhost)
+   return dbtables.droptables(user,password,dbname,dbhost)
 
 def main():
    print "Not supported, please cd into website and run python websetupdb.py"

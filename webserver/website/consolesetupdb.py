@@ -30,11 +30,15 @@ scriptdir = os.path.dirname( os.path.realpath( __file__ ) )
 
 def create(user,password,dbname,hostname):
    print "creating all..."
-   setupdb.createall(user,password,dbname,hostname)
+   exceptions = setupdb.createall(user,password,dbname,hostname)
+   for exceptionstring in exceptions:
+      print " exception: " + exceptionstring
 
 def drop(user,password,dbname,hostname):
    print "dropping all..."
-   setupdb.dropall(user,password,dbname,hostname)
+   exceptions = setupdb.dropall(user,password,dbname,hostname)
+   for exceptionstring in exceptions:
+      print " exception: " + exceptionstring
 
 def usage():
    print "Usage: " + sys.argv[0] + " username password dbname dbhostname [create|drop]"
