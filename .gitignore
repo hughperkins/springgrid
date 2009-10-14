@@ -28,4 +28,9 @@ testunitsync.py
 *.tar
 *.zip
 
+# cmake stuff:
+CMakeCache.txt
+CMakeFiles
+Makefile
+cmake_install.cmake
 

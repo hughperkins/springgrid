@@ -23,11 +23,12 @@
 #include <cstdlib>
 #include <pthread.h>
 #include <fstream>
+#include <sstream>
 
 using namespace std;
 
-char *endgamemessageprefix = "[   024131] Team";
-char *endgamemessagepostfix = " kicked the bucket";
+string endgamemessageprefix = "[   024131] Team";
+string endgamemessagepostfix = " kicked the bucket";
 
 void hang() {
          while(true) {
@@ -41,7 +42,7 @@ void openInfolog() {
    // I think it's opened by the constructor
 }
 
-void writeToInfolog( char *message ) {
+void writeToInfolog( string message ) {
    Infolog << message << endl;
 }
 
@@ -78,17 +79,18 @@ int main( int argc, char** argv ) {
    int randomnumber = rand() % 4; // use % 5 if you want to simulate hangs too
    int a = 0;
    int b = 0;
-   char message[1024];
+   ostringstream messagestream;
    createfakereplay();
+   cout << "randomnumber: " << randomnumber << endl;
    switch( randomnumber ) {
-      case 4:   // crash
+      case 3:   // crash
          cout << "crashing" << endl;
          writeStuffToInfolog();
          a = 0;
          b = 5 / a;
          break;
 
-      case 5:   // hang 
+      case 4:   // hang 
          cout << "hanging" << endl;
          writeStuffToInfolog();
          hang();
@@ -97,26 +99,26 @@ int main( int argc, char** argv ) {
       case 2:   // ai0 dies
          cout << "ai0 dieing..." << endl;
          writeStuffToInfolog();
-         sprintf( message, "%s%i%s", endgamemessageprefix, 0, endgamemessagepostfix );
-         writeToInfolog( message );
+         messagestream << endgamemessageprefix << 0 << endgamemessagepostfix;
+         writeToInfolog( messagestream.str() );
          hang();
          break;
 
       case 1:   // ai1 dies
          cout << "ai1 dieing..." << endl;
          writeStuffToInfolog();
-         sprintf( message, "%s%i%s", endgamemessageprefix, 1, endgamemessagepostfix );
-         writeToInfolog( message );
+         messagestream << endgamemessageprefix << 1 << endgamemessagepostfix;
+         writeToInfolog( messagestream.str() );
          hang();
          break;
 
       case 0:   // both ais die
          cout << "both dieing..." << endl;
          writeStuffToInfolog();
-         sprintf( message, "%s%i%s", endgamemessageprefix, 0, endgamemessagepostfix );
-         writeToInfolog( message );
-         sprintf( message, "%s%i%s", endgamemessageprefix, 1, endgamemessagepostfix );
-         writeToInfolog( message );
+         messagestream << endgamemessageprefix << 0 << endgamemessagepostfix;
+         writeToInfolog( messagestream.str() );
+         messagestream << endgamemessageprefix << 1 << endgamemessagepostfix;
+         writeToInfolog( messagestream.str() );
          hang();
          break;
 
