@@ -18,7 +18,12 @@ reloaddb.cgi
 #spring...
 spring
 spring-headlessstubs
+spring-dummy
 
 # personal test files:
 testunitsync.py
+
+*.tar.bz2
+*.tar
+*.zip
 
