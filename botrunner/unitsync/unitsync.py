@@ -32,6 +32,9 @@ class Unitsync:
 			locationdir = os.path.dirname(location)
 			# load devil first, to avoid dll conflicts
 			ctypes.windll.LoadLibrary(locationdir + "/devil.dll" )
+			# load other dependencies, in case the spring dir is not in PATH
+			ctypes.windll.LoadLibrary(locationdir + "/ILU.dll" )
+			ctypes.windll.LoadLibrary(locationdir + "/SDL.dll" )
 			self.unitsync = ctypes.windll.LoadLibrary(location)
 
 	def GetNextError(self): return c_char_p(self.unitsync.GetNextError()).value
