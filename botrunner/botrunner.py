@@ -449,7 +449,7 @@ def registerais():
       serverrequestarray = serverrequesthandle.readlines()
 
 def go():
-   global config, unitsync, writabledatadirectory
+   global config, unitsync, writabledatadirectory, demosdirectorylistingbeforegame
    # check for config, question user if doesn't exist
    try:
       import config
