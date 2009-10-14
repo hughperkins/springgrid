@@ -32,8 +32,7 @@ import sys
 import io
 from xml.dom import minidom
 import tarfile
-
-import urllib2_file
+import base64
 
 from unitsync import unitsync as unitsyncpkg
 
@@ -228,24 +227,25 @@ def uploadresulttoserver( serverrequest, gameresult ):
 
    # ok, let's do the upload... if we don't have a replay, we won't send the replay
    if thisreplayfilename != '':
-      replayfilehandle = open( writabledatadirectory.replace( "\\", "/" ) + "/thisreplay.tar.bz2", 'r' )
+      replayfilehandle = open( writabledatadirectory + "/thisreplay.tar.bz2", 'rb' )
+      replaycontents = replayfilehandle.read()
+      replayfilehandle.close()
+      replaycontentsbase64 = base64.encodestring(replaycontents)
+      print "binary length: " + str(len(replaycontents))
+      print "base64 length: " + str(len(replaycontentsbase64))
 
-#      requestparams = urllib.urlencode({
-      requestparams = {
+      requestparams = urllib.urlencode({
           'botrunnername': config.botrunnername,
           'sharedsecret': config.sharedsecret,
           'matchrequestid': serverrequest.matchrequestid,
           'result': gameresult.resultstring,
-          'replay': replayfilehandle }
-      # serverrequesthandle = urllib.urlopen( config.websitepostpage, requestparams )  
+          'replay': replaycontentsbase64 } )
       requestuploadedok = False    
       while not requestuploadedok:
          try:
-            serverrequest = urllib2.Request( config.websitepostpage, requestparams, {} )      
-            stream = urllib2.urlopen( serverrequest )
-            pageresult = stream.read()
-            print pageresult
-            replayfilehandle.close()
+            serverrequesthandle = urllib.urlopen( config.websitepostpage, requestparams )  
+            resultlines = serverrequesthandle.readlines()
+            print "\n".join(resultlines)
             requestuploadedok = True
          except:
             print "Something went wrong uploading to the server: " + str( sys.exc_value ) + ".\nRetrying ... "
