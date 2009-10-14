@@ -32,7 +32,7 @@ menu.printPageTop()
 print '<h3>AILadder - About</h3>'
 
 print '<table border="1" cellpadding="3">'
-print '<tr><td>Version:</td><td>0.2</td></tr>'
+print '<tr><td>Version:</td><td>' + str( version.version ) + '</td></tr>'
 print '<tr><td>License:</td><td>GPL v2</td></tr>'
 print '<tr><td>Authors:</td><td><a href="http://manageddreams.com">Hugh Perkins</a></td></tr>'
 print '<tr><td>Download url:</td><td><a href="http://github.com/hughperkins/ailadder/archives/master">http://github.com/hughperkins/ailadder/archives/master</a></td></tr>'
