@@ -25,6 +25,14 @@
 #include <fstream>
 #include <sstream>
 
+#ifdef WIN32
+#define SLEEP_MS Sleep
+#define FS "\\"
+#else
+#define SLEEP_MS sleep
+#define FS "/"
+#endif
+
 using namespace std;
 
 string endgamemessageprefix = "[   024131] Team";
@@ -32,7 +40,7 @@ string endgamemessagepostfix = " kicked the bucket";
 
 void hang() {
          while(true) {
-            sleep(1000);
+            SLEEP_MS(1000);
          }         
 }
 
@@ -48,7 +56,7 @@ void writeToInfolog( string message ) {
 
 void createfakereplay() {
    char replayfilename[100];
-   sprintf( replayfilename, "demos/%i", rand() );
+   sprintf( replayfilename, "demos%s%i", FS, rand() );
    ofstream replayfile( replayfilename );
    // let's write about 500k of stuff...
    // though after zipping it it will be much smaller
@@ -69,7 +77,7 @@ void writeStuffToInfologbis() {
 void writeStuffToInfolog() {
    for( int i = 0; i < 3; i++ ) {
       writeStuffToInfologbis();
-      sleep(1);
+      SLEEP_MS(1);
    }
    writeStuffToInfologbis();
 }
