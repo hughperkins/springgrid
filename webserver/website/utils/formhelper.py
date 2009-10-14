@@ -21,6 +21,7 @@
 
 import cgi
 import os
+import base64
 
 # helps with form stuff
 
@@ -51,22 +52,18 @@ def getValue( fieldname ):
 # returns true if succeeds
 # or false if no such field item
 def writeIncomingFileToDisk( fieldname, outputpath ):
-   form = getform()
-   fileitem = form[fieldname]
-   if fileitem == None:
+   filebase64 = getValue(fieldname)
+   if filebase64 == None:
       print "no replay field detected in incoming post"
       return False # file not uploaded
 
-   if fileitem.file == None:
-      print "no replay file uploaded"
-      return False # file not uploaded
+   print "base64length: " + str( len( filebase64 ) ) + "<br />"
+   filebinary = base64.decodestring( filebase64 )
+   print "binlength: " + str( len( filebinary ) ) + "<br />"
 
-   filehandle = fileitem.file
-   print "output path: " + outputpath
-   outputfilehandle = open(outputpath, 'wb', 10000)
-   for chunk in fbuffer(filehandle):
-      print "writing chunk..."
-      outputfilehandle.write(chunk)
+   # print "output path: " + outputpath
+   outputfilehandle = open(outputpath, 'wb' )
+   outputfilehandle.write(filebinary)
    outputfilehandle.close()
    return True
 
