@@ -228,7 +228,7 @@ def uploadresulttoserver( serverrequest, gameresult ):
 
    # ok, let's do the upload... if we don't have a replay, we won't send the replay
    if thisreplayfilename != '':
-      replayfilehandle = open( writabledatadirectory + "/thisreplay.tar.bz2", 'r' )
+      replayfilehandle = open( writabledatadirectory.replace( "\\", "/" ) + "/thisreplay.tar.bz2", 'r' )
 
 #      requestparams = urllib.urlencode({
       requestparams = {
