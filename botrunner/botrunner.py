@@ -140,7 +140,7 @@ def rungame( serverrequest ):
    if os.path.exists( writabledatadirectory + "/infolog.txt" ):
       os.remove( writabledatadirectory + "/infolog.txt" )
 
-   #os.chdir( config.springgamedir )
+   os.chdir( writabledatadirectory )
    popen = subprocess.Popen( [ config.springPath, writabledatadirectory + "/script.txt"])
    finished = False
    starttimeseconds = time.time()
@@ -237,12 +237,18 @@ def uploadresulttoserver( serverrequest, gameresult ):
           'matchrequestid': serverrequest.matchrequestid,
           'result': gameresult.resultstring,
           'replay': replayfilehandle }
-      # serverrequesthandle = urllib.urlopen( config.websitepostpage, requestparams )      
-      serverrequest = urllib2.Request( config.websitepostpage, requestparams, {} )      
-      stream = urllib2.urlopen( serverrequest )
-      pageresult = stream.read()
-      print pageresult
-      replayfilehandle.close()
+      # serverrequesthandle = urllib.urlopen( config.websitepostpage, requestparams )  
+      requestuploadedok = False    
+      while not requestuploadedok:
+         try:
+            serverrequest = urllib2.Request( config.websitepostpage, requestparams, {} )      
+            stream = urllib2.urlopen( serverrequest )
+            pageresult = stream.read()
+            print pageresult
+            replayfilehandle.close()
+            requestuploadedok = True
+         except:
+            print "Something went wrong uploading to the server: " + str( sys.exc_value ) + ".\nRetrying ... "
    else:
       print "we haven't programmed in the case of no replay found yet..."
       pass
