@@ -48,7 +48,11 @@ classBase = '''
 class Unitsync:
 	def __init__(self, location='.'):
 		if location.endswith('.so'): self.unitsync = ctypes.cdll.LoadLibrary(location)
-		elif location.endswith('.dll'): self.unitsync = ctypes.windll.LoadLibrary(location)
+		elif location.endswith('.dll'): 
+         locationdir = os.path.dirname(location)
+         # load devil first, to avoid dll conflicts
+         ctypes.windll.LoadLibrary(locationdir + "/devil.dll" )
+         self.unitsync = ctypes.windll.LoadLibrary(location)
 '''
 
 argv = sys.argv

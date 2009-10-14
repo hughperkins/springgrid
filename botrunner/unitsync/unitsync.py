@@ -1,20 +1,3 @@
-# This program is free software; you can redistribute it and/or modify it
-# under the terms of the GNU General Public License as published by the
-# Free Software Foundation; either version 2 of the License, or
-# (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful, but
-# WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
-# or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
-#  more details.
-#
-# You should have received a copy of the GNU General Public License along
-# with this program in the file licence.txt; if not, write to the
-# Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-
-# 1307 USA
-# You can find the licence also on the web at:
-# http://www.opensource.org/licenses/gpl-license.php
-
 import os, ctypes
 from ctypes import c_bool, c_char, c_char_p, c_int, c_uint, c_float, Structure, create_string_buffer, cast, pointer
 
@@ -25,7 +8,7 @@ class StartPos(Structure):
 
 class MapInfo(Structure):
 	def __init__(self):
-		self.author = cast(create_string_buffer(200), c_char_p) # author still shows up empty for some reason...
+		self.author = cast(create_string_buffer(200), c_char_p) # BUG: author field shows up as empty, probably something to do with the fact it's after the startpos structs
 		self.description = cast(create_string_buffer(255), c_char_p)
 		
 	_fields_ = [('description', c_char_p),
@@ -44,7 +27,11 @@ class MapInfo(Structure):
 class Unitsync:
 	def __init__(self, location='.'):
 		if location.endswith('.so'): self.unitsync = ctypes.cdll.LoadLibrary(location)
-		elif location.endswith('.dll'): self.unitsync = ctypes.windll.LoadLibrary(location)
+		elif location.endswith('.dll'): 
+         locationdir = os.path.dirname(location)
+         # load devil first, to avoid dll conflicts
+         ctypes.windll.LoadLibrary(locationdir + "/devil.dll" )
+         self.unitsync = ctypes.windll.LoadLibrary(location)
 
 	def GetNextError(self): return c_char_p(self.unitsync.GetNextError()).value
 	def GetSpringVersion(self): return c_char_p(self.unitsync.GetSpringVersion()).value
