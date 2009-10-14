@@ -63,8 +63,7 @@ void writeToInfolog( string message ) {
 void createfakereplay() {
    ostringstream replayfilename;
    replayfilename << "demos" << FS << rand();
-   string foo = "blah";
-   ofstream replayfile( foo );
+   ofstream replayfile( replayfilename.str().c_str() );
    // let's write about 500k of stuff...
    // though after zipping it it will be much smaller
    // use rand to prevent zipping being too powerful
