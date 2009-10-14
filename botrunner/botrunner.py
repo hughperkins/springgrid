@@ -280,7 +280,7 @@ def getPath( pathname, potentialpaths ):
       print "Please enter the number of the path to " + pathname + ":"
       for i in xrange( len( paths ) ):
          print str(i + 1 ) + ". " + paths[i]
-      print str( len( paths ) + 1 ) + ". custom path"
+      print str( len( paths ) + 1 ) + ". custom path (eg " + potentialpaths[0] + ")"
 
       inputline = sys.stdin.readline().strip()
       if inputline == '':
@@ -306,7 +306,7 @@ def getPath( pathname, potentialpaths ):
       if index <= len( paths ):
          return paths[index - 1]
       # user wants to enter a custom path:
-      print "Please type in the path to " + pathname + ":"
+      print "Please type in the path to " + pathname + " (eg " + potentialpaths[0] + ") :"
       inputline = sys.stdin.readline().strip()
       if inputline == '':
          continue
