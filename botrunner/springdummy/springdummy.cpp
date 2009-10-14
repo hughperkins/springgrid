@@ -26,10 +26,8 @@
 #include <sstream>
 
 #ifdef WIN32
-#define SLEEP_MS Sleep
 #define FS "\\"
 #else
-#define SLEEP_MS sleep
 #define FS "/"
 #endif
 
@@ -38,9 +36,17 @@ using namespace std;
 string endgamemessageprefix = "[   024131] Team";
 string endgamemessagepostfix = " kicked the bucket";
 
+void sleep_seconds( int seconds ) {
+#ifdef WIN32
+Sleep( seconds * 1000 );
+#else
+sleep( seconds );
+#endif
+}
+
 void hang() {
          while(true) {
-            SLEEP_MS(1000);
+            sleep_seconds(1000);
          }         
 }
 
@@ -77,7 +83,7 @@ void writeStuffToInfologbis() {
 void writeStuffToInfolog() {
    for( int i = 0; i < 3; i++ ) {
       writeStuffToInfologbis();
-      SLEEP_MS(1);
+      sleep_seconds(1);
    }
    writeStuffToInfologbis();
 }
