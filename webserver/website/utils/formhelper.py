@@ -61,7 +61,7 @@ def writeIncomingFileToDisk( fieldname, outputpath ):
    filebinary = base64.decodestring( filebase64 )
    print "binlength: " + str( len( filebinary ) ) + "<br />"
 
-   print "output path: " + outputpath
+   # print "output path: " + outputpath
    outputfilehandle = open(outputpath, 'wb' )
    outputfilehandle.write(filebinary)
    outputfilehandle.close()
