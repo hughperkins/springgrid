@@ -369,7 +369,7 @@ def  setupConfig():
          weburl = "http://" + weburl
       botrunnername = getValueFromUser("What name do you want to give to your botrunner?  This name will be shown on the website.")
       print ""
-      botrunnersharedsecret = getValueFromUser("What sharedsecret do you want to use with this botrunner?  This will be used to authenticate your botrunner to the website.")
+      botrunnersharedsecret = getValueFromUser("What sharedsecret do you want to use with this botrunner?  This will be used to authenticate your botrunner to the website.  Just pick something, and remember it.")
       print ""
       springPath = getSpringPath()
       if springPath == '':

@@ -26,9 +26,44 @@ import os
 
 import cgitb; cgitb.enable()
 
+from utils import filehelper
+
 scriptdir = os.path.dirname( os.path.realpath( __file__ ) )
 
 setupdb = None
+
+# carry out some verification checks on the installation
+def runchecks():
+   # check replays directory is writable
+   if not os.path.exists(scriptdir + "/replays"):
+      try:
+         os.makedirs( scriptdir + "/replays" )
+      except:
+         print "Cannot create 'replays' directory in website directory.  Please create the 'replays' directory in the website directory, and ensure it is writable"
+         return False
+   # if we got here, replays directory exists, check writable...
+   testfilepath = scriptdir + "/replays/~test"
+   if os.path.exists( testfilepath ):
+      try:
+         os.remove( testfilepath )
+      except:
+         print str(sys.exc_value) + "<br />"
+      if os.path.exists( testfilepath ):  
+         print "Cannot delete old testfile from 'replays' directory on website.  Please check that the 'replays' directory in the website directory is writable, and then try again."
+         return False
+
+   try:
+      filehelper.writeFile( testfilepath, "foo" )
+   except:
+      print str(sys.exc_value) + "<br /><br />"
+
+   if not os.path.exists( testfilepath ):  
+      print "Please check that the 'replays' directory in the website directory is writable, and then try again."
+      return False
+
+   os.remove( testfilepath )
+
+   return True
 
 def go():
    try:
@@ -52,6 +87,9 @@ def go():
    dbpassword = formhelper.getValue('dbpassword')
    dbname = formhelper.getValue('dbname')
    dbhost = formhelper.getValue('dbhost')
+
+   if not runchecks():
+      return
 
    if dbuser == None or dbpassword == None or dbname == None or dbhost == None or dbuser == '' or dbpassword == '' or dbname == '' or dbhost == '':
       print "Please fill in all the values and try again."
