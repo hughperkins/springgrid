@@ -89,7 +89,7 @@ def requestgamefromwebserver():
    return serverrequest
 
 def readFile( filepath ):
-   filehandle = io.open( filepath, "r" )
+   filehandle = open( filepath, "r" )
    filecontents = ""
    line = filehandle.readline()
    while( line != "" ):
@@ -99,7 +99,7 @@ def readFile( filepath ):
    return filecontents
 
 def writeFile( filepath, contents ):
-   filehandle = io.open( filepath, "w" )
+   filehandle = open( filepath, "w" )
    filehandle.write( contents )
    filehandle.close()
 

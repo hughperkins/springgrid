@@ -23,6 +23,7 @@ spring-dummy
 
 # personal test files:
 testunitsync.py
+testreceivefile.py
 
 *.tar.bz2
 *.tar
