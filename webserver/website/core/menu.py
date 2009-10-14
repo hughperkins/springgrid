@@ -85,7 +85,8 @@ def getPageTop( headers = 'Content-type: text/html\n\n' ):
       additem( 'View available maps', 'viewmaps.py' ),
       additem( 'View available mods', 'viewmods.py' ),
       additem( 'View available ais', 'viewais.py' ),
-      additem( 'View accounts', 'viewaccounts.py' ) ) )
+      additem( 'View accounts', 'viewaccounts.py' ),
+      additem( 'Run website diagnostics', 'diagnostics.py' ) ) )
 
    page = page + addmenu( 'About', ( additem( 'About', 'about.py' ) ) )
 
