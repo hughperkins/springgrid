@@ -267,42 +267,71 @@ def getValueFromUser(questiontouser):
       uservalue = inputline.strip()
       if uservalue != '':
          return uservalue
-      #print "You have input: " + uservalue
-      #print "Is this right? (y to confirm)"
-      #confirmation = sys.stdin.readline().strip().lower()
-      #if confirmation == 'y':
-      #   return uservalue
+
+def getPath( pathname, potentialpaths ):
+   # just include paths that exist
+   paths = []
+   for potentialpath in potentialpaths:
+      if os.path.exists( potentialpath ):
+         paths.append( potentialpath )
+
+   print paths
+   while True:
+      print "Please enter the number of the path to " + pathname + ":"
+      for i in xrange( len( paths ) ):
+         print str(i + 1 ) + ". " + paths[i]
+      print str( len( paths ) + 1 ) + ". custom path"
+
+      inputline = sys.stdin.readline().strip()
+      if inputline == '':
+         continue
+      try:
+         index = int( inputline )
+      except:
+         # user didn't enter a number
+         # could be a path?
+         try:
+            if not os.path.exists( inputline ):
+               print "Not a valid path for " + pathname
+               continue
+            return inputline
+         except:
+            # probably not a spring executable
+            print "Not a valid path for " + pathname
+            continue
+         
+      if index < 1 or index > len( paths ) + 1:
+         print "Please enter a number from 1 to " + str( len( paths ) + 1 ) + "."
+         continue
+      if index <= len( paths ):
+         return paths[index - 1]
+      # user wants to enter a custom path:
+      print "Please type in the path to " + pathname + ":"
+      inputline = sys.stdin.readline().strip()
+      if inputline == '':
+         continue
+      if not os.path.exists( inputline ):
+         print "Not a valid path for " + pathname
+         continue
+      return inputline
 
 def getSpringPath():
+   potentialpaths = []
    if os.name == 'posix':
-      examplePaths = '\t- /usr/games/spring\n\t- /usr/games/spring-headlessstubs'
+      potentialpaths = ( '/usr/games/spring', '/usr/games/spring-headlessstubs' )
    elif os.name == 'nt':
-      examplePaths = '\t- C:\Program Files\Spring\spring.exe\n\t- C:\Program Files\Spring\spring-headlessstubs.exe'
-   print "Common paths for the Spring executable are:"
-   print examplePaths
+      potentialpaths = ( 'C:\Program Files\Spring\spring.exe', 'C:\Program Files\Spring\spring-headlessstubs.exe' )
 
-   try:
-      thePath = askForPathToFile("the Spring executable")
-      popen = subprocess.Popen( [ thePath, "--version"])
-      popen.wait()
-      return thePath
-   except:
-      print "Spring executable not found!"
-      return ''
+   return getPath( "the Spring executable", potentialpaths )
 
 def getUnitSyncPath():
+   potentialpaths = []
    if os.name == 'posix':
-      examplePaths = '\t- /usr/lib/spring/unitsync.so'
+      potentialpaths = ( '/usr/lib/spring/unitsync.so', )
    elif os.name == 'nt':
-      examplePaths = '\t- C:\Program Files\Spring\unitsync.dll'
-   print "Common paths for UnitSync are:"
-   print examplePaths
-   try:
-      thePath = askForPathToFile("UnitSync")
-      return thePath
-   except:
-      print "UnitSync not found"
-      return ''
+      potentialpaths = ( "C:\\Program Files\\Spring\\unitsync.dll", )
+
+   return getPath( "unitsync", potentialpaths )
 
 # returns True for confirmed, otherwise False
 def getConfirmation( confirmationquestion ):
