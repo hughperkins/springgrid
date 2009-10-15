@@ -25,6 +25,7 @@ import cgitb; cgitb.enable()
 
 from utils import *
 from core import *
+from db import *
 
 dbconnection.connectdb()
 
@@ -32,7 +33,10 @@ loginhelper.processCookie()
 
 menu.printPageTop()
 
-requests = dbconnection.querytomaplist( "select matchrequestqueue.matchrequest_id as matchrequestid, " \
+sqlalchemysetup.init()
+
+if False:
+   requests = dbconnection.querytomaplist( "select matchrequestqueue.matchrequest_id as matchrequestid, " \
       "ai0.ai_name as ai0name, "\
       "ai0.ai_version as ai0version, "\
       "ai1.ai_name as ai1name, "\
@@ -57,6 +61,9 @@ requests = dbconnection.querytomaplist( "select matchrequestqueue.matchrequest_i
       "   and not exists ( select * from matchresults " \
              " where matchresults.matchrequest_id = matchrequestqueue.matchrequest_id )" )
 
+requests = sqlalchemysetup.session.query(tableclasses.MatchRequest)
+
+
 print "<h3>AILadder - Match requests</h3>" \
 "<table border='1' padding='3'>" \
 "<tr class='tablehead'>"
@@ -73,27 +80,29 @@ print "<td>datetimeassigned</td>"
 print "</tr>"
 
 for request in requests:
-   if request['botrunnername'] != None:
+   if request.matchresult != None:
+      continue
+   if request.matchrequestinprogress != None:
       print "<tr class='inprogress'>"
    else:
       print "<tr>"
-   print "<td>" + str(request['matchrequestid']) + "</td>"
-   print "<td>" + request['ai0name'] + "</td>"
-   print "<td>" + request['ai0version'] + "</td>"
-   print "<td>" + request['ai1name'] + "</td>"
-   print "<td>" + request['ai1version'] + "</td>"
-   print "<td>" + request['mapname'] + "</td>"
-   print "<td>" + request['modname'] + "</td>"
+   print "<td>" + str(request.matchrequest_id) + "</td>"
+   print "<td>" + request.ai0.ai_name + "</td>"
+   print "<td>" + request.ai0.ai_version + "</td>"
+   print "<td>" + request.ai1.ai_name + "</td>"
+   print "<td>" + request.ai1.ai_version + "</td>"
+   print "<td>" + request.map.map_name + "</td>"
+   print "<td>" + request.mod.mod_name + "</td>"
    print "<td>"
-   options = dbconnection.querytolistwithparams("select option_name "\
-      " from aioptions, matchrequest_options " \
-      " where aioptions.option_id = matchrequest_options.option_id "\
-      " and matchrequest_options.matchrequest_id = %s ",
-      ( request['matchrequestid'], ) )
-   print ' '.join( options )
-   print "</td>"
-   print "<td>" + str(request['botrunnername']) + "</td>"
-   print "<td>" + str(request['datetimeassigned']) + "</td>"
+   for option in request.options:
+      print option.option.option_name + "&nbsp;" 
+   print "&nbsp;</td>"
+   if request.matchrequestinprogress != None:
+      print "<td>" + request.matchrequestinprogress.botrunner.botrunner_name + "</td>"
+      print "<td>" + request.matchrequestinprogress.datetimeassigned + "</td>"
+   else:
+      print "<td>&nbsp;</td>"
+      print "<td>&nbsp;</td>"
    print "</tr>"
 
 print "</table>"
