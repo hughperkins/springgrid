@@ -39,7 +39,7 @@ def validatesharedsecret(lbotrunnername, sharedsecret):
    if rows == 0:  # Never seen this botrunner before, just add it
       dbconnection.cursor.execute("insert into botrunners (botrunner_name, botrunner_sharedsecret ) "\
          " values ( %s, %s ) ",
-         ( botrunnername, sharedsecret ) )
+         ( lbotrunnername, sharedsecret ) )
       # if this fails, return true anyway
       return True
    elif rows >= 1:
