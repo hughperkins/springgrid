@@ -43,14 +43,6 @@ writabledatadirectory = None
 
 scriptdir = os.path.dirname( os.path.realpath( __file__ ) )
 
-class ServerRequest():
-   def __init__( self ):
-     pass     
-
-class GameResult():
-   def __init__( self ):
-      pass
-
 def StringToBoolean( booleanstring ):
    if booleanstring.lower() == "yes":
       return True
@@ -95,7 +87,6 @@ def doping( status ):
 
 def rungame( serverrequest ):
    global config, writabledatadirectory
-   gameresult = GameResult()
    scripttemplatecontents = readFile( scriptdir + "/" + config.scripttemplatefilename )
 
    scriptcontents = scripttemplatecontents
@@ -131,6 +122,7 @@ def rungame( serverrequest ):
    starttimeseconds = time.time()
    doping("playing game " + serverrequest['ai0name'] + " vs " + serverrequest['ai1name'] + " on " + serverrequest['mapname'] + " " + serverrequest['modname'] )
    lastpingtimeseconds = time.time()
+   gameresult = {}
    while not finished:
       print "waiting for game to terminate..."
       if time.time() - lastpingtimeseconds > config.pingintervalminutes * 60:
@@ -143,22 +135,22 @@ def rungame( serverrequest ):
          if ( infologcontents.find( ai0endstring ) != -1 ) and ( infologcontents.find(ai1endstring ) == - 1 ):
             # ai0 died
             print "team 1 won!"
-            gameresult.winningai = 1
-            gameresult.resultstring = "ai1won"
+            gameresult['winningai'] = 1
+            gameresult['resultstring'] = "ai1won"
             popen.kill()
             return gameresult
          if infologcontents.find( ai0endstring ) == -1 and infologcontents.find(ai1endstring ) != - 1:
             # ai1 died
             print "team 0 won!"
-            gameresult.winningai = 0
-            gameresult.resultstring = "ai0won"
+            gameresult['winningai'] = 0
+            gameresult['resultstring'] = "ai0won"
             popen.kill()
             return gameresult
          if infologcontents.find( ai0endstring ) != -1 and infologcontents.find(ai1endstring ) != - 1:
             # both died...
             print "A draw..." 
-            gameresult.winningai = -1
-            gameresult.resultstring = "draw"
+            gameresult['winningai'] = -1
+            gameresult['resultstring'] = "draw"
             popen.kill()
             return gameresult
 
@@ -166,8 +158,8 @@ def rungame( serverrequest ):
       if ( time.time() - starttimeseconds ) > serverrequest['gametimeoutminutes'] * 60:
          # timeout
          print "Game timed out"
-         gameresult.winningai = -1
-         gameresult.resultstring = "gametimeout"
+         gameresult['winningai'] = -1
+         gameresult['resultstring'] = "gametimeout"
          popen.kill()
          return gameresult
 
@@ -175,8 +167,8 @@ def rungame( serverrequest ):
          # spring finished / died / crashed
          # presumably if we got here, it crashed, otherwise infolog would have been written   
          print "Crashed" 
-         gameresult.winningai = -1
-         gameresult.resultstring = "crashed"
+         gameresult['winningai'] = -1
+         gameresult['resultstring'] = "crashed"
          return gameresult
 
       time.sleep (1)
@@ -223,7 +215,7 @@ def uploadresulttoserver( serverrequest, gameresult ):
       requestuploadedok = False    
       while not requestuploadedok:
          try:
-            (result,errormessage ) = getxmlrpcproxy().submitresult( config.botrunnername, config.sharedsecret, serverrequest['matchrequestid'], gameresult.resultstring, replaybinarywrapper )
+            (result,errormessage ) = getxmlrpcproxy().submitresult( config.botrunnername, config.sharedsecret, serverrequest['matchrequestid'], gameresult['resultstring'], replaybinarywrapper )
             print "upload result: " + str( result) + " " + errormessage
             requestuploadedok = True
          except:
