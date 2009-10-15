@@ -20,6 +20,7 @@
 #
 
 import sqlalchemy
+import tableclasses
 
 import config
 
@@ -36,4 +37,8 @@ def setup():
 
 def close():
    session.commit()
+
+def createalltables():
+   global engine,Session,session
+   tableclasses.createall(engine)
 

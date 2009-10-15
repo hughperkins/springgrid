@@ -195,7 +195,7 @@ class MatchResult(Base):
    matchresult = Column(String(255))
    matchrequest = relation("MatchRequest", backref=backref('matchresult', uselist=False))
 
-def createall():
+def createall(engine):
    Base.metadata.create_all(engine)
 
 
