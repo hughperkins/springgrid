@@ -59,9 +59,9 @@ def requestgamefromwebserver():
       print "Something went wrong: " + serverrequest
       return None
 
-   print serverrequest
-
-   return serverrequest
+   if len(serverrequest) == 0:
+      return None
+   return serverrequest[0]  # can't handle passing None in python 2.4
 
 def readFile( filepath ):
    filehandle = open( filepath, "r" )
@@ -80,7 +80,7 @@ def writeFile( filepath, contents ):
 
 # return xmlrpcproxy to communicate with web server
 def getxmlrpcproxy():
-   return xmlrpclib.ServerProxy( uri = config.websiteurl + "/botrunner_webservice.py", allow_none = True )
+   return xmlrpclib.ServerProxy( uri = config.websiteurl + "/botrunner_webservice.py" )
 
 def doping( status ):
    return getxmlrpcproxy().ping( config.botrunnername, config.sharedsecret, status )

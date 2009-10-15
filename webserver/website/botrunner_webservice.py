@@ -96,9 +96,6 @@ class AILadderService:
    def getsupportedais( self, botrunnername, sharedsecret ):
       return aihelper.getsupportedais(botrunnername)
 
-   def submitresult2( self, botrunnername, sharedsecret, matchrequestid, resultstring, replaycontentsbase64 ):
-      return (True, 'blah')
-
    #  resultstring is: 'ai0won', 'draw', 'crashed', 'hung', ...
    # returns (True,message) or (False,message)
    def submitresult( self, botrunnername, sharedsecret, matchrequestid, resultstring, replaycontentsdata ):
@@ -136,16 +133,16 @@ class AILadderService:
             return (False, "Not authenticated")
          requestitem = matchrequestcontroller.getcompatibleitemfromqueue(botrunnername)
          if requestitem == None:
-            return ( True, None )
+            return ( True, [] ) # can't return None in python 2.4
 
          requestitem['gametimeoutminutes'] = config.gametimeoutminutes
          requestitem['gameendstring'] = config.gameendstring
          matchrequestcontroller.markrequestasinprogress( requestitem['matchrequestid'], botrunnername )
-         return (True, requestitem )
+         return (True, [ requestitem ] )
       except:
          return (False,"An unexpected exception occurred: " + str( sys.exc_info() ) + "\n" + str( traceback.extract_tb( sys.exc_traceback ) ) )
 
-handler = SimpleXMLRPCServer.CGIXMLRPCRequestHandler(allow_none=True)
+handler = SimpleXMLRPCServer.CGIXMLRPCRequestHandler()
 handler.register_instance( AILadderService() )
 handler.register_introspection_functions()
 
