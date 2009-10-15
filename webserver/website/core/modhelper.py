@@ -42,6 +42,14 @@ def addmodifdoesntexist(modname, modarchivechecksum):
 
    return (True,'')
 
+# return list of supported modnames
+def getsupportedmods( botrunnername ):
+   return dbconnection.querytolistwithparams("select mod_name "\
+      " from mods, botrunners, botrunner_supportedmods "\
+      " where mods.mod_id = botrunner_supportedmods.mod_id "\
+      " and botrunners.botrunner_name = %s ",
+      ( botrunnername, ) )
+
 def setbotrunnersupportsthismod( botrunnername, modname ):
    # Now, register the mod as supported mod
    rows = dbconnection.dictcursor.execute("select * from botrunners, botrunner_supportedmods, mods " \

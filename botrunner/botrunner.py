@@ -417,14 +417,18 @@ def  setupConfig():
    return True
 
 def registermaps():
+   registeredmaps = getxmlrpcproxy().getsupportedmaps( config.botrunnername, config.sharedsecret )
+   print registeredmaps
+
    for i in xrange( unitsync.GetMapCount() ):
       mapname = unitsync.GetMapName(i)
-      print "registering map " + mapname + " ..."
-      unitsync.GetMapArchiveCount(mapname)
-      archivename = unitsync.GetMapArchiveName(0)
-      #print unitsync.GetMapArchiveName(1)
-      archivechecksum = unitsync.GetArchiveChecksum( archivename )
-      print getxmlrpcproxy().registersupportedmap( config.botrunnername, config.sharedsecret, mapname, str(archivechecksum) )
+      if registeredmaps.count( mapname ) == 0:
+         print "registering map " + mapname + " ..."
+         unitsync.GetMapArchiveCount(mapname)
+         archivename = unitsync.GetMapArchiveName(0)
+         #print unitsync.GetMapArchiveName(1)
+         archivechecksum = unitsync.GetArchiveChecksum( archivename )
+         print getxmlrpcproxy().registersupportedmap( config.botrunnername, config.sharedsecret, mapname, str(archivechecksum) )
 
 def registermods():
    for i in xrange( unitsync.GetPrimaryModCount() ):

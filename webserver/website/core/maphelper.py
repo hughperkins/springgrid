@@ -42,6 +42,14 @@ def addmapifdoesntexist(mapname, maparchivechecksum):
 
    return (True,'')
 
+# return list of supported mapnames
+def getsupportedmaps( botrunnername ):
+   return dbconnection.querytolistwithparams("select map_name "\
+      " from maps, botrunners, botrunner_supportedmaps "\
+      " where maps.map_id = botrunner_supportedmaps.map_id "\
+      " and botrunners.botrunner_name = %s ",
+      ( botrunnername, ) )
+
 def setbotrunnersupportsthismap( botrunnername, mapname ):
    # Now, register the map as supported map
    rows = dbconnection.dictcursor.execute("select * from botrunners, botrunner_supportedmaps, maps " \
