@@ -28,12 +28,15 @@ import sys
 import os
 import datetime
 import base64
+import traceback
 
 from utils import *
 from core import *
 
 import config
 
+# entry point for method calls from botrunner to the server
+# botrunner simply calls getxmlrpcproxy().<methodname>( params, ... )
 class AILadderService:
    # return (True,'') if goes ok, otherwise (False,message)
    def ping(self, botrunnername, sharedsecret, status):
@@ -126,7 +129,23 @@ class AILadderService:
       except:
          return (False,"unexpected exception: " + str( sys.exc_info() ) )
 
-handler = SimpleXMLRPCServer.CGIXMLRPCRequestHandler()
+   # returns (True, request) (True, None) or (False, errormessage)
+   def getrequest( self, botrunnername, sharedsecret ):
+      try:
+         if not botrunnerhelper.validatesharedsecret(botrunnername, sharedsecret):
+            return (False, "Not authenticated")
+         requestitem = matchrequestcontroller.getcompatibleitemfromqueue(botrunnername)
+         if requestitem == None:
+            return ( True, None )
+
+         requestitem['gametimeoutminutes'] = config.gametimeoutminutes
+         requestitem['gameendstring'] = config.gameendstring
+         matchrequestcontroller.markrequestasinprogress( requestitem['matchrequestid'], botrunnername )
+         return (True, requestitem )
+      except:
+         return (False,"An unexpected exception occurred: " + str( sys.exc_info() ) + "\n" + str( traceback.extract_tb( sys.exc_traceback ) ) )
+
+handler = SimpleXMLRPCServer.CGIXMLRPCRequestHandler(allow_none=True)
 handler.register_instance( AILadderService() )
 handler.register_introspection_functions()
 

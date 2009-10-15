@@ -67,7 +67,7 @@ def getcompatibleitemfromqueue( botrunnerdescription ):
    # now we've archived the old requests, we just pick a request
    # in the future, we'll pick a compatible request.  In the future ;-)
    # also, we need to handle options.  In the future ;-)
-   dbconnection.dictcursor.execute("select matchrequestqueue.matchrequest_id, ai0.ai_name as ai0name, ai0.ai_version as ai0version, ai1.ai_name as ai1name, ai1.ai_version as ai1version, map_name, map_archivechecksum, mod_name, mod_archivechecksum " \
+   dbconnection.dictcursor.execute("select matchrequestqueue.matchrequest_id as matchrequestid, ai0.ai_name as ai0name, ai0.ai_version as ai0version, ai1.ai_name as ai1name, ai1.ai_version as ai1version, map_name as mapname, map_archivechecksum, mod_name as modname, mod_archivechecksum " \
       "from ais as ai0," \
       " ais as ai1, " \
       " maps, " \
@@ -95,33 +95,17 @@ def getcompatibleitemfromqueue( botrunnerdescription ):
 #      " and not exists (select * from matchrequests_inprogress where " \
  #     "                     matchrequests_inprogress.matchrequest_id = matchrequestqueue.matchrequest_id ) " )
    row = dbconnection.dictcursor.fetchone()
-   # just take the first one...
-   if row != None:
-      # we got a row
-      matchrequest = MatchRequest()
-      matchrequest.matchrequest_id = row['matchrequest_id']
-      matchrequest.ai0name = row['ai0name']
-      matchrequest.ai0version = row['ai0version']
-      matchrequest.ai1name = row['ai1name']
-      matchrequest.ai1version = row['ai1version']
-      matchrequest.mapname = row['map_name']
-      matchrequest.maparchivechecksum = row['map_archivechecksum']
-      matchrequest.modname = row['mod_name']
-      matchrequest.modarchivechecksum = row['mod_archivechecksum']
-      return matchrequest
-   else:
-      # no rows left. great!
-      return None
+   return row
 
-def markrequestasinprogress( requestitem, botrunnerdescription ):
+def markrequestasinprogress( matchrequestid, botrunnername ):
    dbconnection.cursor.execute("delete from matchrequests_inprogress "\
-      "where matchrequest_id = %s", ( requestitem.matchrequest_id, ) )
+      "where matchrequest_id = %s", ( matchrequestid, ) )
    dbconnection.cursor.execute("insert into matchrequests_inprogress "\
       "( matchrequest_id, botrunner_id, datetimeassigned ) "\
       " select %s, botrunners.botrunner_id, %s "\
       " from botrunners "\
       " where botrunners.botrunner_name = %s",
-      ( requestitem.matchrequest_id, dates.dateTimeToDateString( datetime.datetime.now() ), botrunnerdescription ) )
+      ( matchrequestid, dates.dateTimeToDateString( datetime.datetime.now() ), botrunnername ) )
 
 # validate that an incoming result is for a match assigned to this server
 # return true if so, otherwise false

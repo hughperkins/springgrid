@@ -62,30 +62,13 @@ def StringToInteger( integerstring ):
    return int( integerstring )
 
 def requestgamefromwebserver():
-   requestparams = urllib.urlencode({'botrunnername': config.botrunnername, 'sharedsecret': config.sharedsecret })
-   serverrequesthandle = urllib.urlopen( config.websiterequestpage, requestparams )
-   serverrequestarray = serverrequesthandle.readlines()
-   # print serverrequestarray
-   serverrequeststring = ''.join( serverrequestarray )
-   print serverrequeststring
-   serverrequestdom = minidom.parseString( serverrequeststring )
-   # print serverrequestdom
-   if serverrequestdom.documentElement.hasAttribute("summary"):
-      print serverrequestdom.documentElement.getAttribute("summary")
+   [result, serverrequest ] = getxmlrpcproxy().getrequest(config.botrunnername, config.sharedsecret )
+   if not result:
+      print "Something went wrong: " + serverrequest
       return None
-   serverrequest = ServerRequest()
-   serverrequest.matchrequestid = serverrequestdom.documentElement.getAttribute("matchrequestid")
-   serverrequest.ai0 = serverrequestdom.documentElement.getAttribute("ai0")
-   serverrequest.ai0version = serverrequestdom.documentElement.getAttribute("ai0version")
-   serverrequest.ai1 = serverrequestdom.documentElement.getAttribute("ai1")
-   serverrequest.ai1version = serverrequestdom.documentElement.getAttribute("ai1version")
-   serverrequest.map = serverrequestdom.documentElement.getAttribute("map")
-   serverrequest.mod = serverrequestdom.documentElement.getAttribute("mod")
-   serverrequest.maparchivechecksum = serverrequestdom.documentElement.getAttribute("maparchivechecksum")
-   serverrequest.modarchivechecksum = serverrequestdom.documentElement.getAttribute("modarchivechecksum")
-   serverrequest.cheatingallowed = StringToBoolean( serverrequestdom.documentElement.getAttribute("cheatingallowed") )
-   serverrequest.gametimeoutminutes = StringToInteger( serverrequestdom.documentElement.getAttribute("gametimeoutminutes") )
-   serverrequest.gameendstring = serverrequestdom.documentElement.getAttribute("gameendstring")
+
+   print serverrequest
+
    return serverrequest
 
 def readFile( filepath ):
@@ -105,7 +88,7 @@ def writeFile( filepath, contents ):
 
 # return xmlrpcproxy to communicate with web server
 def getxmlrpcproxy():
-   return xmlrpclib.ServerProxy( config.websiteurl + "/botrunner_webservice.py" )
+   return xmlrpclib.ServerProxy( uri = config.websiteurl + "/botrunner_webservice.py", allow_none = True )
 
 def doping( status ):
    return getxmlrpcproxy().ping( config.botrunnername, config.sharedsecret, status )
@@ -116,15 +99,15 @@ def rungame( serverrequest ):
    scripttemplatecontents = readFile( scriptdir + "/" + config.scripttemplatefilename )
 
    scriptcontents = scripttemplatecontents
-   scriptcontents = scriptcontents.replace("%MAP%", serverrequest.map )
-   scriptcontents = scriptcontents.replace("%MOD%", serverrequest.mod )
-   scriptcontents = scriptcontents.replace("%AI0%", serverrequest.ai0 )
-   scriptcontents = scriptcontents.replace("%AI0VERSION%", serverrequest.ai0version )
-   scriptcontents = scriptcontents.replace("%AI1%", serverrequest.ai1 )
-   scriptcontents = scriptcontents.replace("%AI1VERSION%", serverrequest.ai1version )
+   scriptcontents = scriptcontents.replace("%MAP%", serverrequest['mapname'] )
+   scriptcontents = scriptcontents.replace("%MOD%", serverrequest['modname'] )
+   scriptcontents = scriptcontents.replace("%AI0%", serverrequest['ai0name'] )
+   scriptcontents = scriptcontents.replace("%AI0VERSION%", serverrequest['ai0version'] )
+   scriptcontents = scriptcontents.replace("%AI1%", serverrequest['ai1name'] )
+   scriptcontents = scriptcontents.replace("%AI1VERSION%", serverrequest['ai1version'] )
 
    map_info = unitsyncpkg.MapInfo()
-   unitsync.GetMapInfoEx(str(serverrequest.map), map_info, 1)
+   unitsync.GetMapInfoEx(str(serverrequest['mapname']), map_info, 1)
    team0startpos = map_info.StartPos[0]
    team1startpos = map_info.StartPos[1]
    # we always play team 0 on startpos0 ,and team1 on startpos1, for repeatability
@@ -146,17 +129,17 @@ def rungame( serverrequest ):
    popen = subprocess.Popen( [ config.springPath, writabledatadirectory + "/script.txt"])
    finished = False
    starttimeseconds = time.time()
-   doping("playing game " + serverrequest.ai0 + " vs " + serverrequest.ai1 + " on " + serverrequest.map + " " + serverrequest.mod )
+   doping("playing game " + serverrequest['ai0name'] + " vs " + serverrequest['ai1name'] + " on " + serverrequest['mapname'] + " " + serverrequest['modname'] )
    lastpingtimeseconds = time.time()
    while not finished:
       print "waiting for game to terminate..."
       if time.time() - lastpingtimeseconds > config.pingintervalminutes * 60:
-         doping ("playing game " + serverrequest.ai0 + " vs " + serverrequest.ai1 + " on " + serverrequest.map + " " + serverrequest.mod )
+         doping ("playing game " + serverrequest['ai0name'] + " vs " + serverrequest['ai1name'] + " on " + serverrequest['mapname'] + " " + serverrequest['modname'] )
       if os.path.exists( writabledatadirectory + "/infolog.txt" ):
          infologcontents = readFile( writabledatadirectory + "/infolog.txt" )
          # print infologcontents
-         ai0endstring = serverrequest.gameendstring.replace("%TEAMNUMBER%", "0")
-         ai1endstring = serverrequest.gameendstring.replace("%TEAMNUMBER%", "1")
+         ai0endstring = serverrequest['gameendstring'].replace("%TEAMNUMBER%", "0")
+         ai1endstring = serverrequest['gameendstring'].replace("%TEAMNUMBER%", "1")
          if ( infologcontents.find( ai0endstring ) != -1 ) and ( infologcontents.find(ai1endstring ) == - 1 ):
             # ai0 died
             print "team 1 won!"
@@ -180,7 +163,7 @@ def rungame( serverrequest ):
             return gameresult
 
       # check timeout (== draw)
-      if ( time.time() - starttimeseconds ) > serverrequest.gametimeoutminutes * 60:
+      if ( time.time() - starttimeseconds ) > serverrequest['gametimeoutminutes'] * 60:
          # timeout
          print "Game timed out"
          gameresult.winningai = -1
@@ -240,7 +223,7 @@ def uploadresulttoserver( serverrequest, gameresult ):
       requestuploadedok = False    
       while not requestuploadedok:
          try:
-            (result,errormessage ) = getxmlrpcproxy().submitresult( config.botrunnername, config.sharedsecret, serverrequest.matchrequestid, gameresult.resultstring, replaybinarywrapper )
+            (result,errormessage ) = getxmlrpcproxy().submitresult( config.botrunnername, config.sharedsecret, serverrequest['matchrequestid'], gameresult.resultstring, replaybinarywrapper )
             print "upload result: " + str( result) + " " + errormessage
             requestuploadedok = True
          except:
