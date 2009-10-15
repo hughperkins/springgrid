@@ -2,8 +2,6 @@
 config.py
 config.pyc
 
-infolog.txt
-
 # exclude all compiled modules
 *.pyc
 
@@ -15,6 +13,7 @@ package.sh
 # logfiles
 *.log
 *log.txt
+infolog.txt
 
 #spring...
 spring
@@ -24,6 +23,7 @@ spring-dummy
 # personal test files:
 testunitsync.py
 testreceivefile.py
+testwebservice.py
 
 *.tar.bz2
 *.tar
