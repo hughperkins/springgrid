@@ -32,6 +32,7 @@ import traceback
 
 from utils import *
 from core import *
+from db import *
 
 import config
 
@@ -43,11 +44,12 @@ class AILadderService:
       if not botrunnerhelper.validatesharedsecret(botrunnername, sharedsecret):
          return (False, "Not authenticated")
 
-      dbconnection.dictcursor.execute("update botrunners " \
-         " set botrunner_lastpingstatus = %s, "\
-         " botrunner_lastpingtime = %s " \
-         " where botrunners.botrunner_name = %s  ",
-         ( status, dates.dateTimeToDateString( datetime.datetime.now() ), botrunnername ) )
+      botrunner = sqlalchemysetup.session.query(tableclasses.BotRunner).filter(tableclasses.BotRunner.botrunner_name == botrunnername ).first()
+      if botrunner == None:
+         return (False,'')
+      botrunner.botrunner_lastpingtime = dates.dateTimeToDateString( datetime.datetime.now() )
+      botrunner.botrunner_lastpingstatus = status
+      sqlalchemysetup.session.commit()
       return (True,'')
 
    # return (True,'') if goes ok, otherwise (False,message)
@@ -148,9 +150,11 @@ handler.register_introspection_functions()
 
 if __name__ == '__main__':
    dbconnection.connectdb()
+   sqlalchemysetup.setup()
    try:
       handler.handle_request()
    except:
       print str( sys.exc_value )
+   sqlalchemysetup.close()
    dbconnection.disconnectdb()
 

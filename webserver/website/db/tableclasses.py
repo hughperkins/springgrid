@@ -51,6 +51,46 @@ class AI(Base):
    ai_name = Column(String(255))
    ai_version = Column(String(255))
 
+class AIAllowedMap(Base):
+   __tablename__ = 'ai_allowedmaps'
+
+   ai_id = Column(Integer,ForeignKey('ais.ai_id'),primary_key=True)
+   map_id = Column(Integer,ForeignKey('maps.map_id'),primary_key=True)
+
+   ai = relation("AI")
+   map = relation("Map")
+
+class AIAllowedMod(Base):
+   __tablename__ = 'ai_allowedmods'
+
+   ai_id = Column(Integer,ForeignKey('ais.ai_id'),primary_key=True)
+   mod_id = Column(Integer,ForeignKey('mods.mod_id'),primary_key=True)
+
+   ai = relation("AI")
+   mod = relation("Mod")
+
+class Role(Base):
+   __tablename__ = 'roles'
+
+   role_id = Column(Integer,primary_key=True)
+   role_name = Column(String(255))
+
+class RoleMember(Base):
+   __tablename__ = 'role_members'
+
+   role_id = Column(Integer,ForeignKey('roles.role_id'),primary_key=True)
+   account_id = Column(Integer,ForeignKey('accounts.account_id'),primary_key=True)
+
+   role = relation("Role")
+
+class Cookie(Base):
+   __tablename__ = 'cookies'
+
+   cookiereference = Column(String(255),primary_key=True)
+   account_id = Column(Integer,ForeignKey('accounts.account_id'))
+
+   account = relation("Account")
+
 class Account(Base):
    __tablename__ = 'accounts'
 
@@ -61,11 +101,31 @@ class Account(Base):
    passwordsalt = Column(String(255))
    passwordhash = Column(String(255))
 
+   roles = relation("RoleMember")
+
 class BotRunnerOption(Base):
    __tablename__ = 'botrunner_options'
 
    botrunner_option_id = Column(Integer,primary_key=True)
    botrunner_option_name = Column(String(255))
+
+class BotRunnerSupportedMap(Base):
+   __tablename__ = 'botrunner_supportedmaps'
+
+   botrunner_id = Column(Integer,ForeignKey('botrunners.botrunner_id'),primary_key=True)
+   map_id = Column(Integer,ForeignKey('maps.map_id'),primary_key=True)
+
+   botrunner = relation("BotRunner")
+   map = relation("Map")
+
+class BotRunnerSupportedMod(Base):
+   __tablename__ = 'botrunner_supportedmods'
+
+   botrunner_id = Column(Integer,ForeignKey('botrunners.botrunner_id'),primary_key=True)
+   mod_id = Column(Integer,ForeignKey('mods.mod_id'),primary_key=True)
+
+   botrunner = relation("BotRunner")
+   mod = relation("Mod")
 
 class BotRunnerAssignedOption(Base):
    __tablename__ = 'botrunner_assignedoptions'
