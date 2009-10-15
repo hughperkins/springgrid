@@ -30,8 +30,11 @@ import cgi
 
 from utils import *
 from core import *
+from db import *
 
 dbconnection.connectdb()
+
+sqlalchemysetup.setup()
 
 loginhelper.processCookie()
 
@@ -67,6 +70,8 @@ def go():
 go()
 
 menu.printPageBottom()
+
+sqlalchemysetup.close()
 
 dbconnection.disconnectdb()
 

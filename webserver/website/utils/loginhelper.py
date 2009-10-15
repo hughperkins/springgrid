@@ -22,14 +22,15 @@
 # functions for login, cookies etc...
 
 import Cookie
-import MySQLdb
 import random
 import cgi
 import string
 import os
 import os.path
+import md5
 
 import dbconnection
+from db import *
 
 import stringhelper
    
@@ -62,8 +63,11 @@ def createSalt():
 
 # returns True if password correct, otherwise false
 def validateUsernamePassword( username, password ):
-   rows = dbconnection.cursor.execute( "select username from accounts where username=%s and passwordhash = md5(concat(%s, passwordsalt))", ( username, password, ) )
-   return ( rows == 1 )
+   account = sqlalchemysetup.session.query(tableclasses.Account).filter( tableclasses.Account.username == username ).first()
+   if account == None:
+      return False
+   thispasswordhash = md5.md5( password + account.passwordsalt ).hexdigest()
+   return thispasswordhash == account.passwordhash
 
 def logonUser(username, password):
    global gusername
@@ -90,12 +94,11 @@ def logonUser(username, password):
 
 def changePassword( username, password ):
    passwordsalt = createSalt()
-   rows = dbconnection.cursor.execute( "update accounts "\
-      " set passwordsalt = %s, "\
-      " passwordhash = md5( concat( %s, %s ) ) "\
-      " where username = %s ",
-      ( passwordsalt, password, passwordsalt, username, ) )
-   return (rows == 1 )
+   account = sqlalchemysetup.session.query(tableclasses.Account).filter( tableclasses.Account.username == username ).first()
+   account.passwordsalt = passwordsalt
+   account.passwordhash = md5.md5( password + passwordsalt ).hexdigest()
+   sqlalchemysetup.session.commit()
+   return True
 
 def processCookie():
   global cookie, cookiereference, gusername, loginhtml
