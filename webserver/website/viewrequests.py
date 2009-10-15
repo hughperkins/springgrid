@@ -29,7 +29,7 @@ from db import *
 
 dbconnection.connectdb()
 
-sqlalchemysetup.init()
+sqlalchemysetup.setup()
 
 loginhelper.processCookie()
 
@@ -79,6 +79,8 @@ for request in requests:
    print "</tr>"
 
 print "</table>"
+
+sqlalchemysetup.close()
 
 dbconnection.disconnectdb()
 

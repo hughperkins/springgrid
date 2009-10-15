@@ -26,40 +26,19 @@ import os
 
 from utils import *
 from core import *
+from db import *  
 
 import core.replaycontroller as replaycontroller
 
 dbconnection.connectdb()
 
+sqlalchemysetup.setup()
+
 loginhelper.processCookie()
 
 menu.printPageTop()
 
-requests = dbconnection.querytomaplist( "select matchrequestqueue.matchrequest_id as matchrequestid, " \
-      "ai0.ai_name as ai0name, "\
-      "ai0.ai_version as ai0version, "\
-      "ai1.ai_name as ai1name, "\
-      "ai1.ai_version as ai1version, "\
-      "map_name as mapname, "\
-      "mod_name as modname, " \
-      "botrunner_name as botrunnername, "\
-      "matchresult "\
-      "from ais as ai0, "\
-      "   ais as ai1, "\
-      "   maps, "\
-      "   mods, "\
-      "   matchrequestqueue, "\
-      "   matchrequests_inprogress, "\
-      "   matchresults, "\
-      "   botrunners "\
-      " where "\
-      "   matchresults.matchrequest_id = matchrequestqueue.matchrequest_id " \
-      "   and matchrequests_inprogress.matchrequest_id = matchrequestqueue.matchrequest_id " \
-      "   and botrunners.botrunner_id = matchrequests_inprogress.botrunner_id"\
-      "   and ai0.ai_id = matchrequestqueue.ai0_id "\
-      "   and ai1.ai_id = matchrequestqueue.ai1_id "\
-      "   and maps.map_id = matchrequestqueue.map_id "\
-      "   and mods.mod_id = matchrequestqueue.mod_id " )
+requests = sqlalchemysetup.session.query(tableclasses.MatchRequest)
 
 print "<h3>AILadder - Match results</h3>" \
 "<table>" \
@@ -78,32 +57,31 @@ print "<td>replay</td>"
 print "</tr>"
 
 for request in requests:
+   if request.matchresult == None:
+      continue
    print "<tr>"
-   matchrequest_id = request['matchrequestid']
-   print "<td>" + str(request['matchrequestid']) + "</td>"
-   print "<td>" + request['ai0name'] + "</td>"
-   print "<td>" + request['ai0version'] + "</td>"
-   print "<td>" + request['ai1name'] + "</td>"
-   print "<td>" + request['ai1version'] + "</td>"
-   print "<td>" + request['mapname'] + "</td>"
-   print "<td>" + request['modname'] + "</td>"
+   print "<td>" + str(request.matchrequest_id) + "</td>"
+   print "<td>" + request.ai0.ai_name + "</td>"
+   print "<td>" + request.ai0.ai_version + "</td>"
+   print "<td>" + request.ai1.ai_name + "</td>"
+   print "<td>" + request.ai1.ai_version + "</td>"
+   print "<td>" + request.map.map_name + "</td>"
+   print "<td>" + request.mod.mod_name + "</td>"
    print "<td>"
-   options = dbconnection.querytolistwithparams("select option_name "\
-      " from aioptions, matchrequest_options " \
-      " where aioptions.option_id = matchrequest_options.option_id "\
-      " and matchrequest_options.matchrequest_id = %s ",
-      ( request['matchrequestid'], ) )
-   print ' '.join( options )
-   print "</td>"
-   print "<td>" + str(request['botrunnername']) + "</td>"
-   print "<td>" + str(request['matchresult']) + "</td>"
+   for option in request.options:
+      print option.option.option_name + "&nbsp;" 
+   print "&nbsp;</td>"
+   print "<td>" + request.matchrequestinprogress.botrunner.botrunner_name + "</td>"
+   print "<td>" + request.matchresult.matchresult + "</td>"
    print "<td>"
-   if os.path.isfile( replaycontroller.getReplayPath(matchrequest_id) ):
-      print "<a href='" + replaycontroller.getReplayWebRelativePath(matchrequest_id) + "'>replay</a>"
+   if os.path.isfile( replaycontroller.getReplayPath(request.matchrequest_id) ):
+      print "<a href='" + replaycontroller.getReplayWebRelativePath(request.matchrequest_id) + "'>replay</a>"
    print "</td>"
    print "</tr>"
 
 print "</table>"
+
+sqlalchemysetup.close()
 
 dbconnection.disconnectdb()
 

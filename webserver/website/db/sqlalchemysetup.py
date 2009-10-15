@@ -27,11 +27,13 @@ engine = None
 Session = None
 session = None
 
-def init():
+def setup():
    global engine,Session,session
 
    engine = sqlalchemy.create_engine('mysql://' + config.dbuser + ":" + config.dbpassword + "@" + config.dbhost + "/" + config.dbname, echo=False)
    Session = sqlalchemy.orm.sessionmaker(bind=engine)
    session = Session()
 
+def close():
+   session.commit()
 
