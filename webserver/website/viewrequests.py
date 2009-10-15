@@ -35,34 +35,7 @@ menu.printPageTop()
 
 sqlalchemysetup.init()
 
-if False:
-   requests = dbconnection.querytomaplist( "select matchrequestqueue.matchrequest_id as matchrequestid, " \
-      "ai0.ai_name as ai0name, "\
-      "ai0.ai_version as ai0version, "\
-      "ai1.ai_name as ai1name, "\
-      "ai1.ai_version as ai1version, "\
-      "map_name as mapname, "\
-      "mod_name as modname, " \
-      "matchrequests_inprogress.datetimeassigned, "\
-      "botrunner_name as botrunnername "\
-      "from ais as ai0, "\
-      "   ais as ai1, "\
-      "   maps, "\
-      "   mods, "\
-      "   matchrequestqueue "\
-      " left join matchrequests_inprogress "\
-      "   on matchrequests_inprogress.matchrequest_id = matchrequestqueue.matchrequest_id " \
-      " left join botrunners "\
-      "   on botrunners.botrunner_id = matchrequests_inprogress.botrunner_id"\
-      " where ai0.ai_id = matchrequestqueue.ai0_id "\
-      "   and ai1.ai_id = matchrequestqueue.ai1_id "\
-      "   and maps.map_id = matchrequestqueue.map_id "\
-      "   and mods.mod_id = matchrequestqueue.mod_id "\
-      "   and not exists ( select * from matchresults " \
-             " where matchresults.matchrequest_id = matchrequestqueue.matchrequest_id )" )
-
 requests = sqlalchemysetup.session.query(tableclasses.MatchRequest)
-
 
 print "<h3>AILadder - Match requests</h3>" \
 "<table border='1' padding='3'>" \
