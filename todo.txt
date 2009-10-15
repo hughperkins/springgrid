@@ -3,8 +3,6 @@ what is being worked on at the moment:
 
 todo:
 - add botrunner howto to website
-- add possibility to describe which maps and mods a botrunner supports on website, and take
-  into account when botrunner makes requests to the website
 - add subscription to each league for each ai
 - add scheduler, to queue up matchrequests for each league
 - add results calculator
@@ -40,6 +38,9 @@ not sure if actually necessary (so: to test/investigate):
 - add gameendstring to per-mod config
 
 done:
+- remove _drop.sql files, rename _create.sql files to drop _create prefix
+- add possibility to describe which maps and mods a botrunner supports on website, and take
+  into account when botrunner makes requests to the website
 - show botrunners that connected within last 5 minutes so in green in botrunners table (maybe with status?)
 - add 'last ping time' to botrunner table, or to another table, maybe also 'current status'
 - assume each botrunner is on a unique machine; purge previous requests when a new
