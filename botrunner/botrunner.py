@@ -431,13 +431,17 @@ def registermaps():
          print getxmlrpcproxy().registersupportedmap( config.botrunnername, config.sharedsecret, mapname, str(archivechecksum) )
 
 def registermods():
+   registeredmods = getxmlrpcproxy().getsupportedmods( config.botrunnername, config.sharedsecret )
+   print registeredmods
+
    for i in xrange( unitsync.GetPrimaryModCount() ):
       modname = unitsync.GetPrimaryModName(i)
-      print "registering mod " + modname + " ..."
-      unitsync.GetPrimaryModArchiveCount(i)
-      modarchive = unitsync.GetPrimaryModArchive(0)
-      modarchivechecksum = unitsync.GetArchiveChecksum( modarchive )
-      print getxmlrpcproxy().registersupportedmod( config.botrunnername, config.sharedsecret, modname, str(modarchivechecksum) )
+      if registeredmods.count( modname ) == 0:
+         print "registering mod " + modname + " ..."
+         unitsync.GetPrimaryModArchiveCount(i)
+         modarchive = unitsync.GetPrimaryModArchive(0)
+         modarchivechecksum = unitsync.GetArchiveChecksum( modarchive )
+         print getxmlrpcproxy().registersupportedmod( config.botrunnername, config.sharedsecret, modname, str(modarchivechecksum) )
 
 def registerais():
    for i in xrange( unitsync.GetSkirmishAICount() ):
