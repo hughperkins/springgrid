@@ -61,6 +61,20 @@ class Account(Base):
    passwordsalt = Column(String(255))
    passwordhash = Column(String(255))
 
+class BotRunnerOption(Base):
+   __tablename__ = 'botrunner_options'
+
+   botrunner_option_id = Column(Integer,primary_key=True)
+   botrunner_option_name = Column(String(255))
+
+class BotRunnerAssignedOption(Base):
+   __tablename__ = 'botrunner_assignedoptions'
+
+   botrunner_id = Column(Integer,ForeignKey('botrunners.botrunner_id'),primary_key=True)
+   botrunner_option_id = Column(Integer,ForeignKey('botrunner_options.botrunner_option_id'),primary_key=True)
+
+   option = relation("BotRunnerOption")
+
 class BotRunner(Base):
    __tablename__ = 'botrunners'
 
@@ -72,6 +86,7 @@ class BotRunner(Base):
    botrunner_owneraccountid = Column(Integer, ForeignKey('accounts.account_id') )
 
    owneraccount = relation("Account")
+   options = relation("BotRunnerAssignedOption")
 
 class AIOption(Base):
    __tablename__ = 'aioptions'

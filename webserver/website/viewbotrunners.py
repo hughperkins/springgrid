@@ -26,34 +26,28 @@ import datetime
 
 from utils import *
 from core import *
+from db import *
 
 import config
 
 dbconnection.connectdb()
 
+sqlalchemysetup.setup()
+
 loginhelper.processCookie()
 
 menu.printPageTop()
 
-rows = dbconnection.querytomaplist( "select "\
-   "    botrunner_name as botrunnername, "\
-   "    username, "\
-   "    userfullname, "\
-   "    botrunner_sharedsecret as sharedsecret, "\
-   "    botrunner_lastpingtime, "\
-   "    botrunner_lastpingstatus "\
-   " from botrunners " \
-   " left join accounts on  "\
-   "    botrunners.botrunner_owneraccountid = accounts.account_id " )
+botrunners = sqlalchemysetup.session.query(tableclasses.BotRunner)
 
 print "<h3>AILadder - Bot Runner List</h3>" \
 "<table border='1' padding='3'>" \
 "<tr class='tablehead'><td>Bot Runner Name</td><td>Last ping time</td><td>Last ping status</td><td>Bot Runner Owner Name:</td><td>Shared secret (only visible for your own botrunners)</td><td>Options</td></tr>"
 
-for row in rows:
+for botrunner in botrunners:
    pingtimeok = False
    lastpingtimeddate = None
-   lastpingtime = row['botrunner_lastpingtime']
+   lastpingtime =  botrunner.botrunner_lastpingtime
    if lastpingtime != None:
       lastpingtimedate = dates.dateStringToDateTime( lastpingtime )
       secondssincelastping = dates.timedifftototalseconds( datetime.datetime.now() - lastpingtimedate )
@@ -64,25 +58,23 @@ for row in rows:
       print "<tr class='success'>"
    else:
       print "<tr>"
-   print "<td><a href='viewbotrunner.py?botrunnername=" + row['botrunnername'] + "'>" + row['botrunnername'] + "</a></td>"
+   print "<td><a href='viewbotrunner.py?botrunnername=" + botrunner.botrunner_name + "'>" + botrunner.botrunner_name + "</a></td>"
    print "<td>" + str( lastpingtimedate ) + "</td>"
-   print "<td>" + str( row['botrunner_lastpingstatus'] ) + "</td>"
-   if row['userfullname'] != None:
-      print "<td>" + row['userfullname'] + "</td>"
+   print "<td>" + str( botrunner.botrunner_lastpingstatus ) + "</td>"
+   if botrunner.owneraccount != None:
+      print "<td>" + botrunner.owneraccount.userfullname + "</td>"
    else:
-      print "<td></td>"
-   if row['username'] != None and row['username'] == loginhelper.gusername:
-      print "<td>" + row['sharedsecret'] + "</td>"
+      print "<td>&nbsp;</td>"
+   if botrunner.owneraccount != None:
+      if botrunner.owneraccount.username == loginhelper.gusername:
+         print "<td>" + botrunner.botrunner_sharedsecret + "</td>"
    else:
-      print "<td></td>"
+      print "<td>&nbsp;</td>"
 
-   options = dbconnection.querytolistwithparams( "select botrunner_option_name "\
-      " from botrunner_options, botrunner_assignedoptions, botrunners "\
-      " where botrunners.botrunner_name = %s "\
-      " and botrunner_assignedoptions.botrunner_id = botrunners.botrunner_id "\
-      " and botrunner_options.botrunner_option_id = botrunner_assignedoptions.botrunner_option_id ",
-      ( row['botrunnername'], ) )
-   print "<td>" + ' '.join( options ) + "</td>"
+   print "<td>"
+   for option in botrunner.options:
+      print option.option.botrunner_option_name + "&npsp;"
+   print "&nbsp;</td>"
 
    print "</tr>"
 
@@ -103,6 +95,8 @@ if loginhelper.gusername != '' and False:
    "<tr><td></td><td><input type='submit' value='Add' /></td></tr>" \
    "</table>" \
    "</form>"
+
+sqlalchemysetup.close()
 
 dbconnection.disconnectdb()
 
