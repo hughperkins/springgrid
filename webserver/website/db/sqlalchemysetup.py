@@ -32,8 +32,6 @@ def init():
 
    engine = sqlalchemy.create_engine('mysql://' + config.dbuser + ":" + config.dbpassword + "@" + config.dbhost + "/" + config.dbname, echo=False)
    Session = sqlalchemy.orm.sessionmaker(bind=engine)
-   print Session
    session = Session()
-   print session
 
 

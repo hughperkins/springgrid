@@ -29,11 +29,11 @@ from db import *
 
 dbconnection.connectdb()
 
+sqlalchemysetup.init()
+
 loginhelper.processCookie()
 
 menu.printPageTop()
-
-sqlalchemysetup.init()
 
 requests = sqlalchemysetup.session.query(tableclasses.MatchRequest)
 
