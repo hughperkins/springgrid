@@ -1,5 +1,3 @@
-#!/usr/bin/python
-
 # Copyright Hugh Perkins 2009
 # hughperkins@gmail.com http://manageddreams.com
 #
@@ -21,21 +19,9 @@
 # http://www.opensource.org/licenses/gpl-license.php
 #
 
-# lets a botrunner add a single map to the database
-
-# import cgitb; cgitb.enable()
-import cgi
-import sys
-
 from utils import *
-from core import *
 
-def printfailresponse(reason ):
-   print '<response success="false" reason="' + reason.replace('"', "'") + '" />'
-
-def printsuccessresponse():
-   print "<response success='true' />"
-
+# returns True if exists, or added ok, otherwise False
 def addmapifdoesntexist(mapname, maparchivechecksum):
    rows = dbconnection.dictcursor.execute("select map_archivechecksum from maps where map_name = %s", (mapname) )
    if rows == 0:
@@ -43,37 +29,20 @@ def addmapifdoesntexist(mapname, maparchivechecksum):
          rows = dbconnection.dictcursor.execute( "insert into maps ( map_name, map_archivechecksum ) "\
             " values ( %s, %s )", ( mapname, maparchivechecksum) )
       except:
-         printfailresponse("error adding to db: " + str( sys.exc_value ) )
-         return False
+         return(False, "error adding to db: " + str( sys.exc_value ) )
 
       if rows != 1:
-         printfailresponse("error adding to db")
-         return False
+         return(False,"error adding to db")
       
-      return True
+      return (True,'')
 
    row = dbconnection.dictcursor.fetchone()
    if row["map_archivechecksum"] != maparchivechecksum:
-      printfailresponse("map archive checksum doesn't match the one already on the website.")
-      return False
+      return (False,"map archive checksum doesn't match the one already on the website.")
 
-   return True
+   return (True,'')
 
-def go():
-   if not botrunnerhelper.botrunnerauthorized():
-      printfailresponse("Not authenticated")
-      return 
-
-   botrunnername = formhelper.getValue("botrunnername")
-   mapname = formhelper.getValue("mapname")
-   maparchivechecksum = formhelper.getValue("maparchivechecksum")
-   if mapname == None  or mapname == '' or maparchivechecksum == None or maparchivechecksum == '':
-      printfailresponse("not all fields supplied")
-      return
-
-   if not addmapifdoesntexist(mapname, maparchivechecksum):
-      return
-
+def setbotrunnersupportsthismap( botrunnername, mapname ):
    # Now, register the map as supported map
    rows = dbconnection.dictcursor.execute("select * from botrunners, botrunner_supportedmaps, maps " \
       " where botrunners.botrunner_id = botrunner_supportedmaps.botrunner_id "\
@@ -90,14 +59,5 @@ def go():
          " where botrunners. botrunner_name = %s "\
          " and maps.map_name = %s ",
          ( botrunnername, mapname ) )
-
-   printsuccessresponse()
-
-print "Content-type: text/xml\n\n"
-try:
-   dbconnection.connectdb()
-   go()
-   dbconnection.disconnectdb()
-except:
-   printfailresponse("Unexpected exception: " + str( sys.exc_value ) )
+   return (True,'')
 

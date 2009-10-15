@@ -33,6 +33,7 @@ import io
 from xml.dom import minidom
 import tarfile
 import base64
+import xmlrpclib
 
 from unitsync import unitsync as unitsyncpkg
 
@@ -102,10 +103,12 @@ def writeFile( filepath, contents ):
    filehandle.write( contents )
    filehandle.close()
 
+# return xmlrpcproxy to communicate with web server
+def getxmlrpcproxy():
+   return xmlrpclib.ServerProxy( config.websiteurl + "/botrunner_webservice.py" )
+
 def doping( status ):
-   requestparams = urllib.urlencode({'botrunnername': config.botrunnername, 'sharedsecret': config.sharedsecret, 'status': status })
-   serverrequesthandle = urllib.urlopen( config.websiteurl + "/botrunner_ping.py", requestparams )
-   serverrequestarray = serverrequesthandle.readlines()
+   return getxmlrpcproxy().ping( config.botrunnername, config.sharedsecret, status )
 
 def rungame( serverrequest ):
    global config, writabledatadirectory
@@ -421,10 +424,7 @@ def registermaps():
       archivename = unitsync.GetMapArchiveName(0)
       #print unitsync.GetMapArchiveName(1)
       archivechecksum = unitsync.GetArchiveChecksum( archivename )
-      requestparams = urllib.urlencode({'mapname': mapname, 'maparchivechecksum': archivechecksum, 'botrunnername': config.botrunnername, 'sharedsecret': config.sharedsecret })
-      serverrequesthandle = urllib.urlopen( config.websiteurl + "/botrunner_registersupportedmap.py", requestparams )
-      serverrequestarray = serverrequesthandle.readlines()
-      print "\n".join( serverrequestarray )
+      print getxmlrpcproxy().registersupportedmap( config.botrunnername, config.sharedsecret, mapname, str(archivechecksum) )
 
 def registermods():
    for i in xrange( unitsync.GetPrimaryModCount() ):
@@ -433,10 +433,7 @@ def registermods():
       unitsync.GetPrimaryModArchiveCount(i)
       modarchive = unitsync.GetPrimaryModArchive(0)
       modarchivechecksum = unitsync.GetArchiveChecksum( modarchive )
-      requestparams = urllib.urlencode({'modname': modname, 'modarchivechecksum': modarchivechecksum, 'botrunnername': config.botrunnername, 'sharedsecret': config.sharedsecret })
-      serverrequesthandle = urllib.urlopen( config.websiteurl + "/botrunner_registersupportedmod.py", requestparams )
-      serverrequestarray = serverrequesthandle.readlines()
-      print "\n".join( serverrequestarray )
+      print getxmlrpcproxy().registersupportedmod( config.botrunnername, config.sharedsecret, modname, str(modarchivechecksum) )
 
 def registerais():
    for i in xrange( unitsync.GetSkirmishAICount() ):
