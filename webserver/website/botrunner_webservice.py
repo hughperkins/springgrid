@@ -74,6 +74,15 @@ class AILadderService:
 
       return (True,'')
 
+   def registersupportedai( self, botrunnername, sharedsecret, ainame, aiversion ):
+      if not botrunnerhelper.validatesharedsecret(botrunnername, sharedsecret):
+         return (False, "Not authenticated")
+
+      if not aihelper.addaiifdoesntexist(ainame, aiversion):
+         return (False, "Couldn't register ai")
+
+      return (True,'')
+
 handler = SimpleXMLRPCServer.CGIXMLRPCRequestHandler()
 handler.register_instance( AILadderService() )
 handler.register_introspection_functions()

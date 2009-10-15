@@ -447,9 +447,7 @@ def registerais():
          
       if shortname != '' and version != '':
          print "registering ai " + shortname + " version " + version + " ..."
-      requestparams = urllib.urlencode({'ainame': shortname, 'aiversion': version, 'botrunnername': config.botrunnername, 'sharedsecret': config.sharedsecret })
-      serverrequesthandle = urllib.urlopen( config.websiteurl + "/botrunner_registersupportedai.py", requestparams )
-      serverrequestarray = serverrequesthandle.readlines()
+      print getxmlrpcproxy().registersupportedai( config.botrunnername, config.sharedsecret, shortname, version )
 
 def go():
    global config, unitsync, writabledatadirectory, demosdirectorylistingbeforegame
