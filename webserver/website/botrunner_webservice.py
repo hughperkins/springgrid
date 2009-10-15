@@ -27,6 +27,7 @@ import SimpleXMLRPCServer
 import sys
 import os
 import datetime
+import base64
 
 from utils import *
 from core import *
@@ -92,16 +93,48 @@ class AILadderService:
    def getsupportedais( self, botrunnername, sharedsecret ):
       return aihelper.getsupportedais(botrunnername)
 
+   def submitresult2( self, botrunnername, sharedsecret, matchrequestid, resultstring, replaycontentsbase64 ):
+      return (True, 'blah')
+
+   #  resultstring is: 'ai0won', 'draw', 'crashed', 'hung', ...
+   # returns (True,message) or (False,message)
+   def submitresult( self, botrunnername, sharedsecret, matchrequestid, resultstring, replaycontentsdata ):
+      try:
+         if not botrunnerhelper.validatesharedsecret(botrunnername, sharedsecret):
+            return (False, "Not authenticated")
+
+         # check if this matchrequest_id was actually assigned to this engine
+         # otherwise ditch the result
+         if not matchrequestcontroller.matchrequestvalidforthisserver( botrunnername, matchrequestid ):
+            return (False, "invalid matchrequestid" )
+
+         # store the result, and remove from queue
+         # if the replay upload fails, well, that's a shame, but it's not the end 
+         # of the world...
+         # or we could get the botrunner to retry several times, to be decided.
+         matchrequestcontroller.storeresult( botrunnername, matchrequestid, resultstring )
+
+         # now to handle uploading the replay...
+         replaycontentsraw = replaycontentsdata.data
+         replayfilehandle = open( replaycontroller.getReplayPath(matchrequestid), "wb" )
+         replayfilehandle.write( replaycontentsraw )
+         replayfilehandle.close()
+         # really, we should validate that this match was assigned to this server first...
+         # also, ideally, if there is no upload, we should store that info in the database somewheree
+
+         return (True,'received replay file raw length: ' + str( len( replaycontentsraw ) ) )
+      except:
+         return (False,"unexpected exception: " + str( sys.exc_info() ) )
+
 handler = SimpleXMLRPCServer.CGIXMLRPCRequestHandler()
 handler.register_instance( AILadderService() )
 handler.register_introspection_functions()
 
-dbconnection.connectdb()
-try:
-   handler.handle_request()
-except:
-   print str( sys.exc_value )
-
-dbconnection.disconnectdb()
-
+if __name__ == '__main__':
+   dbconnection.connectdb()
+   try:
+      handler.handle_request()
+   except:
+      print str( sys.exc_value )
+   dbconnection.disconnectdb()
 

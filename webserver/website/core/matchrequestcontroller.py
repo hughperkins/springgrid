@@ -126,7 +126,7 @@ def markrequestasinprogress( requestitem, botrunnerdescription ):
 # validate that an incoming result is for a match assigned to this server
 # return true if so, otherwise false
 def matchrequestvalidforthisserver( botrunnername, matchrequest_id ):
-   print botrunnername + " " + str(matchrequest_id)
+   #print botrunnername + " " + str(matchrequest_id)
    rows = dbconnection.cursor.execute("select * from matchrequests_inprogress, "\
       " botrunners "\
       " where matchrequest_id = %s " \

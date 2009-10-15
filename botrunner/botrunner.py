@@ -233,25 +233,19 @@ def uploadresulttoserver( serverrequest, gameresult ):
       replayfilehandle = open( writabledatadirectory + "/thisreplay.tar.bz2", 'rb' )
       replaycontents = replayfilehandle.read()
       replayfilehandle.close()
-      replaycontentsbase64 = base64.encodestring(replaycontents)
-      print "binary length: " + str(len(replaycontents))
-      print "base64 length: " + str(len(replaycontentsbase64))
 
-      requestparams = urllib.urlencode({
-          'botrunnername': config.botrunnername,
-          'sharedsecret': config.sharedsecret,
-          'matchrequestid': serverrequest.matchrequestid,
-          'result': gameresult.resultstring,
-          'replay': replaycontentsbase64 } )
+      print "binary length: " + str(len(replaycontents))
+      replaybinarywrapper = xmlrpclib.Binary(replaycontents)
+
       requestuploadedok = False    
       while not requestuploadedok:
          try:
-            serverrequesthandle = urllib.urlopen( config.websitepostpage, requestparams )  
-            resultlines = serverrequesthandle.readlines()
-            print "\n".join(resultlines)
+            (result,errormessage ) = getxmlrpcproxy().submitresult( config.botrunnername, config.sharedsecret, serverrequest.matchrequestid, gameresult.resultstring, replaybinarywrapper )
+            print "upload result: " + str( result) + " " + errormessage
             requestuploadedok = True
          except:
             print "Something went wrong uploading to the server: " + str( sys.exc_value ) + ".\nRetrying ... "
+            time.sleep(5)
    else:
       print "we haven't programmed in the case of no replay found yet..."
       pass
