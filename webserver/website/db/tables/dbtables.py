@@ -28,37 +28,33 @@ from utils import *
 
 scriptdir = os.path.dirname( os.path.realpath( __file__ ) )
 
+# execute all .sql files, assuming that each one is a script to create a table
 # returns list of exceptions
 def createtables(user,name,dbname,dbhost):
    exceptions = []
    for sqlfilename in os.listdir(scriptdir):
-      if sqlfilename.find("_create.sql") != -1:
-         #print sqlfilename
-         #filecontents = filehelper.readFile( scriptdir + "/" + sqlfilename )
+      if sqlfilename.find(".sql") != -1:
          try:
             dbconnection.executesqlfile(scriptdir + "/" + sqlfilename)
-            #dbconnection.cursor.execute( filecontents )
          except:
-            # just print, and carry on
             exceptions.append( str( sys.exc_value ) )
-            #print "Exception: " + str( sys.exc_value )
          dbconnection.nextAllSets(dbconnection.cursor)
    return exceptions
          
+# find all files ending in .sql, assume filename, without .sql, is the tablename
+# drop that table
+# do for all files ending in .sql in same directory as this script
 def droptables(user,name,dbname, dbhost):
    exceptions = []
    for sqlfilename in os.listdir(scriptdir):
-      if sqlfilename.find("_drop.sql") != -1:
-         #print sqlfilename
-         #filecontents = filehelper.readFile( scriptdir + "/" + sqlfilename )
+      if sqlfilename.find(".sql") != -1:
+         tablename = sqlfilename.split(".")[0]
+         # print tablename
          try:
-            dbconnection.executesqlfile(scriptdir + "/" + sqlfilename)
-            #dbconnection.cursor.execute( filecontents )
+            dbconnection.dictcursor.execute("drop table " + tablename )
          except:
             # just print, and carry on
-            #print "Exception: " + str( sys.exc_value )
             exceptions.append( str( sys.exc_value ) )
-         dbconnection.nextAllSets(dbconnection.cursor)
    return exceptions
 
 def usage():
