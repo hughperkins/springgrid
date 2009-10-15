@@ -89,6 +89,9 @@ class AILadderService:
    def getsupportedmaps( self, botrunnername, sharedsecret ):
       return maphelper.getsupportedmaps(botrunnername)
 
+   def getsupportedais( self, botrunnername, sharedsecret ):
+      return aihelper.getsupportedais(botrunnername)
+
 handler = SimpleXMLRPCServer.CGIXMLRPCRequestHandler()
 handler.register_instance( AILadderService() )
 handler.register_introspection_functions()

@@ -21,6 +21,15 @@
 
 from utils import *
 
+# return list of supported (ainame,aiversion) tuples
+def getsupportedais( botrunnername ):
+   resultmaplist = dbconnection.querytomaplist("select ai_name, ai_version "\
+      " from ais " )
+   resultlist = []
+   for mapitem in resultmaplist:
+      resultlist.append( ( mapitem['ai_name'], mapitem['ai_version'] ) )
+   return resultlist
+
 def addaiifdoesntexist(ainame, aiversion):
    rows = dbconnection.dictcursor.execute("select * from ais where ai_name = %s and ai_version = %s", (ainame, aiversion) )
    if rows == 0:

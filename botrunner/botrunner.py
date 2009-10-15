@@ -444,6 +444,9 @@ def registermods():
          print getxmlrpcproxy().registersupportedmod( config.botrunnername, config.sharedsecret, modname, str(modarchivechecksum) )
 
 def registerais():
+   registeredais = getxmlrpcproxy().getsupportedais( config.botrunnername, config.sharedsecret )
+   print registeredais
+
    for i in xrange( unitsync.GetSkirmishAICount() ):
       shortname = ''
       version = ''
@@ -454,8 +457,9 @@ def registerais():
             version = unitsync.GetInfoValue(j)
          
       if shortname != '' and version != '':
-         print "registering ai " + shortname + " version " + version + " ..."
-      print getxmlrpcproxy().registersupportedai( config.botrunnername, config.sharedsecret, shortname, version )
+         if registeredais.count( [ shortname, version ] ) == 0:
+            print "registering ai " + shortname + " version " + version + " ..."
+            print getxmlrpcproxy().registersupportedai( config.botrunnername, config.sharedsecret, shortname, version )
 
 def go():
    global config, unitsync, writabledatadirectory, demosdirectorylistingbeforegame
