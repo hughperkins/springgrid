@@ -1,5 +1,6 @@
 what is being worked on at the moment:
-- making it easy to run botrunner
+- waiting for someone to run a botrunner or two ;-) then will probably work on match
+  scheduling
 
 todo:
 - add botrunner howto to website
@@ -8,7 +9,6 @@ todo:
 - add results calculator
 - enforce no-cheating option in botrunner
 - some way of passing options through to ai (via script.txt?)
-- implement game timeout in botrunner
 - upload logfile after game, per-ai, or at least the infolog.txt
 - be able to configure arm vs core vs ... vs random
 
