@@ -23,6 +23,7 @@ import cgi
 
 from utils import *
 #from core import *
+from db import *
 
 botrunnername = ""
 
@@ -35,19 +36,21 @@ def botrunnerauthorized():
 
 def validatesharedsecret(lbotrunnername, sharedsecret):
    global botrunnername
-   rows = dbconnection.cursor.execute("select botrunner_sharedsecret from botrunners where botrunner_name=%s", (lbotrunnername,) )
-   if rows == 0:  # Never seen this botrunner before, just add it
-      dbconnection.cursor.execute("insert into botrunners (botrunner_name, botrunner_sharedsecret ) "\
-         " values ( %s, %s ) ",
-         ( lbotrunnername, sharedsecret ) )
+
+   botrunner = sqlalchemysetup.session.query(tableclasses.BotRunner).filter(tableclasses.BotRunner.botrunner_name == lbotrunnername ).first()
+
+   if botrunner == None: 
+      # Never seen this botrunner before, just add it
+      botrunner = tableclasses.BotRunner()
+      botrunner.botrunner_name = lbotrunnername
+      botrunner.botrunner_sharedsecret = sharedsecret
+      sqlalchemysetup.session.add(botrunner)
+      sqlalchemysetup.session.commit()
+
       # if this fails, return true anyway
       return True
-   elif rows >= 1:
-      row = dbconnection.cursor.fetchone()
-      if row == None:
-         return False
-      actualsharedsecret = row[0]
-      if actualsharedsecret == sharedsecret:
+   else:
+      if botrunner.botrunner_sharedsecret == sharedsecret:
          botrunnername = lbotrunnername
          return True
       return False

@@ -22,7 +22,7 @@
 create table botrunners (
    botrunner_id integer not null auto_increment,
    botrunner_name varchar(255) not null,
-   botrunner_owneraccountid integer not null,
+   botrunner_owneraccountid integer,
    botrunner_sharedsecret varchar(255) not null,
    botrunner_lastpingtime varchar(255),
    botrunner_lastpingstatus varchar(255),
