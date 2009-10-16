@@ -42,3 +42,12 @@ def createalltables():
    global engine,Session,session
    tableclasses.createall(engine)
 
+def dropalltables():
+   global engine,Session,session
+   tableclasses.dropall(engine)
+
+def reloadalltables():
+   global engine,Session,session
+   tableclasses.dropall(engine)
+   tableclasses.createall(engine)
+

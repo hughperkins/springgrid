@@ -87,6 +87,8 @@ class Cookie(Base):
    __tablename__ = 'cookies'
 
    cookiereference = Column(String(255),primary_key=True)
+   #username = Column(String(255))
+   # we can change to use account_id in the future
    account_id = Column(Integer,ForeignKey('accounts.account_id'))
 
    account = relation("Account")
@@ -197,6 +199,9 @@ class MatchResult(Base):
 
 def createall(engine):
    Base.metadata.create_all(engine)
+
+def dropall(engine):
+   Base.metadata.drop_all(engine)
 
 
 
