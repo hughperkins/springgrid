@@ -7,9 +7,9 @@ def test():
    dates.test()
    stringhelper.test()
 
-   dbconnection.connectdb()
+   sqlalchemysetup.setup()
    roles.test()
-   dbconnection.disconnectdb()
+   sqlalchemysetup.close()
 
 if __name__ == '__main__':
    test()
