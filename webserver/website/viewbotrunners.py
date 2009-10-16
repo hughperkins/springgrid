@@ -26,10 +26,9 @@ import datetime
 
 from utils import *
 from core import *
+from core.tableclasses import *
 
 import config
-
-dbconnection.connectdb()
 
 sqlalchemysetup.setup()
 
@@ -37,7 +36,7 @@ loginhelper.processCookie()
 
 menu.printPageTop()
 
-botrunners = sqlalchemysetup.session.query(tableclasses.BotRunner)
+botrunners = sqlalchemysetup.session.query(BotRunner)
 
 print "<h3>AILadder - Bot Runner List</h3>" \
 "<table border='1' padding='3'>" \
@@ -72,7 +71,7 @@ for botrunner in botrunners:
 
    print "<td>"
    for option in botrunner.options:
-      print option.option.botrunner_option_name + "&npsp;"
+      print option.option.option_name + "&nbsp;"
    print "&nbsp;</td>"
 
    print "</tr>"
@@ -96,8 +95,6 @@ if loginhelper.gusername != '' and False:
    "</form>"
 
 sqlalchemysetup.close()
-
-dbconnection.disconnectdb()
 
 menu.printPageBottom()
 

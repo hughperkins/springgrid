@@ -155,11 +155,12 @@ class Cookie(Base):
 
    account = relation("Account")
 
-class BotRunnerOption(Base):
-   __tablename__ = 'botrunner_options'
-
-   botrunner_option_id = Column(Integer,primary_key=True)
-   botrunner_option_name = Column(String(255))
+# I think this was in transition when I switched to doing something else ;-)
+#class BotRunnerOption(Base):
+#   __tablename__ = 'botrunner_options'
+#
+#   botrunner_option_id = Column(Integer,primary_key=True)
+#   botrunner_option_name = Column(String(255))
 
 class BotRunnerSupportedMap(Base):
    __tablename__ = 'botrunner_supportedmaps'
@@ -167,7 +168,7 @@ class BotRunnerSupportedMap(Base):
    botrunner_id = Column(Integer,ForeignKey('botrunners.botrunner_id'),primary_key=True)
    map_id = Column(Integer,ForeignKey('maps.map_id'),primary_key=True)
 
-   botrunner = relation("BotRunner")
+   botrunner = relation("BotRunner",backref='supportedmaps')
    map = relation("Map")
 
 class BotRunnerSupportedMod(Base):
@@ -176,16 +177,19 @@ class BotRunnerSupportedMod(Base):
    botrunner_id = Column(Integer,ForeignKey('botrunners.botrunner_id'),primary_key=True)
    mod_id = Column(Integer,ForeignKey('mods.mod_id'),primary_key=True)
 
-   botrunner = relation("BotRunner")
+   botrunner = relation("BotRunner",backref='supportedmods')
    mod = relation("Mod")
 
 class BotRunnerAssignedOption(Base):
    __tablename__ = 'botrunner_assignedoptions'
 
    botrunner_id = Column(Integer,ForeignKey('botrunners.botrunner_id'),primary_key=True)
-   botrunner_option_id = Column(Integer,ForeignKey('botrunner_options.botrunner_option_id'),primary_key=True)
+   botrunner_option_id = Column(Integer,ForeignKey('aioptions.option_id'),primary_key=True)
 
-   option = relation("BotRunnerOption")
+   option = relation("AIOption")
+
+   def __init__(self, option ):
+      self.option = option
 
 class BotRunner(Base):
    __tablename__ = 'botrunners'
@@ -318,12 +322,14 @@ def addstaticdata(session):
    modadminrole = Role("modadmin")
    mapadminrole = Role("mapadmin")
    leagueadminrole = Role("leagueadmin")
+   botrunneradminrole = Role("botrunneradmin")
 
    session.add(accountadminrole)
    session.add(aiadminrole)
    session.add(modadminrole)
    session.add(mapadminrole)
    session.add(leagueadminrole)
+   session.add(botrunneradminrole)
 
    account = Account("admin","admin", "admin")
    session.add(account)
@@ -332,6 +338,7 @@ def addstaticdata(session):
    account.addRole( modadminrole )
    account.addRole( mapadminrole )
    account.addRole( leagueadminrole )
+   account.addRole( botrunneradminrole )
 
    session.add(Account("guest","guest","guest"))
 

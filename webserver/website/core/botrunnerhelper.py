@@ -24,6 +24,7 @@ import cgi
 from utils import *
 import sqlalchemysetup
 import tableclasses
+from tableclasses import *
 
 botrunnername = ""
 
@@ -56,17 +57,10 @@ def validatesharedsecret(lbotrunnername, sharedsecret):
       return False
 
 def getOwnerUsername(botrunnername):
-   rows = dbconnection.cursor.execute("select username from "\
-      " botrunners, accounts " \
-      " where botrunners.botrunner_owneraccountid = account_id "\
-      " and botrunners.botrunner_name = %s ",
-      ( botrunnername ) )
-   if rows == 0:
-      return ''
-   row = dbconnection.cursor.fetchone()
-   if row == None:
-      return
-   return row[0]
-
-
+   botrunner = sqlalchemysetup.session.query(BotRunner).filter(BotRunner.botrunner_name == botrunnername ).first()
+   if botrunner == None:
+      return None
+   if botrunner.owneraccount == None:
+      return None
+   return botrunner.owneraccount.username
 
