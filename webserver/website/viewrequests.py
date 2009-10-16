@@ -25,7 +25,6 @@ import cgitb; cgitb.enable()
 
 from utils import *
 from core import *
-from db import *
 
 dbconnection.connectdb()
 
