@@ -35,10 +35,13 @@ def botrunnerauthorized():
    sharedsecret = formhelper.getValue("sharedsecret")
    return validatesharedsecret( botrunnername, sharedsecret )
 
+def getbotrunner(botrunnername ):
+   return sqlalchemysetup.session.query(tableclasses.BotRunner).filter(tableclasses.BotRunner.botrunner_name == botrunnername ).first()
+
 def validatesharedsecret(lbotrunnername, sharedsecret):
    global botrunnername
 
-   botrunner = sqlalchemysetup.session.query(tableclasses.BotRunner).filter(tableclasses.BotRunner.botrunner_name == lbotrunnername ).first()
+   botrunner = getbotrunner( lbotrunnername )
 
    if botrunner == None: 
       # Never seen this botrunner before, just add it
@@ -57,7 +60,7 @@ def validatesharedsecret(lbotrunnername, sharedsecret):
       return False
 
 def getOwnerUsername(botrunnername):
-   botrunner = sqlalchemysetup.session.query(BotRunner).filter(BotRunner.botrunner_name == botrunnername ).first()
+   botrunner = getbotrunner( botrunnername )
    if botrunner == None:
       return None
    if botrunner.owneraccount == None:

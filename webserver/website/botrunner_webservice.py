@@ -148,12 +148,10 @@ handler.register_instance( AILadderService() )
 handler.register_introspection_functions()
 
 if __name__ == '__main__':
-   dbconnection.connectdb()
    sqlalchemysetup.setup()
    try:
       handler.handle_request()
    except:
       print str( sys.exc_value )
    sqlalchemysetup.close()
-   dbconnection.disconnectdb()
 

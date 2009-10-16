@@ -20,52 +20,48 @@
 #
 
 from utils import *
+import sqlalchemysetup
+from tableclasses import *
+import botrunnerhelper
 
 # returns True if exists, or added ok, otherwise False
 def addmapifdoesntexist(mapname, maparchivechecksum):
-   rows = dbconnection.dictcursor.execute("select map_archivechecksum from maps where map_name = %s", (mapname) )
-   if rows == 0:
+   map = sqlalchemysetup.session.query(Map).filter(Map.map_name == mapname ).first()
+   if map == None:
       try:
-         rows = dbconnection.dictcursor.execute( "insert into maps ( map_name, map_archivechecksum ) "\
-            " values ( %s, %s )", ( mapname, maparchivechecksum) )
+         map = Map( mapname, maparchivechecksum )
+         sqlalchemysetup.session.add(map)
+         sqlalchemysetup.session.commit()
       except:
          return(False, "error adding to db: " + str( sys.exc_value ) )
 
-      if rows != 1:
-         return(False,"error adding to db")
-      
       return (True,'')
 
-   row = dbconnection.dictcursor.fetchone()
-   if row["map_archivechecksum"] != maparchivechecksum:
+   if map.map_archivechecksum != maparchivechecksum:
       return (False,"map archive checksum doesn't match the one already on the website.")
 
    return (True,'')
 
+def getmap( mapname ):
+   return sqlalchemysetup.session.query(Map).filter(Map.map_name == mapname ).first()
+
 # return list of supported mapnames
 def getsupportedmaps( botrunnername ):
-   return dbconnection.querytolistwithparams("select map_name "\
-      " from maps, botrunners, botrunner_supportedmaps "\
-      " where maps.map_id = botrunner_supportedmaps.map_id "\
-      " and botrunners.botrunner_name = %s ",
-      ( botrunnername, ) )
+   botrunner = sqlalchemysetup.session.query(BotRunner).filter(BotRunner.botrunner_name == botrunnername ).first()
+   if botrunner == None:
+      return []
+   if botrunner.supportedmaps == None:
+      return []
+   supportedmapnames = []
+   for map in botrunner.supportedmaps:
+      supportedmapnames.append(map.map.map_name)
+   return supportedmapnames
 
 def setbotrunnersupportsthismap( botrunnername, mapname ):
    # Now, register the map as supported map
-   rows = dbconnection.dictcursor.execute("select * from botrunners, botrunner_supportedmaps, maps " \
-      " where botrunners.botrunner_id = botrunner_supportedmaps.botrunner_id "\
-      " and botrunners.botrunner_name = %s "\
-      " and botrunner_supportedmaps.map_id = maps.map_id "\
-      " and maps.map_name = %s ",
-      ( botrunnername, mapname ) )
-   #print rows
-   if rows == 0:
-      dbconnection.dictcursor.execute("insert into botrunner_supportedmaps "\
-         " ( botrunner_id, map_id ) "\
-         " select botrunner_id, map_id "\
-         " from botrunners, maps "\
-         " where botrunners. botrunner_name = %s "\
-         " and maps.map_name = %s ",
-         ( botrunnername, mapname ) )
+   botrunner = botrunnerhelper.getbotrunner( botrunnername )
+   map = getmap(mapname)
+   botrunner.supportedmaps.append(BotRunnerSupportedMap(map))
+   sqlalchemysetup.session.commit()
    return (True,'')
 

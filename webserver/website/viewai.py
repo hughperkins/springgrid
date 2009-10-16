@@ -25,10 +25,9 @@ import cgitb; cgitb.enable()
 
 from utils import *
 from core import *
+from core.tableclasses import *
 
 sqlalchemysetup.setup()
-
-dbconnection.connectdb()
 
 loginhelper.processCookie()
 
@@ -37,13 +36,7 @@ menu.printPageTop()
 ainame = formhelper.getValue('ainame')
 aiversion = formhelper.getValue('aiversion')
 
-compatibleoptions = dbconnection.querytolistwithparams( "select option_name "\
-   " from ai_allowedoptions, aioptions, ais "\
-   " where ai_allowedoptions.option_id = aioptions.option_id "\
-   " and ai_allowedoptions.ai_id = ais.ai_id "\
-   " and ais.ai_name = %s "\
-   " and ais.ai_version= %s ",
-   ( ainame, aiversion, ) )
+ai = sqlalchemysetup.session.query(AI).filter(AI.ai_name == ainame).filter(AI.ai_version == aiversion).first()
 
 print "<h3>AILadder - View AI '" + ainame + " " + aiversion + "'</h3>"
 
@@ -53,10 +46,10 @@ print "<p>For example, if it can run when cheating is allowed, then add the opti
 print "<table border='1' padding='3'>" \
 "<tr><td>Compatible options</td><td></td></tr>"
 
-for option in compatibleoptions:
+for option in ai.allowedoptions:
    print "<tr>"
-   print "<td>" + option + "</td>"
-   print "<td><a href='deleteoptionfromai.py?ainame=" + ainame + "&aiversion=" + aiversion + "&aioption=" + option + "'>Remove option</a></td>"
+   print "<td>" + option.option.option_name + "</td>"
+   print "<td><a href='deleteoptionfromai.py?ainame=" + ainame + "&aiversion=" + aiversion + "&aioption=" + option.option.option_name + "'>Remove option</a></td>"
    print "</tr>"
 
 print "</table>"
@@ -69,13 +62,9 @@ if roles.isInRole(roles.aiadmin):
 
    print "<h4>Add new compatible options:</h4>"
 
-   potentialoptions = dbconnection.querytolistwithparams( "select option_name from aioptions where not exists ( "\
-   "    select * from ai_allowedoptions, ais "\
-   "    where ai_allowedoptions.option_id = aioptions.option_id "\
-   "    and ai_allowedoptions.ai_id = ais.ai_id "\
-   "    and ais.ai_name = %s "\
-   "    and ais.ai_version= %s ) ",
-   ( ainame, aiversion, ) )
+   potentialoptions = listhelper.tuplelisttolist( sqlalchemysetup.session.query(AIOption.option_name) )
+   for option in ai.allowedoptions:
+      potentialoptions.remove(option.option.option_name )
   
    print "<form action='addoptiontoai.py' method='post'>" \
    "<table border='1' padding='3'>" \
@@ -87,8 +76,6 @@ if roles.isInRole(roles.aiadmin):
    "</form>"
 
 menu.printPageBottom()
-
-dbconnection.disconnectdb()
 
 sqlalchemysetup.close()
 

@@ -36,10 +36,14 @@ Base = sqlalchemy.ext.declarative.declarative_base()
 class Map(Base):
    __tablename__ = 'maps'
 
-   map_id =Column(Integer,primary_key=True)
+   map_id = Column(Integer,primary_key=True)
    map_name = Column(String(255))
    map_archivechecksum = Column(String(255))
    map_url = Column(String(255))
+
+   def __init__(self, map_name, map_archivechecksum ):
+      self.map_name = map_name
+      self.map_archivechecksum = map_archivechecksum
 
 class Mod(Base):
    __tablename__ = 'mods'
@@ -48,6 +52,10 @@ class Mod(Base):
    mod_name = Column(String(255))
    mod_archivechecksum = Column(String(255))
    mod_url = Column(String(255))
+
+   def __init__(self, mod_name, mod_archivechecksum ):
+      self.mod_name = mod_name
+      self.mod_archivechecksum = mod_archivechecksum
 
 class Role(Base):
    __tablename__ = 'roles'
@@ -168,8 +176,10 @@ class BotRunnerSupportedMap(Base):
    botrunner_id = Column(Integer,ForeignKey('botrunners.botrunner_id'),primary_key=True)
    map_id = Column(Integer,ForeignKey('maps.map_id'),primary_key=True)
 
-   botrunner = relation("BotRunner",backref='supportedmaps')
-   map = relation("Map")
+   map = relation("Map",uselist = False)
+
+   def __init__(self, map ):
+      self.map = map
 
 class BotRunnerSupportedMod(Base):
    __tablename__ = 'botrunner_supportedmods'
@@ -179,6 +189,9 @@ class BotRunnerSupportedMod(Base):
 
    botrunner = relation("BotRunner",backref='supportedmods')
    mod = relation("Mod")
+
+   def __init__(self, mod ):
+      self.mod = mod
 
 class BotRunnerAssignedOption(Base):
    __tablename__ = 'botrunner_assignedoptions'
@@ -203,6 +216,7 @@ class BotRunner(Base):
 
    owneraccount = relation("Account")
    options = relation("BotRunnerAssignedOption")
+   supportedmaps = relation("BotRunnerSupportedMap", uselist=True )
 
 class AIOption(Base):
    __tablename__ = 'aioptions'
