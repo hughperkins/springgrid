@@ -26,10 +26,10 @@ import botrunnerhelper
 
 # returns True if exists, or added ok, otherwise False
 def addmodifdoesntexist(modname, modarchivechecksum):
-   mod = sqlalchemysetup.session.query(Map).filter(Map.mod_name == modname ).first()
+   mod = sqlalchemysetup.session.query(Mod).filter(Mod.mod_name == modname ).first()
    if mod == None:
       try:
-         mod = Map( modname, modarchivechecksum )
+         mod = Mod( modname, modarchivechecksum )
          sqlalchemysetup.session.add(mod)
          sqlalchemysetup.session.commit()
       except:
@@ -43,7 +43,7 @@ def addmodifdoesntexist(modname, modarchivechecksum):
    return (True,'')
 
 def getmod( modname ):
-   return sqlalchemysetup.session.query(Map).filter(Map.mod_name == modname ).first()
+   return sqlalchemysetup.session.query(Mod).filter(Mod.mod_name == modname ).first()
 
 # return list of supported modnames
 def getsupportedmods( botrunnername ):
@@ -61,7 +61,7 @@ def setbotrunnersupportsthismod( botrunnername, modname ):
    # Now, register the mod as supported mod
    botrunner = botrunnerhelper.getbotrunner( botrunnername )
    mod = getmod(modname)
-   botrunner.supportedmods.append(BotRunnerSupportedMap(mod))
+   botrunner.supportedmods.append(BotRunnerSupportedMod(mod))
    sqlalchemysetup.session.commit()
    return (True,'')
 

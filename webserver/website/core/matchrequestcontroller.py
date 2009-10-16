@@ -23,89 +23,79 @@
 
 import datetime
 
+from sqlalchemy.orm import join
+
 import config
 
 from utils import *
 #from core import *
-
-class MatchRequest:
-   def __init__(self):
-      pass
-
+from tableclasses import *
+import sqlalchemysetup
+import botrunnerhelper
 
 # go through matchrequests_inprogress table, and remove any rows
 # older than a certain time
 # placeholder for now
 def archiveoldrequests():
-   dbconnection.cursor.execute("select matchrequest_id, datetimeassigned from matchrequests_inprogress")
-   row = dbconnection.cursor.fetchone()
-   while row != None:
-      matchrequestid = row[0]
-      datetimestring = row[1]
-      # datetime = dates.dateStringToDateTime( datetimestring )
+   pass
+   #dbconnection.cursor.execute("select matchrequest_id, datetimeassigned from matchrequests_inprogress")
+   #row = dbconnection.cursor.fetchone()
+   #while row != None:
+   #   matchrequestid = row[0]
+   #   datetimestring = row[1]
+   #   # datetime = dates.dateStringToDateTime( datetimestring )
       
-      row = dbconnection.cursor.fetchone()
+  #    row = dbconnection.cursor.fetchone()
 
 # this should walk the queue till it finds something that the engine
 # can handle
 # for now, it just returns the first item in the queue
 # we need to only take things that arent in the inprogress queue of course...
-def getcompatibleitemfromqueue( botrunnerdescription ):
+def getcompatibleitemfromqueue( botrunnername ):
    archiveoldrequests()
+
+   botrunner = botrunnerhelper.getbotrunner(botrunnername)
 
    # Also, remove any requests that this engine was supposedly processing
    # for which there are no results
-   dbconnection.dictcursor.execute("delete matchrequests_inprogress.* from "\
-      " matchrequestqueue, matchrequests_inprogress, botrunners "\
-      " where matchrequestqueue.matchrequest_id = matchrequests_inprogress.matchrequest_id " \
-      " and not exists (select * from matchresults "\
-      "    where matchresults.matchrequest_id = matchrequestqueue.matchrequest_id ) "\
-      " and matchrequests_inprogress.botrunner_id = botrunners.botrunner_id " \
-      " and botrunner_name = %s ",
-      ( botrunnerdescription ) )
-
+   matchrequests = sqlalchemysetup.session.query(MatchRequest)
+   matchrequests = sqlalchemysetup.session.query(MatchRequest).filter( MatchRequest.matchresult == None ).filter( MatchRequest.matchrequestinprogress != None )
+   for matchrequest in matchrequests:
+      if matchrequest.matchrequestinprogress.botrunner is botrunner:
+        sqlalchemysetup.session.delete( matchrequest )
+   
    # now we've archived the old requests, we just pick a request
    # in the future, we'll pick a compatible request.  In the future ;-)
    # also, we need to handle options.  In the future ;-)
-   dbconnection.dictcursor.execute("select matchrequestqueue.matchrequest_id as matchrequestid, ai0.ai_name as ai0name, ai0.ai_version as ai0version, ai1.ai_name as ai1name, ai1.ai_version as ai1version, map_name as mapname, map_archivechecksum, mod_name as modname, mod_archivechecksum " \
-      "from ais as ai0," \
-      " ais as ai1, " \
-      " maps, " \
-      " mods, " \
-      " botrunners, "\
-      " botrunner_supportedmaps, "\
-      " botrunner_supportedmods, "\
-      " matchrequestqueue " \
-      " where ai0.ai_id = ai0_id " \
-      " and ai1.ai_id = ai1_id " \
-      " and mods.mod_id = botrunner_supportedmods.mod_id " \
-      " and maps.map_id = botrunner_supportedmaps.map_id "\
-      " and botrunners.botrunner_id = botrunner_supportedmods.botrunner_id "\
-      " and botrunners.botrunner_id = botrunner_supportedmaps.botrunner_id "\
-      " and botrunners.botrunner_name = %s "\
-      " and maps.map_id = matchrequestqueue.map_id " \
-      " and mods.mod_id = matchrequestqueue.mod_id " \
-      " and not exists (select * from matchrequests_inprogress "\
-      " where matchrequests_inprogress.matchrequest_id = matchrequestqueue.matchrequest_id ) " \
-      " and not exists (select * from matchresults "\
-      " where matchresults.matchrequest_id = matchrequestqueue.matchrequest_id ) ",
-      ( botrunnerdescription ) )
-#      " left join matchrequests_inprogress on       " 
-#matchrequests_inprogress.matchrequest_id = matchrequestqueue.matchrequest_id " \
-#      " and not exists (select * from matchrequests_inprogress where " \
- #     "                     matchrequests_inprogress.matchrequest_id = matchrequestqueue.matchrequest_id ) " )
-   row = dbconnection.dictcursor.fetchone()
-   return row
+   matchrequests = sqlalchemysetup.session.query(MatchRequest)
+   # .select_from(join(join(MatchRequest,MatchRequestInProgress),MatchResult)).filter( MatchRequest.matchrequestinprogress == None )
+   # .filter( MatchRequestInprogress == None )
+   print matchrequests
+   for matchrequest in matchrequests:
+      if matchrequest.matchresult != None:
+         continue
+      if matchrequest.matchrequestinprogress != None:
+         continue
+      mapok = False
+      for map in botrunner.supportedmaps:
+         if map.map is matchrequest.map:
+            mapok = True
+      modok = False
+      for mod in botrunner.supportedmods:
+         if mod.mod is matchrequest.mod:
+            modok = True
+      if mapok and modok:
+         return matchrequest
 
-def markrequestasinprogress( matchrequestid, botrunnername ):
-   dbconnection.cursor.execute("delete from matchrequests_inprogress "\
-      "where matchrequest_id = %s", ( matchrequestid, ) )
-   dbconnection.cursor.execute("insert into matchrequests_inprogress "\
-      "( matchrequest_id, botrunner_id, datetimeassigned ) "\
-      " select %s, botrunners.botrunner_id, %s "\
-      " from botrunners "\
-      " where botrunners.botrunner_name = %s",
-      ( matchrequestid, dates.dateTimeToDateString( datetime.datetime.now() ), botrunnername ) )
+   # didn't find any compatible match
+   return None
+
+def markrequestasinprogress( matchrequest, botrunnername ):
+   botrunner = botrunnerhelper.getbotrunner(botrunnername)
+
+   matchrequest.matchrequestinprogress = MatchRequestInProgress( botrunner, dates.dateTimeToDateString( datetime.datetime.now() ) )
+
+   sqlalchemysetup.session.commit()
 
 # validate that an incoming result is for a match assigned to this server
 # return true if so, otherwise false

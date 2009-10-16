@@ -20,27 +20,38 @@
 #
 
 from utils import *
+from tableclasses import *
+import sqlalchemysetup
+import botrunnerhelper
+
+def getallais():
+   return sqlalchemysetup.session.query(AI)
 
 # return list of supported (ainame,aiversion) tuples
 def getsupportedais( botrunnername ):
-   resultmaplist = dbconnection.querytomaplist("select ai_name, ai_version "\
-      " from ais " )
-   resultlist = []
-   for mapitem in resultmaplist:
-      resultlist.append( ( mapitem['ai_name'], mapitem['ai_version'] ) )
-   return resultlist
+   botrunner = botrunnerhelper.getbotrunner(botrunnername)
+   if botrunner == None:
+      return []
+   supportedais = []
+   #for ai in botrunner.supportedais:
+   #   supportedais.append( [ ai.ai.ai_name, ai.ai.ai_version ] )
+   #  hmmm, in fact we just return all ais for now ;-)
+   for ai in getallais():
+      supportedais.append( [ ai.ai_name, ai.ai_version ] )
+   return supportedais
+
+def getai( ainame, aiversion ):
+   return sqlalchemysetup.session.query(AI).filter(AI.ai_name == ainame ).filter(AI.ai_version == aiversion ).first()
 
 def addaiifdoesntexist(ainame, aiversion):
-   rows = dbconnection.dictcursor.execute("select * from ais where ai_name = %s and ai_version = %s", (ainame, aiversion) )
-   if rows == 0:
+   ai = getai( ainame, aiversion )
+   if ai == None:
       try:
-         rows = dbconnection.dictcursor.execute( "insert into ais ( ai_name, ai_version ) "\
-            " values ( %s, %s )", ( ainame, aiversion ) )
+         ai = AI(ainame, aiversion )
+         sqlalchemysetup.session.add( ai )
+         sqlalchemysetup.session.commit()
       except:
          return(False,"error adding to db: " + str( sys.exc_value ) )
-
-      if rows != 1:
-         return(False,"error adding to db")
 
    return (True,'')
 

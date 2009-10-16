@@ -122,6 +122,10 @@ class AI(Base):
 
    owneraccount = relation("Account")
 
+   def __init__( self, ai_name, ai_version ):
+      self.ai_name = ai_name
+      self.ai_version = ai_version
+
 class AIAllowedMap(Base):
    __tablename__ = 'ai_allowedmaps'
 
@@ -252,6 +256,8 @@ class MatchRequest(Base):
    ai0 = relation("AI", primaryjoin = ai0_id == AI.ai_id )
    ai1 = relation("AI", primaryjoin = ai1_id == AI.ai_id )
 
+   matchrequestinprogress = relation("MatchRequestInProgress", uselist=False)
+   matchresult = relation("MatchResult", uselist=False)
    options = relation("MatchRequestOption")
 
    def __init__( self, ai0, ai1, map, mod ):
@@ -267,15 +273,17 @@ class MatchRequestInProgress(Base):
    botrunner_id = Column(Integer,ForeignKey('botrunners.botrunner_id'))
    datetimeassigned = Column(String(255))
 
-   matchrequest = relation("MatchRequest", backref=backref('matchrequestinprogress', uselist=False))
    botrunner= relation("BotRunner")
+
+   def __init__(self, botrunner, datetimeassigned ):
+      self.botrunner = botrunner
+      self.datetimeassigned = datetimeassigned
 
 class MatchResult(Base):
    __tablename__ = 'matchresults'
 
    matchrequest_id = Column(Integer,ForeignKey('matchrequestqueue.matchrequest_id'),primary_key=True )
    matchresult = Column(String(255))
-   matchrequest = relation("MatchRequest", backref=backref('matchresult', uselist=False))
 
 class League(Base):
    __tablename__ = 'leagues'
