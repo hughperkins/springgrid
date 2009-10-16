@@ -217,6 +217,9 @@ class MatchRequestOption(Base):
 
    option = relation("AIOption")
 
+   def __init__(self, option ):
+      self.option = option
+
 class MatchRequest(Base):
    __tablename__ = 'matchrequestqueue'
 
@@ -232,6 +235,12 @@ class MatchRequest(Base):
    ai1 = relation("AI", primaryjoin = ai1_id == AI.ai_id )
 
    options = relation("MatchRequestOption")
+
+   def __init__( self, ai0, ai1, map, mod ):
+      self.ai0 = ai0
+      self.ai1 = ai1
+      self.map = map
+      self.mod = mod
 
 class MatchRequestInProgress(Base):
    __tablename__ = 'matchrequests_inprogress'
