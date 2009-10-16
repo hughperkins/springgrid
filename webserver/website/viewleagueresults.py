@@ -30,6 +30,7 @@ from core import *
 import core.replaycontroller as replaycontroller
 
 dbconnection.connectdb()
+sqlalchemysetup.setup()
 
 loginhelper.processCookie()
 
@@ -97,6 +98,7 @@ for request in requests:
 print "</table>"
 
 dbconnection.disconnectdb()
+sqlalchemysetup.close()
 
 menu.printPageBottom()
 
