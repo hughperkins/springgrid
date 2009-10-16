@@ -20,52 +20,48 @@
 #
 
 from utils import *
+import sqlalchemysetup
+from tableclasses import *
+import botrunnerhelper
 
 # returns True if exists, or added ok, otherwise False
 def addmodifdoesntexist(modname, modarchivechecksum):
-   rows = dbconnection.dictcursor.execute("select mod_archivechecksum from mods where mod_name = %s", (modname) )
-   if rows == 0:
+   mod = sqlalchemysetup.session.query(Map).filter(Map.mod_name == modname ).first()
+   if mod == None:
       try:
-         rows = dbconnection.dictcursor.execute( "insert into mods ( mod_name, mod_archivechecksum ) "\
-            " values ( %s, %s )", ( modname, modarchivechecksum) )
+         mod = Map( modname, modarchivechecksum )
+         sqlalchemysetup.session.add(mod)
+         sqlalchemysetup.session.commit()
       except:
          return(False, "error adding to db: " + str( sys.exc_value ) )
 
-      if rows != 1:
-         return(False,"error adding to db")
-      
       return (True,'')
 
-   row = dbconnection.dictcursor.fetchone()
-   if row["mod_archivechecksum"] != modarchivechecksum:
+   if mod.mod_archivechecksum != modarchivechecksum:
       return (False,"mod archive checksum doesn't match the one already on the website.")
 
    return (True,'')
 
+def getmod( modname ):
+   return sqlalchemysetup.session.query(Map).filter(Map.mod_name == modname ).first()
+
 # return list of supported modnames
 def getsupportedmods( botrunnername ):
-   return dbconnection.querytolistwithparams("select mod_name "\
-      " from mods, botrunners, botrunner_supportedmods "\
-      " where mods.mod_id = botrunner_supportedmods.mod_id "\
-      " and botrunners.botrunner_name = %s ",
-      ( botrunnername, ) )
+   botrunner = sqlalchemysetup.session.query(BotRunner).filter(BotRunner.botrunner_name == botrunnername ).first()
+   if botrunner == None:
+      return []
+   if botrunner.supportedmods == None:
+      return []
+   supportedmodnames = []
+   for mod in botrunner.supportedmods:
+      supportedmodnames.append(mod.mod.mod_name)
+   return supportedmodnames
 
 def setbotrunnersupportsthismod( botrunnername, modname ):
    # Now, register the mod as supported mod
-   rows = dbconnection.dictcursor.execute("select * from botrunners, botrunner_supportedmods, mods " \
-      " where botrunners.botrunner_id = botrunner_supportedmods.botrunner_id "\
-      " and botrunners.botrunner_name = %s "\
-      " and botrunner_supportedmods.mod_id = mods.mod_id "\
-      " and mods.mod_name = %s ",
-      ( botrunnername, modname ) )
-   #print rows
-   if rows == 0:
-      dbconnection.dictcursor.execute("insert into botrunner_supportedmods "\
-         " ( botrunner_id, mod_id ) "\
-         " select botrunner_id, mod_id "\
-         " from botrunners, mods "\
-         " where botrunners. botrunner_name = %s "\
-         " and mods.mod_name = %s ",
-         ( botrunnername, modname ) )
+   botrunner = botrunnerhelper.getbotrunner( botrunnername )
+   mod = getmod(modname)
+   botrunner.supportedmods.append(BotRunnerSupportedMap(mod))
+   sqlalchemysetup.session.commit()
    return (True,'')
 
