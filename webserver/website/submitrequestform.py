@@ -33,23 +33,21 @@ import cgitb; cgitb.enable()
 from utils import *
 from core import *
 
-dbconnection.connectdb()
+sqlalchemysetup.setup()
 
 menu.printPageTop()
 
-ais = dbconnection.querytomaplist("select distinct ai_name, ai_version from ais")
-# just get all aiversions for now, otherwise we need ajax and stuff...
-#aiversions = dbconnection.querytolist("select distinct ai_version from ais")
-maps = dbconnection.querytolist("select distinct map_name from maps")
-mods = dbconnection.querytolist("select distinct mod_name from mods")
+ais = sqlalchemysetup.session.query( tableclasses.AI.ai_name, tableclasses.AI.ai_version )
+maps = listhelper.tuplelisttolist( sqlalchemysetup.session.query( tableclasses.Map.map_name ) )
+mods = listhelper.tuplelisttolist( sqlalchemysetup.session.query( tableclasses.Mod.mod_name ) )
 
-options = dbconnection.querytolist("select option_name from aioptions")
+options = listhelper.tuplelisttolist( sqlalchemysetup.session.query( tableclasses.AIOption.option_name ) )
 
 aiitems = []
 aivalues = []
 for ai in ais:
-   aivalues.append( ai['ai_name'] + " " + ai['ai_version'] )
-   aiitems.append( ai['ai_name'] + "|" + ai['ai_version'] )
+   aivalues.append( ai.ai_name + " " + ai.ai_version )
+   aiitems.append( ai.ai_name + "|" + ai.ai_version )
 
 print "<h3>AILadder - submit game request</h3>" \
 "<form action='submitrequest.py' method='post'>" \
@@ -68,7 +66,7 @@ print "<tr><td></td><td><input type='submit' value='Submit Request' /></td></tr>
 "</table>" \
 "</form>"
 
-dbconnection.disconnectdb()
+sqlalchemysetup.close()
 
 menu.printPageBottom()
 

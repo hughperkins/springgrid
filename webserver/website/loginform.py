@@ -29,8 +29,6 @@ import cgi
 from utils import *
 from core import *
 
-dbconnection.connectdb()
-
 menu.printPageTop()
 
 print "<h3>AI Ladder - login</h3>"
@@ -41,8 +39,6 @@ print "<tr><td>Password:</td><td><input type='password' name='password'></td></t
 print "<tr><td></td><td><input type='submit' value='Login'></td></tr>"
 print "</table>"
 print "</form>"
-
-dbconnection.disconnectdb()
 
 menu.printPageBottom()
 
