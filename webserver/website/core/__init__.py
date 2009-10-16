@@ -3,5 +3,6 @@
 
 # This lets us do 'from core import *':
 __all__ = ['roles', 'botrunnerhelper','matchrequestcontroller',
-   'replaycontroller', 'menu', 'version', 'maphelper', 'modhelper','aihelper']
+   'replaycontroller', 'menu', 'version', 'maphelper', 'modhelper','aihelper',
+   'loginhelper', 'sqlalchemysetup', 'tableclasses']
 

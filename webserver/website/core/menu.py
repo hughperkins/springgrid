@@ -23,6 +23,8 @@
 
 from utils import *
 
+import loginhelper
+
 def printPageTop( headers = 'Content-type: text/html\n\n' ):
    print getPageTop( headers )
 

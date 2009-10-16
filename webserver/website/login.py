@@ -28,9 +28,6 @@ import cgi
 
 from utils import *
 from core import *
-from db import *
-
-dbconnection.connectdb()
 
 sqlalchemysetup.setup()
 
@@ -51,8 +48,6 @@ else:
    print loginhelper.loginhtml
 
 sqlalchemysetup.close()
-
-dbconnection.disconnectdb()
 
 menu.printPageBottom()
 

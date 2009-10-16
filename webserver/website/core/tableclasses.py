@@ -19,12 +19,17 @@
 # http://www.opensource.org/licenses/gpl-license.php
 #
 
+import md5
+
 import sqlalchemy
 import sqlalchemy.ext.declarative
 import sqlalchemy.orm
 
 from sqlalchemy import Column, String, Integer, ForeignKey
 from sqlalchemy.orm import backref, relation
+
+from utils import *
+import loginhelper
 
 Base = sqlalchemy.ext.declarative.declarative_base()
 
@@ -72,11 +77,17 @@ class AIAllowedMod(Base):
 class Role(Base):
    __tablename__ = 'roles'
 
+   def __init__(self, role_name ):
+      self.role_name = role_name
+
    role_id = Column(Integer,primary_key=True)
    role_name = Column(String(255))
 
 class RoleMember(Base):
    __tablename__ = 'role_members'
+
+   def __init__(self, role ):
+      self.role = role
 
    role_id = Column(Integer,ForeignKey('roles.role_id'),primary_key=True)
    account_id = Column(Integer,ForeignKey('accounts.account_id'),primary_key=True)
@@ -85,6 +96,10 @@ class RoleMember(Base):
 
 class Cookie(Base):
    __tablename__ = 'cookies'
+
+   def __init__( self, cookiereference, account ):
+      self.cookiereference = cookiereference
+      self.account = account
 
    cookiereference = Column(String(255),primary_key=True)
    #username = Column(String(255))
@@ -104,6 +119,24 @@ class Account(Base):
    passwordhash = Column(String(255))
 
    roles = relation("RoleMember")
+
+   def __init__(self, username, userfullname, password ):
+      self.username = username
+      self.userfullname = userfullname
+
+      self.passwordsalt = loginhelper.createSalt()
+      self.passwordhash = md5.md5( password + self.passwordsalt ).hexdigest()
+
+   def checkPassword( self, password ):
+      return ( md5.md5( password + self.passwordsalt ).hexdigest() == self.passwordhash )
+
+   def changePassword( self, newpassword ):
+      self.passwordsalt = loginhelper.createSalt()
+      self.passwordhash = md5.md5( newpassword + self.passwordsalt ).hexdigest()
+
+   def addRole( self, role ):
+      rolemember = RoleMember( role )
+      self.roles.append(rolemember)
 
 class BotRunnerOption(Base):
    __tablename__ = 'botrunner_options'
@@ -196,6 +229,29 @@ class MatchResult(Base):
    matchrequest_id = Column(Integer,ForeignKey('matchrequestqueue.matchrequest_id'),primary_key=True )
    matchresult = Column(String(255))
    matchrequest = relation("MatchRequest", backref=backref('matchresult', uselist=False))
+
+def addstaticdata(session):
+   # maybe roles static data could be created by core/roles.py?
+   # anyway, for now... :
+   accountadminrole = Role("accountadmin")
+   aiadminrole = Role("aiadmin")
+   modadminrole = Role("modadmin")
+   mapadminrole = Role("mapadmin")
+   leagueadminrole = Role("leagueadmin")
+
+   session.add(accountadminrole)
+   session.add(aiadminrole)
+   session.add(modadminrole)
+   session.add(mapadminrole)
+   session.add(leagueadminrole)
+
+   account = Account("admin","admin", "admin")
+   session.add(account)
+   account.addRole( accountadminrole )
+   account.addRole( aiadminrole )
+   account.addRole( modadminrole )
+   account.addRole( mapadminrole )
+   account.addRole( leagueadminrole )
 
 def createall(engine):
    Base.metadata.create_all(engine)

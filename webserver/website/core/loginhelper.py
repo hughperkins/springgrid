@@ -29,11 +29,13 @@ import os
 import os.path
 import md5
 
-import dbconnection
-from db import *
+from sqlalchemy.orm import join
 
-import stringhelper
-   
+from utils import *
+
+import sqlalchemysetup
+import tableclasses
+
 gusername = ""  # first call loginhelper.processCookie().  If the user
                 # is already logged in after that, then gusername will no
                 # longer be blank
@@ -66,8 +68,7 @@ def validateUsernamePassword( username, password ):
    account = sqlalchemysetup.session.query(tableclasses.Account).filter( tableclasses.Account.username == username ).first()
    if account == None:
       return False
-   thispasswordhash = md5.md5( password + account.passwordsalt ).hexdigest()
-   return thispasswordhash == account.passwordhash
+   return account.checkPassword( password )
 
 def logonUser(username, password):
    global gusername
@@ -85,18 +86,21 @@ def logonUser(username, password):
    cookie = Cookie.SimpleCookie()
    cookie["cookiereference"] = cookiereference
 
-   dbconnection.cursor.execute("delete from cookies where username=%s", (username,))
-   dbconnection.cursor.execute("insert into cookies (username,cookiereference)" \
-         " values (%s, %s )", (username, cookiereference, ) )
+   accountrow = sqlalchemysetup.session.query(tableclasses.Account).filter(tableclasses.Account.username == username ).first()
+   if accountrow == None:
+      loginhtml =  "<h4>Logon error: Please check your username and password.</h4>"
+      return 
+
+   cookierow = tableclasses.Cookie( cookiereference, accountrow )
+   sqlalchemysetup.session.add(cookierow)
+   sqlalchemysetup.session.commit()
 
    gusername = username
    loginhtml = "<p>Logged in as: " + gusername + "</p>"
 
 def changePassword( username, password ):
-   passwordsalt = createSalt()
    account = sqlalchemysetup.session.query(tableclasses.Account).filter( tableclasses.Account.username == username ).first()
-   account.passwordsalt = passwordsalt
-   account.passwordhash = md5.md5( password + passwordsalt ).hexdigest()
+   account.changePassword( password )
    sqlalchemysetup.session.commit()
    return True
 
@@ -114,13 +118,12 @@ def processCookie():
 
   cookiereference = str( cookie["cookiereference"].value )
 
-  dbconnection.cursor.execute("select username from cookies where cookiereference=%s", (cookiereference,))
-  row = dbconnection.cursor.fetchone()
-
-  if row == None:
+  cookierow = sqlalchemysetup.session.query(tableclasses.Cookie).filter(tableclasses.Cookie.cookiereference == cookiereference ).first()
+  if cookierow == None:
      return
 
-  gusername = row[0]
+  # Note: could consider migrating from username string to account object
+  gusername = cookierow.account.username
 
   if gusername == '':
      return
@@ -130,7 +133,10 @@ def processCookie():
 def logoutUser():
    global cookie, cookiereference, gusername, loginhtml
    
-   dbconnection.cursor.execute("delete from cookies where username=%s", (gusername,))
+   cookierow = sqlalchemysetup.session.query(tableclasses.Cookie).select_from(join(tableclasses.Cookie,tableclasses.Account)).filter(tableclasses.Account.username == gusername ).first()
+   if cookierow != None:
+      sqlalchemysetup.session.delete(cookierow)
+      sqlalchemysetup.session.commit()
    
    cookiereference = '0'
    cookie = Cookie.SimpleCookie()

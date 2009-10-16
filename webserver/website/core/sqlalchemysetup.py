@@ -41,6 +41,8 @@ def close():
 def createalltables():
    global engine,Session,session
    tableclasses.createall(engine)
+   tableclasses.addstaticdata(session)
+   session.commit()
 
 def dropalltables():
    global engine,Session,session
@@ -48,6 +50,6 @@ def dropalltables():
 
 def reloadalltables():
    global engine,Session,session
-   tableclasses.dropall(engine)
-   tableclasses.createall(engine)
+   dropalltables()
+   createalltables()
 
