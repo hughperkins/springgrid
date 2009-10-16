@@ -22,18 +22,26 @@
 import sqlalchemy
 import tableclasses
 
-import config
+try:
+   import config
+except:
+   pass
 
 engine = None
 Session = None
 session = None
 
+def setupwithcredentials( rdbmsname, dbuser, dbpassword, dbhost, dbname ):
+   global engine,Session,session
+
+   engine = sqlalchemy.create_engine( rdbmsname + '://' + dbuser + ":" + dbpassword + "@" + dbhost + "/" + dbname, echo=False)
+   Session = sqlalchemy.orm.sessionmaker(bind=engine)
+   session = Session()
+
 def setup():
    global engine,Session,session
 
-   engine = sqlalchemy.create_engine('mysql://' + config.dbuser + ":" + config.dbpassword + "@" + config.dbhost + "/" + config.dbname, echo=False)
-   Session = sqlalchemy.orm.sessionmaker(bind=engine)
-   session = Session()
+   setupwithcredentials( 'mysql', config.dbuser, config.dbpassword, config.dbhost, config.dbname )
 
 def close():
    session.commit()

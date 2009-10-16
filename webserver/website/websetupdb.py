@@ -95,29 +95,22 @@ def go():
       print "Please fill in all the values and try again."
       return
 
-   from utils import dbconnection
+   from core import sqlalchemysetup
 
    try:
-      dbconnection.connectdbwiththesecredentials(dbuser, dbpassword, dbname, dbhost )
+      sqlalchemysetup.setupwithcredentials( 'mysql', dbuser, dbpassword, dbhost, dbname )
    except:
       # if can't connect, then abort
       print "Exception: " + str(sys.exc_value)
       return
 
-   sys.path.append("db")
-   import setupdb
-
-   # drop everything, and ignore exceptions
-   exceptions = setupdb.dropall(dbuser,dbpassword,dbname,dbhost)
-
-   # then create again...
-   exceptions = setupdb.createall(dbuser,dbpassword,dbname,dbhost)
-   if len(exceptions) > 0:
-      print "<h3>Exceptions report:</h3>"
-      print "<ul>"
-      for exceptionstring in exceptions:
-         print "<li>" + exceptionstring + "</li>"
-      print "</ul>"
+   try:
+      sqlalchemysetup.reloadalltables()
+      sqlalchemysetup.close()
+   except:
+      # if can't connect, then abort
+      print "Exception: " + str(sys.exc_value)
+      return
 
    # Thats done.. now create the config file, first read the template:
    from utils import filehelper
