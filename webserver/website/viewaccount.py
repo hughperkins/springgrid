@@ -26,6 +26,8 @@ import cgitb; cgitb.enable()
 from utils import *
 from core import *
 
+sqlalchemysetup.setup()
+
 dbconnection.connectdb()
 
 loginhelper.processCookie()
@@ -83,6 +85,8 @@ if roles.isInRole(roles.accountadmin):
    "</form>"
 
 dbconnection.disconnectdb()
+
+sqlalchemysetup.close()
 
 menu.printPageBottom()
 

@@ -27,6 +27,8 @@ import cgi
 from utils import *
 from core import *
 
+sqlalchemysetup.setup()
+
 dbconnection.connectdb()
 
 loginhelper.processCookie()
@@ -57,6 +59,8 @@ else:
       print "Please fill in the fields and try again"
 
 dbconnection.disconnectdb()
+
+sqlalchemysetup.close()
 
 menu.printPageBottom()
 

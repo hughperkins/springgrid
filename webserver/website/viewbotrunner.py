@@ -27,6 +27,7 @@ from utils import *
 from core import *
 
 dbconnection.connectdb()
+sqlalchemysetup.setup()
 
 loginhelper.processCookie()
 
@@ -140,6 +141,7 @@ if row['username'] == loginhelper.getUsername():
    "</form>"
 
 dbconnection.disconnectdb()
+sqlalchemysetup.close()
 
 menu.printPageBottom()
 

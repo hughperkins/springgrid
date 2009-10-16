@@ -82,7 +82,7 @@ def go():
    else:
       print "<p>Issues were found.  Please check these issues and try again.</p>"
 
-dbconnection.connectdb()
+sqlalchemysetup.setup()
 
 loginhelper.processCookie()
 
@@ -92,6 +92,5 @@ go()
 
 menu.printPageBottom()
 
-dbconnection.disconnectdb()
-
+sqlalchemysetup.close()
 

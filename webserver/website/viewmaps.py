@@ -25,9 +25,6 @@ import cgitb; cgitb.enable()
 
 from utils import *
 from core import *
-from db import *
-
-dbconnection.connectdb()
 
 sqlalchemysetup.setup()
 
@@ -42,7 +39,12 @@ print "<h3>AILadder - Map List</h3>" \
 "<tr class='tablehead'><td>Map name</td><td>Map archive checksum (Note: this is NOT the maphash seen in the start script)</td><td>Map download url</td></tr>"
 
 for map in maps:
-   print "<tr><td>" + map.map_name + "</td><td>" + map.map_archivechecksum + "</td><td><a href='" + map.map_url + "'>" + map.map_url + "</a></td></tr>"
+   print "<tr><td>" + map.map_name + "</td><td>" + map.map_archivechecksum + "</td>"
+   if map.map_url != None:
+      print "<td><a href='" + map.map_url + "'>" + map.map_url + "</a></td>"
+   else:
+      print "<td>&nbsp;</td>"
+   print "</tr>"
 
 print "</table>"
 
@@ -66,8 +68,6 @@ if loginhelper.gusername != '' and False:
 
 
 sqlalchemysetup.close()
-
-dbconnection.disconnectdb()
 
 menu.printPageBottom()
 

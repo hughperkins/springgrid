@@ -28,6 +28,8 @@ from core import *
 
 dbconnection.connectdb()
 
+sqlalchemysetup.setup()
+
 loginhelper.processCookie()
 
 menu.printPageTop()
@@ -73,6 +75,8 @@ def go():
 
 
 go()
+
+sqlalchemysetup.close()
 
 dbconnection.disconnectdb()
 

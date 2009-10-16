@@ -22,8 +22,8 @@
 import cgi
 
 from utils import *
-#from core import *
-from db import *
+import sqlalchemysetup
+import tableclasses
 
 botrunnername = ""
 

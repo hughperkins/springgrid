@@ -55,6 +55,7 @@ modname = formhelper.getValue("modname")
 # matchrequest.modhash = formhelper.getValue("modhash")
 
 dbconnection.connectdb()
+sqlalchemysetup.setup()
 
 loginhelper.processCookie()
 
@@ -112,6 +113,7 @@ else:
    print "Please login first."
 
 dbconnection.disconnectdb()
+sqlalchemysetup.close()
 
 menu.printPageBottom()
 

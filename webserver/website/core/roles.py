@@ -24,6 +24,7 @@
 # manages roles
 
 from utils import *
+import loginhelper
 
 # list rolenames here
 # they're also in the roles table, and should match

@@ -49,31 +49,6 @@ class Mod(Base):
    mod_archivechecksum = Column(String(255))
    mod_url = Column(String(255))
 
-class AI(Base):
-   __tablename__ = 'ais'
-
-   ai_id = Column(Integer,primary_key=True)
-   ai_name = Column(String(255))
-   ai_version = Column(String(255))
-
-class AIAllowedMap(Base):
-   __tablename__ = 'ai_allowedmaps'
-
-   ai_id = Column(Integer,ForeignKey('ais.ai_id'),primary_key=True)
-   map_id = Column(Integer,ForeignKey('maps.map_id'),primary_key=True)
-
-   ai = relation("AI")
-   map = relation("Map")
-
-class AIAllowedMod(Base):
-   __tablename__ = 'ai_allowedmods'
-
-   ai_id = Column(Integer,ForeignKey('ais.ai_id'),primary_key=True)
-   mod_id = Column(Integer,ForeignKey('mods.mod_id'),primary_key=True)
-
-   ai = relation("AI")
-   mod = relation("Mod")
-
 class Role(Base):
    __tablename__ = 'roles'
 
@@ -86,27 +61,13 @@ class Role(Base):
 class RoleMember(Base):
    __tablename__ = 'role_members'
 
-   def __init__(self, role ):
-      self.role = role
-
    role_id = Column(Integer,ForeignKey('roles.role_id'),primary_key=True)
    account_id = Column(Integer,ForeignKey('accounts.account_id'),primary_key=True)
 
    role = relation("Role")
 
-class Cookie(Base):
-   __tablename__ = 'cookies'
-
-   def __init__( self, cookiereference, account ):
-      self.cookiereference = cookiereference
-      self.account = account
-
-   cookiereference = Column(String(255),primary_key=True)
-   #username = Column(String(255))
-   # we can change to use account_id in the future
-   account_id = Column(Integer,ForeignKey('accounts.account_id'))
-
-   account = relation("Account")
+   def __init__(self, role ):
+      self.role = role
 
 class Account(Base):
    __tablename__ = 'accounts'
@@ -137,6 +98,62 @@ class Account(Base):
    def addRole( self, role ):
       rolemember = RoleMember( role )
       self.roles.append(rolemember)
+
+class AI(Base):
+   __tablename__ = 'ais'
+
+   ai_id = Column(Integer,primary_key=True)
+   ai_name = Column(String(255))
+   ai_version = Column(String(255))
+   ai_downloadurl = Column(String(255))
+   ai_owneraccount_id = Column(Integer,ForeignKey('accounts.account_id'))
+
+   allowedmaps = relation("AIAllowedMap")
+   allowedmods = relation("AIAllowedMod")
+   allowedoptions = relation("AIAllowedOption")
+
+   owneraccount = relation("Account")
+
+class AIAllowedMap(Base):
+   __tablename__ = 'ai_allowedmaps'
+
+   ai_id = Column(Integer,ForeignKey('ais.ai_id'),primary_key=True)
+   map_id = Column(Integer,ForeignKey('maps.map_id'),primary_key=True)
+
+   ai = relation("AI")
+   map = relation("Map")
+
+class AIAllowedMod(Base):
+   __tablename__ = 'ai_allowedmods'
+
+   ai_id = Column(Integer,ForeignKey('ais.ai_id'),primary_key=True)
+   mod_id = Column(Integer,ForeignKey('mods.mod_id'),primary_key=True)
+
+   ai = relation("AI")
+   mod = relation("Mod")
+
+class AIAllowedOption(Base):
+   __tablename__ = 'ai_allowedoptions'
+
+   ai_id = Column(Integer,ForeignKey('ais.ai_id'),primary_key=True)
+   option_id = Column(Integer,ForeignKey('aioptions.option_id'),primary_key=True)
+
+   ai = relation("AI")
+   option = relation("AIOption")
+
+class Cookie(Base):
+   __tablename__ = 'cookies'
+
+   def __init__( self, cookiereference, account ):
+      self.cookiereference = cookiereference
+      self.account = account
+
+   cookiereference = Column(String(255),primary_key=True)
+   #username = Column(String(255))
+   # we can change to use account_id in the future
+   account_id = Column(Integer,ForeignKey('accounts.account_id'))
+
+   account = relation("Account")
 
 class BotRunnerOption(Base):
    __tablename__ = 'botrunner_options'
@@ -189,11 +206,14 @@ class AIOption(Base):
    option_id = Column(Integer,primary_key=True)
    option_name = Column(String(255))
 
+   def __init__(self, option_name):
+      self.option_name = option_name
+
 class MatchRequestOption(Base):
    __tablename__ = 'matchrequest_options'
 
    matchrequest_id = Column(Integer,ForeignKey('matchrequestqueue.matchrequest_id'), primary_key=True)
-   option_id = Column(Integer,ForeignKey('aioptions.option_id'))
+   option_id = Column(Integer,ForeignKey('aioptions.option_id'),primary_key=True)
 
    option = relation("AIOption")
 
@@ -230,6 +250,57 @@ class MatchResult(Base):
    matchresult = Column(String(255))
    matchrequest = relation("MatchRequest", backref=backref('matchresult', uselist=False))
 
+class League(Base):
+   __tablename__ = 'leagues'
+
+   league_id = Column(Integer,primary_key = True )
+   league_name = Column(String(255))
+   league_creatorid = Column(Integer,ForeignKey('accounts.account_id'))
+   map_id = Column(Integer,ForeignKey('maps.map_id'))
+   mod_id = Column(Integer,ForeignKey('mods.mod_id'))
+
+   creator = relation("Account")
+   map = relation("Map")
+   mod = relation("Mod")
+
+class LeagueOption(Base):
+   __tablename__ = 'leagueoptions'
+
+   league_id = Column(Integer,ForeignKey('leagues.league_id'),primary_key=True)
+   option_id = Column(Integer,ForeignKey('aioptions.option_id'),primary_key=True)
+
+   league = relation("League", backref='options')
+   option = relation("AIOption")
+
+class LeagueGroup(Base):
+   __tablename__ = 'leaguegroups'
+
+   leaguegroup_id = Column(Integer,primary_key = True)
+   leaguegroup_name = Column(String(255))
+   leaguegroup_creatorid = Column(Integer,ForeignKey("accounts.account_id"))
+   
+   creator = relation("Account")
+
+# members who are leaguegruops
+class LeagueGroupLeagueMember(Base):
+   __tablename__ = 'leaguegroup_leaguemembers'
+
+   leaguegroup_id = Column(Integer,ForeignKey('leaguegroups.leaguegroup_id'),primary_key = True)
+   league_id = Column(Integer,ForeignKey('leagues.league_id'),primary_key = True)
+
+   leaguegroup = relation("LeagueGroup", backref="leaguemembers")
+   league = relation("League")
+
+# members who are leagues (leaf nodes)
+def LeagueGroupLeagueGroupMember(Base):
+   __tablename__ = 'leaguegroup_leaguegroupmembers'
+
+   leaguegroup_id = Column(Integer,ForeignKey('leaguegroups.leaguegroup_id'),primary_key = True)
+   childleaguegroup_id = Column(Integer,ForeignKey('leaguegroups.leaguegroup_id'),primary_key=True)
+
+   leaguegroup = relation("LeagueGroup", backref="leaguemembers", primaryjoin = leaguegroup_id == LeagueGroup.leaguegroup_id )
+   childleaguegroup = relation("LeagueGroup", backref="leaguegroupmembers", primaryjoin = childleaguegroup_id == LeagueGroup.leaguegroup_id)
+
 def addstaticdata(session):
    # maybe roles static data could be created by core/roles.py?
    # anyway, for now... :
@@ -252,6 +323,15 @@ def addstaticdata(session):
    account.addRole( modadminrole )
    account.addRole( mapadminrole )
    account.addRole( leagueadminrole )
+
+   session.add(Account("guest","guest","guest"))
+
+   aioption_cheatingequalslose = AIOption('cheatingequalslose')
+   aioption_cheatingallowed = AIOption('cheatingallowed')
+   aioption_dummymatch = AIOption('dummymatch')
+   session.add(aioption_cheatingequalslose)
+   session.add(aioption_cheatingallowed)
+   session.add(aioption_dummymatch)
 
 def createall(engine):
    Base.metadata.create_all(engine)

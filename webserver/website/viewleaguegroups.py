@@ -27,6 +27,7 @@ from utils import *
 from core import *
 
 dbconnection.connectdb()
+sqlalchemysetup.setup()
 
 loginhelper.processCookie()
 
@@ -68,6 +69,7 @@ if loginhelper.gusername != '':
    "</form>"
 
 dbconnection.disconnectdb()
+sqlalchemysetup.close()
 
 menu.printPageBottom()
 

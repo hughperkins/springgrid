@@ -28,6 +28,7 @@ from utils import *
 from core import *
 
 dbconnection.connectdb()
+sqlalchemysetup.setup()
 
 loginhelper.processCookie()
 
@@ -53,6 +54,7 @@ else:
       print "Please fill in the fields and try again"
 
 dbconnection.disconnectdb()
+sqlalchemysetup.close()
 
 menu.printPageBottom()
 

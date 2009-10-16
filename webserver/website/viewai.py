@@ -26,6 +26,8 @@ import cgitb; cgitb.enable()
 from utils import *
 from core import *
 
+sqlalchemysetup.setup()
+
 dbconnection.connectdb()
 
 loginhelper.processCookie()
@@ -88,4 +90,5 @@ menu.printPageBottom()
 
 dbconnection.disconnectdb()
 
+sqlalchemysetup.close()
 
