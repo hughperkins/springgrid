@@ -54,14 +54,18 @@ def StringToInteger( integerstring ):
    return int( integerstring )
 
 def requestgamefromwebserver():
-   [result, serverrequest ] = getxmlrpcproxy().getrequest(config.botrunnername, config.sharedsecret )
-   if not result:
-      print "Something went wrong: " + serverrequest
-      return None
+   try:
+      [result, serverrequest ] = getxmlrpcproxy().getrequest(config.botrunnername, config.sharedsecret )
+      if not result:
+         print "Something went wrong: " + serverrequest
+         return None
 
-   if len(serverrequest) == 0:
+      if len(serverrequest) == 0:
+         return None
+      return serverrequest[0]  # can't handle passing None in python 2.4
+   except:
+      print "Something went wrong: " + str( sys.exc_info() )
       return None
-   return serverrequest[0]  # can't handle passing None in python 2.4
 
 def readFile( filepath ):
    filehandle = open( filepath, "r" )
