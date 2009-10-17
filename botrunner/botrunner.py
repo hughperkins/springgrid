@@ -295,6 +295,7 @@ def registermaps():
    registeredmaps = getxmlrpcproxy().getsupportedmaps( config.botrunnername, config.sharedsecret )
    print registeredmaps
 
+   multicall = xmlrpclib.MultiCall(getxmlrpcproxy())
    for i in xrange( unitsync.GetMapCount() ):
       mapname = unitsync.GetMapName(i)
       if registeredmaps.count( mapname ) == 0:
@@ -303,7 +304,9 @@ def registermaps():
          archivename = unitsync.GetMapArchiveName(0)
          #print unitsync.GetMapArchiveName(1)
          archivechecksum = unitsync.GetArchiveChecksum( archivename )
-         print getxmlrpcproxy().registersupportedmap( config.botrunnername, config.sharedsecret, mapname, str(archivechecksum) )
+         multicall.registersupportedmap( config.botrunnername, config.sharedsecret, mapname, str(archivechecksum) )
+   for result in multicall():
+      print result
 
 def registermods():
    registeredmods = getxmlrpcproxy().getsupportedmods( config.botrunnername, config.sharedsecret )

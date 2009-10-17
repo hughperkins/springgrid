@@ -157,6 +157,7 @@ class AILadderService:
 handler = SimpleXMLRPCServer.CGIXMLRPCRequestHandler()
 handler.register_instance( AILadderService() )
 handler.register_introspection_functions()
+handler.register_multicall_functions()
 
 if __name__ == '__main__':
    sqlalchemysetup.setup()
