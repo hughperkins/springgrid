@@ -92,17 +92,17 @@ def getcompatibleitemfromqueue( botrunnername ):
    # didn't find any compatible match
    return None
 
+def getmatchrequest(matchrequest_id):
+   return sqlalchemysetup.session.query(MatchRequest).filter(MatchRequest.matchrequest_id == matchrequest_id ).first()
+
 # validate that an incoming result is for a match assigned to this server
 # return true if so, otherwise false
 def matchrequestvalidforthisserver( botrunnername, matchrequest_id ):
    #print botrunnername + " " + str(matchrequest_id)
-   rows = dbconnection.cursor.execute("select * from matchrequests_inprogress, "\
-      " botrunners "\
-      " where matchrequest_id = %s " \
-      " and botrunners.botrunner_id = matchrequests_inprogress.botrunner_id "\
-      " and botrunner_name = %s ",
-      ( matchrequest_id, botrunnername, ) )
-   return ( rows == 1 )
+   matchrequest = getmatchrequest( matchrequest_id )
+   if matchrequest.matchrequestinprogress == None:
+      return False
+   return matchrequest.matchrequestinprogress.botrunner.botrunner_name == botrunnername
 
 def submitrequest( requestitem ):
    # ignoring hashes for now...
@@ -121,13 +121,13 @@ def submitrequest( requestitem ):
 
 def storeresult( botrunnername, matchrequest_id, result ):
    # delete any existing result, saves doing check first...
-   dbconnection.cursor.execute("delete from matchresults where "\
-      " matchrequest_id = %s ", ( matchrequest_id, ) )
-   dbconnection.cursor.execute("insert into matchresults "\
-      " (matchrequest_id, matchresult ) "\
-      " values ( %s, %s ) ",
-      ( matchrequest_id, result, ) )
+   matchrequest = getmatchrequest( matchrequest_id )
+   if matchrequest == None:
+      return
+   matchrequest.matchresult  = MatchResult( result )
+   sqlalchemysetup.session.commit()
+
 #   # remove inprogress marker
  #  dbconnection.cursor.execute("delete from matchrequests_inprogress "\
   #     " where matchrequest_id = %s ", ( matchrequest_id,) )
-1
+

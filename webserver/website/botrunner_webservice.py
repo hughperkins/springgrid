@@ -125,7 +125,7 @@ class AILadderService:
 
          return (True,'received replay file raw length: ' + str( len( replaycontentsraw ) ) )
       except:
-         return (False,"unexpected exception: " + str( sys.exc_info() ) )
+         return (False,"An unexpected exception occurred: " + str( sys.exc_info() ) + "\n" + str( traceback.extract_tb( sys.exc_traceback ) ) )
 
    # returns (True, request) (True, None) or (False, errormessage)
    def getrequest( self, botrunnername, sharedsecret ):

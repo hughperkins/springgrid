@@ -285,6 +285,9 @@ class MatchResult(Base):
    matchrequest_id = Column(Integer,ForeignKey('matchrequestqueue.matchrequest_id'),primary_key=True )
    matchresult = Column(String(255))
 
+   def __init__(self, matchresult ):
+      self.matchresult = matchresult
+
 class League(Base):
    __tablename__ = 'leagues'
 

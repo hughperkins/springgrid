@@ -53,8 +53,6 @@ def requestgamefromwebserver():
 
    if len(serverrequest) == 0:
       return None
-   print serverrequest
-   print serverrequest[0]
    return serverrequest[0]  # can't handle passing None in python 2.4
 
 # return xmlrpcproxy to communicate with web server
@@ -67,8 +65,6 @@ def doping( status ):
 def rungame( serverrequest ):
    global config, writabledatadirectory
    scripttemplatecontents = filehelper.readFile( scriptdir + "/" + config.scripttemplatefilename )
-
-   print serverrequest
 
    scriptcontents = scripttemplatecontents
    scriptcontents = scriptcontents.replace("%MAP%", serverrequest['map_name'] )
