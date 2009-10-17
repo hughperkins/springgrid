@@ -25,17 +25,15 @@ import cgitb; cgitb.enable()
 
 from utils import *
 from core import *
+from core.tableclasses import *
 
-dbconnection.connectdb()
 sqlalchemysetup.setup()
 
 loginhelper.processCookie()
 
 menu.printPageTop()
 
-rows = dbconnection.querytomaplist( "select "\
-   "     leaguegroup_name as leaguegroupname "\
-   " from leaguegroups " )
+leaguegroups = sqlalchemysetup.session.query(LeagueGroup)
 
 print "<h3>AILadder - View league groups</h3>" \
 "<p>A league is a specific game configuration used for testing AIs "\
@@ -46,9 +44,9 @@ print "<h3>AILadder - View league groups</h3>" \
 "<table border='1' padding='3'>" \
 "<tr class='tablehead'><td>League group name:</td></tr>"
 
-for row in rows:
+for leaguegroup in leaguegroups:
    print "<tr>"
-   print "<td><a href='viewleaguegroup.py?leaguegroupname=" + row['leaguegroupname'] + "'>" + row['leaguegroupname'] + "</a></td>"
+   print "<td><a href='viewleaguegroup.py?leaguegroupname=" + leaguegroup.leaguegroup_name + "'>" + leaguegroup.leaguegroup_name + "</a></td>"
    print "</tr>"
 
 print "</table>"
@@ -68,7 +66,6 @@ if loginhelper.gusername != '':
    "</table>" \
    "</form>"
 
-dbconnection.disconnectdb()
 sqlalchemysetup.close()
 
 menu.printPageBottom()

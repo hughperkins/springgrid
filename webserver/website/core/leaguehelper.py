@@ -27,3 +27,6 @@ from tableclasses import *
 def getLeague( league_name ):
    return sqlalchemysetup.session.query(League).filter( League.league_name == league_name ).first()
 
+def getLeagueGroup( leaguegroup_name ):
+   return sqlalchemysetup.session.query(LeagueGroup).filter( LeagueGroup.leaguegroup_name == leaguegroup_name ).first()
+

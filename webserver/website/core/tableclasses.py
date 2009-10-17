@@ -225,6 +225,10 @@ class BotRunner(Base):
    options = relation("BotRunnerAssignedOption")
    supportedmaps = relation("BotRunnerSupportedMap", uselist=True )
 
+   def __init__( self, botrunner_name, botrunner_sharedsecret ):
+      self.botrunner_name = botrunner_name
+      self.botrunner_sharedsecret = botrunner_sharedsecret
+
 class AIOption(Base):
    __tablename__ = 'aioptions'
 
@@ -330,6 +334,11 @@ class LeagueGroup(Base):
    leaguegroup_creatorid = Column(Integer,ForeignKey("accounts.account_id"))
    
    creator = relation("Account")
+   childleagues = relation("LeagueGroupLeagueMember")
+   #childleaguegroups = relation("LeagueGroupLeagueGroupMember")
+
+   def __init__( self, leaguegroup_name ):
+      self.leaguegroup_name = leaguegroup_name
 
 # members who are leaguegruops
 class LeagueGroupLeagueMember(Base):
@@ -338,7 +347,6 @@ class LeagueGroupLeagueMember(Base):
    leaguegroup_id = Column(Integer,ForeignKey('leaguegroups.leaguegroup_id'),primary_key = True)
    league_id = Column(Integer,ForeignKey('leagues.league_id'),primary_key = True)
 
-   leaguegroup = relation("LeagueGroup", backref="leaguemembers")
    league = relation("League")
 
 # members who are leagues (leaf nodes)
@@ -348,8 +356,8 @@ def LeagueGroupLeagueGroupMember(Base):
    leaguegroup_id = Column(Integer,ForeignKey('leaguegroups.leaguegroup_id'),primary_key = True)
    childleaguegroup_id = Column(Integer,ForeignKey('leaguegroups.leaguegroup_id'),primary_key=True)
 
-   leaguegroup = relation("LeagueGroup", backref="leaguemembers", primaryjoin = leaguegroup_id == LeagueGroup.leaguegroup_id )
-   childleaguegroup = relation("LeagueGroup", backref="leaguegroupmembers", primaryjoin = childleaguegroup_id == LeagueGroup.leaguegroup_id)
+   parentleaguegroup = relation("LeagueGroup", primaryjoin = leaguegroup_id == LeagueGroup.leaguegroup_id, backrefs = 'childleaguegroups')
+   leaguegroup = relation("LeagueGroup", primaryjoin = childleaguegroup_id == LeagueGroup.leaguegroup_id)
 
 def addstaticdata(session):
    # maybe roles static data could be created by core/roles.py?

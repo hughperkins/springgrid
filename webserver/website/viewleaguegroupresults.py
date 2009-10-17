@@ -4,16 +4,17 @@ import cgitb; cgitb.enable()
 
 from core import *
 from utils import *
+from core.tableclasses import *
 
-dbconnection.connectdb()
+sqlalchemysetup.setup()
 
 loginhelper.processCookie()
 
 menu.printPageTop()
 
-print "Page under construction."
+print "Page not implemented yet."
 
 menu.printPageBottom()
 
-dbconnection.disconnectdb()
+sqlalchemysetup.close()
 

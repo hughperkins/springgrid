@@ -45,9 +45,7 @@ def validatesharedsecret(lbotrunnername, sharedsecret):
 
    if botrunner == None: 
       # Never seen this botrunner before, just add it
-      botrunner = tableclasses.BotRunner()
-      botrunner.botrunner_name = lbotrunnername
-      botrunner.botrunner_sharedsecret = sharedsecret
+      botrunner = BotRunner( lbotrunnername, sharedsecret )
       sqlalchemysetup.session.add(botrunner)
       sqlalchemysetup.session.commit()
 
