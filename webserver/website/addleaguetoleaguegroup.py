@@ -26,8 +26,8 @@ import cgi
 
 from utils import *
 from core import *
+from core.tableclasses import *
 
-dbconnection.connectdb()
 sqlalchemysetup.setup()
 
 loginhelper.processCookie()
@@ -41,21 +41,14 @@ else:
    leaguename = formhelper.getValue('leaguename')
 
    if leaguegroupname != None and leaguegroupname != '' and leaguename != None and leaguename != '':
-      rows = dbconnection.cursor.execute( "insert into leaguegroup_leaguemembers "\
-         "( leaguegroup_id, league_id ) "\
-         " select leaguegroup_id, league_id from "\
-         " leaguegroups, leagues "\
-         " where leaguegroups.leaguegroup_name = %s "\
-         " and leagues.league_name = %s ",
-         ( leaguegroupname, leaguename ) )
-      if rows == 1:
-         print "Added ok"
-      else:
-         print "Something went wrong.  Please check your values and try again."
+      leaguegroup = leaguehelper.getLeagueGroup(leaguegroupname)
+      league = leaguehelper.getLeague(leaguename)
+      leaguegroup.childleagues.append(LeagueGroupLeagueMember(league))
+      sqlalchemysetup.session.commit()
+      print "Added ok"
    else:
       print "Please fill in the fields and try again"
 
-dbconnection.disconnectdb()
 sqlalchemysetup.close()
 
 menu.printPageBottom()

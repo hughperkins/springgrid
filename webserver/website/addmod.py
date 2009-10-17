@@ -30,8 +30,9 @@ import cgi
 
 from utils import *
 from core import *
+from core.tableclasses import *
 
-dbconnection.connectdb()
+sqlalchemysetup.setup()
 
 loginhelper.processCookie()
 
@@ -41,22 +42,21 @@ if not roles.isInRole(roles.modadmin):
    print "You must be logged in as a modadmin"
 else:
    modname = formhelper.getValue("modname")
-   modhash = formhelper.getValue("modhash")
+   modarchivechecksum = formhelper.getValue("modarchivechecksum")
    modurl = formhelper.getValue("modurl")
 
-   if modhash != None and modname != None and modname != "" and modhash != "":
+   if modname != None and modname != "" and modarchivechecksum != None and modarchivechecksum != '':
       if modurl == None:
          modurl = ''
-      rows = dbconnection.cursor.execute( "insert into mods ( mod_name, mod_hash, mod_url ) "\
-         " values ( %s, %s, %s )", ( modname, modhash, modurl ) )
-      if rows == 1:
-         print "Added ok"
-      else:
-         print "Something went wrong.  Please check your values and try again."
+      mod = Mod( modname, modarchivechecksum )
+      mod.modurl = modurl
+      sqlalchemysetup.session.add( mod )
+      sqlalchemysetup.session.commit()
+      print "Added ok"
    else:
       print "Please fill in the fields and try again"
 
-dbconnection.disconnectdb()
+sqlalchemysetup.close()
 
 menu.printPageBottom()
 

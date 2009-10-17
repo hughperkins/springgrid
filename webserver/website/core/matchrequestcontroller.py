@@ -67,22 +67,16 @@ def getcompatibleitemfromqueue( botrunnername ):
    # now we've archived the old requests, we just pick a request
    # in the future, we'll pick a compatible request.  In the future ;-)
    # also, we need to handle options.  In the future ;-)
-   #matchrequests = sqlalchemysetup.session.query(MatchRequest.matchrequest_id, Map.map_name,Mod.mod_name).select_from(join(join(MatchRequest,Map),Mod)).filter(MatchRequest.matchrequestinprogress == None ).filter(MatchRequest.matchresult == None ).all()
    matchrequests = sqlalchemysetup.session.query(MatchRequest).filter(MatchRequest.matchrequestinprogress == None ).filter(MatchRequest.matchresult == None ).all()
-   #print "matchrequests: " + str( matchrequests )
    for matchrequest in matchrequests:
-      #print "matchrequest: " + str( matchrequest )
-      #print matchrequest.map.map_name
       mapok = False
       for map in botrunner.supportedmaps:
          if map.map.map_name == matchrequest.map.map_name:
             mapok = True
-            #print "mapok"
       modok = False
       for mod in botrunner.supportedmods:
          if mod.mod.mod_name == matchrequest.mod.mod_name:
             modok = True
-            #print "modok"
       if mapok and modok:
          # mark request in progress:
          matchrequest.matchrequestinprogress = MatchRequestInProgress( botrunner, dates.dateTimeToDateString( datetime.datetime.now() ) )
@@ -98,7 +92,6 @@ def getmatchrequest(matchrequest_id):
 # validate that an incoming result is for a match assigned to this server
 # return true if so, otherwise false
 def matchrequestvalidforthisserver( botrunnername, matchrequest_id ):
-   #print botrunnername + " " + str(matchrequest_id)
    matchrequest = getmatchrequest( matchrequest_id )
    if matchrequest.matchrequestinprogress == None:
       return False

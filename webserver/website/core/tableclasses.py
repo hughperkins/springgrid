@@ -349,6 +349,9 @@ class LeagueGroupLeagueMember(Base):
 
    league = relation("League")
 
+   def __init__(self, league ):
+      self.league = league
+
 # members who are leagues (leaf nodes)
 def LeagueGroupLeagueGroupMember(Base):
    __tablename__ = 'leaguegroup_leaguegroupmembers'
@@ -358,6 +361,9 @@ def LeagueGroupLeagueGroupMember(Base):
 
    parentleaguegroup = relation("LeagueGroup", primaryjoin = leaguegroup_id == LeagueGroup.leaguegroup_id, backrefs = 'childleaguegroups')
    leaguegroup = relation("LeagueGroup", primaryjoin = childleaguegroup_id == LeagueGroup.leaguegroup_id)
+
+   def __init__(self, leaguegroup ):
+      self.leaguegroup = leaguegroup
 
 def addstaticdata(session):
    # maybe roles static data could be created by core/roles.py?
