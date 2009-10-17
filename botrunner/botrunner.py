@@ -305,13 +305,21 @@ def registermaps():
          #print unitsync.GetMapArchiveName(1)
          archivechecksum = unitsync.GetArchiveChecksum( archivename )
          multicall.registersupportedmap( config.botrunnername, config.sharedsecret, mapname, str(archivechecksum) )
-   for result in multicall():
-      print result
+   results = multicall()
+   successcount = 0
+   total = 0
+   for result in results:
+      total = total + 1
+      if result[0]:
+         successcount = successcount + 1
+   if total > 0:
+      print str(successcount) + " successes out of " + str(total)
 
 def registermods():
    registeredmods = getxmlrpcproxy().getsupportedmods( config.botrunnername, config.sharedsecret )
    print registeredmods
 
+   multicall = xmlrpclib.MultiCall(getxmlrpcproxy())
    for i in xrange( unitsync.GetPrimaryModCount() ):
       modname = unitsync.GetPrimaryModName(i)
       if registeredmods.count( modname ) == 0:
@@ -319,12 +327,22 @@ def registermods():
          unitsync.GetPrimaryModArchiveCount(i)
          modarchive = unitsync.GetPrimaryModArchive(0)
          modarchivechecksum = unitsync.GetArchiveChecksum( modarchive )
-         print getxmlrpcproxy().registersupportedmod( config.botrunnername, config.sharedsecret, modname, str(modarchivechecksum) )
+         multicall.registersupportedmod( config.botrunnername, config.sharedsecret, modname, str(modarchivechecksum) )
+   results = multicall()
+   successcount = 0
+   total = 0
+   for result in results:
+      total = total + 1
+      if result[0]:
+         successcount = successcount + 1
+   if total > 0:
+      print str(successcount) + " successes out of " + str(total)
 
 def registerais():
    registeredais = getxmlrpcproxy().getsupportedais( config.botrunnername, config.sharedsecret )
    print registeredais
 
+   multicall = xmlrpclib.MultiCall(getxmlrpcproxy())
    for i in xrange( unitsync.GetSkirmishAICount() ):
       shortname = ''
       version = ''
@@ -337,7 +355,16 @@ def registerais():
       if shortname != '' and version != '':
          if registeredais.count( [ shortname, version ] ) == 0:
             print "registering ai " + shortname + " version " + version + " ..."
-            print getxmlrpcproxy().registersupportedai( config.botrunnername, config.sharedsecret, shortname, version )
+            multicall.registersupportedai( config.botrunnername, config.sharedsecret, shortname, version )
+   results = multicall()
+   successcount = 0
+   total = 0
+   for result in results:
+      total = total + 1
+      if result[0]:
+         successcount = successcount + 1
+   if total > 0:
+      print str(successcount) + " successes out of " + str(total)
 
 def go():
    global config, unitsync, writabledatadirectory, demosdirectorylistingbeforegame
