@@ -104,21 +104,6 @@ def matchrequestvalidforthisserver( botrunnername, matchrequest_id ):
       return False
    return matchrequest.matchrequestinprogress.botrunner.botrunner_name == botrunnername
 
-def submitrequest( requestitem ):
-   # ignoring hashes for now...
-   rows = dbconnection.cursor.execute("insert into matchrequestqueue (ai0_id, ai1_id, map_id, mod_id) " \
-      " select ai0.ai_id, ai1.ai_id, map_id, mod_id " \
-      " from ais ai0, ais ai1, maps, mods " \
-      " where ai0.ai_name = %s " \
-      " and ai0.ai_version = %s " \
-      " and ai1.ai_name = %s " \
-      " and ai1.ai_version =%s " \
-      " and maps.map_name = %s " \
-      " and mods.mod_name =%s ",
-      (requestitem.ai0name, requestitem.ai0version, requestitem.ai1name, requestitem.ai1version,
-          requestitem.mapname, requestitem.modname, ) )
-   return ( rows == 1 )
-
 def storeresult( botrunnername, matchrequest_id, result ):
    # delete any existing result, saves doing check first...
    matchrequest = getmatchrequest( matchrequest_id )
@@ -126,8 +111,4 @@ def storeresult( botrunnername, matchrequest_id, result ):
       return
    matchrequest.matchresult  = MatchResult( result )
    sqlalchemysetup.session.commit()
-
-#   # remove inprogress marker
- #  dbconnection.cursor.execute("delete from matchrequests_inprogress "\
-  #     " where matchrequest_id = %s ", ( matchrequest_id,) )
 
