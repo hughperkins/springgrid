@@ -25,6 +25,7 @@ import cgitb; cgitb.enable()
 
 from utils import *
 from core import *
+from core.tableclasses import *
 
 sqlalchemysetup.setup()
 
@@ -32,7 +33,7 @@ loginhelper.processCookie()
 
 menu.printPageTop()
 
-leagues = sqlalchemysetup.session.query(tableclasses.League)
+leagues = sqlalchemysetup.session.query(League)
 
 print "<h3>AILadder - View leagues</h3>" \
 "<p>A league is a specific game configuration used for testing AIs "\
@@ -64,8 +65,8 @@ if loginhelper.gusername != '':
    print "<hr />"
    print "<p />"
 
-   maps = listhelper.tuplelisttolist( sqlalchemysetup.session.query(tableclasses.Map.map_name) )
-   mods = listhelper.tuplelisttolist( sqlalchemysetup.session.query(tableclasses.Mod.mod_name) )
+   maps = listhelper.tuplelisttolist( sqlalchemysetup.session.query(Map.map_name) )
+   mods = listhelper.tuplelisttolist( sqlalchemysetup.session.query(Mod.mod_name) )
 
    print "<h4>Create new league:</h4>"
    print "<form action='addleague.py' method='post'>" \

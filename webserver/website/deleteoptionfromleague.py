@@ -30,8 +30,8 @@ import cgi
 
 from utils import *
 from core import *
+from core.tableclasses import *
 
-dbconnection.connectdb()
 sqlalchemysetup.setup()
 
 loginhelper.processCookie()
@@ -45,20 +45,15 @@ else:
    aioption = formhelper.getValue("aioption")
 
    if leaguename != None and aioption != None and leaguename != "" and aioption != "":
-      rows = dbconnection.cursor.execute( "delete leagueoptions.* from leagueoptions, leagues, aioptions "\
-         " where leagues.league_name = %s "\
-         " and aioptions.option_name = %s "\
-         " and leagueoptions.league_id = leagues.league_id "\
-         " and leagueoptions.option_id = aioptions.option_id ",
-         ( leaguename, aioption ) )
-      if rows == 1:
-         print "Added ok"
-      else:
-         print "Something went wrong.  Please check your values and try again."
+      league = leaguehelper.getLeague( leaguename )
+      for option in league.options:
+         if option.option.option_name == aioption:
+            sqlalchemysetup.session.delete( option )
+      sqlalchemysetup.session.commit()
+      print "Removed ok"
    else:
       print "Please fill in the fields and try again"
 
-dbconnection.disconnectdb()
 sqlalchemysetup.close()
 
 menu.printPageBottom()

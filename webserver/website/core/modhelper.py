@@ -42,7 +42,7 @@ def addmodifdoesntexist(modname, modarchivechecksum):
 
    return (True,'')
 
-def getmod( modname ):
+def getMod( modname ):
    return sqlalchemysetup.session.query(Mod).filter(Mod.mod_name == modname ).first()
 
 # return list of supported modnames
@@ -60,7 +60,7 @@ def getsupportedmods( botrunnername ):
 def setbotrunnersupportsthismod( botrunnername, modname ):
    # Now, register the mod as supported mod
    botrunner = botrunnerhelper.getBotRunner( botrunnername )
-   mod = getmod(modname)
+   mod = getMod(modname)
    botrunner.supportedmods.append(BotRunnerSupportedMod(mod))
    sqlalchemysetup.session.commit()
    return (True,'')

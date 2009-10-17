@@ -21,38 +21,9 @@
 # http://www.opensource.org/licenses/gpl-license.php
 #
 
-# lets a user add a single ai to the database
-#
-# This is mostly for bootstrapping, to make the website immediately useful
+import sqlalchemysetup
+from tableclasses import *
 
-import cgitb; cgitb.enable()
-import cgi
-
-from utils import *
-from core import *
-from core.tableclasses import *
-
-sqlalchemysetup.setup()
-
-loginhelper.processCookie()
-
-menu.printPageTop()
-
-if not roles.isInRole(roles.leagueadmin):
-   print "You must be logged in as a leagueadmin"
-else:
-   leaguename = formhelper.getValue("leaguename")
-   aioption = formhelper.getValue("aioption")
-
-   if leaguename != None and aioption != None and leaguename != "" and aioption != "":
-      league = leaguehelper.getLeague( leaguename )
-      league.options.append( LeagueOption( aihelper.getAIOption( aioption ) ) )
-      sqlalchemysetup.session.commit()
-      print "Added ok"
-   else:
-      print "Please fill in the fields and try again"
-
-sqlalchemysetup.close()
-
-menu.printPageBottom()
+def getLeague( league_name ):
+   return sqlalchemysetup.session.query(League).filter( League.league_name == league_name ).first()
 

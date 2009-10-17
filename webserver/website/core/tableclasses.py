@@ -303,6 +303,13 @@ class League(Base):
    creator = relation("Account")
    map = relation("Map")
    mod = relation("Mod")
+   options = relation("LeagueOption")
+
+   def __init__( self, league_name, creator, mod, map ):
+      self.league_name = league_name
+      self.creator = creator
+      self.mod = mod
+      self.map = map
 
 class LeagueOption(Base):
    __tablename__ = 'leagueoptions'
@@ -310,8 +317,10 @@ class LeagueOption(Base):
    league_id = Column(Integer,ForeignKey('leagues.league_id'),primary_key=True)
    option_id = Column(Integer,ForeignKey('aioptions.option_id'),primary_key=True)
 
-   league = relation("League", backref='options')
    option = relation("AIOption")
+
+   def __init__(self, option ):
+      self.option = option
 
 class LeagueGroup(Base):
    __tablename__ = 'leaguegroups'

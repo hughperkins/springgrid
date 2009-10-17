@@ -42,7 +42,7 @@ def addmapifdoesntexist(mapname, maparchivechecksum):
 
    return (True,'')
 
-def getmap( mapname ):
+def getMap( mapname ):
    return sqlalchemysetup.session.query(Map).filter(Map.map_name == mapname ).first()
 
 # return list of supported mapnames
@@ -60,7 +60,7 @@ def getsupportedmaps( botrunnername ):
 def setbotrunnersupportsthismap( botrunnername, mapname ):
    # Now, register the map as supported map
    botrunner = botrunnerhelper.getBotRunner( botrunnername )
-   map = getmap(mapname)
+   map = getMap(mapname)
    botrunner.supportedmaps.append(BotRunnerSupportedMap(map))
    sqlalchemysetup.session.commit()
    return (True,'')
