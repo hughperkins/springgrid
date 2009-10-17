@@ -32,6 +32,7 @@ import traceback
 
 from utils import *
 from core import *
+from core.tableclasses import *
 
 import config
 
@@ -39,15 +40,24 @@ import config
 # botrunner simply calls getxmlrpcproxy().<methodname>( params, ... )
 class AILadderService:
    # return (True,'') if goes ok, otherwise (False,message)
-   def ping(self, botrunnername, sharedsecret, status):
+   def ping(self, botrunnername, sharedsecret, sessionid, status):
       if not botrunnerhelper.validatesharedsecret(botrunnername, sharedsecret):
          return (False, "Not authenticated")
 
-      botrunner = sqlalchemysetup.session.query(tableclasses.BotRunner).filter(tableclasses.BotRunner.botrunner_name == botrunnername ).first()
+      botrunner = botrunnerhelper.getBotRunner( botrunnername )
       if botrunner == None:
          return (False,'')
-      botrunner.botrunner_lastpingtime = dates.dateTimeToDateString( datetime.datetime.now() )
-      botrunner.botrunner_lastpingstatus = status
+
+      targetsession = None
+      for session in botrunner.sessions:
+         if session.session_id == sessionid:
+            targetsession = session
+
+      if targetsession == None:
+         targetsession = BotRunnerSession( sessionid )
+         botrunner.sessions.append(targetsession)
+      targetsession.lastpingtime = dates.dateTimeToDateString( datetime.datetime.now() )
+      targetsession.lastpingstatus = status
       sqlalchemysetup.session.commit()
       return (True,'')
 

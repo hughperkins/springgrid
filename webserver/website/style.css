@@ -79,5 +79,11 @@ tr.inprogress {
 tr.success {
    background-color: lightgreen;
 }
+td.success {
+   background-color: lightgreen;
+}
+td.fail {
+   background-color: red;
+}
 
 

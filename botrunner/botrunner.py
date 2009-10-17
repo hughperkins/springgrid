@@ -45,6 +45,9 @@ writabledatadirectory = None
 
 scriptdir = os.path.dirname( os.path.realpath( __file__ ) )
 
+sessionid = stringhelper.getRandomAlphaNumericString(60)
+print "Sessionid: " + sessionid
+
 def requestgamefromwebserver():
    try:
       [result, serverrequest ] = getxmlrpcproxy().getrequest(config.botrunnername, config.sharedsecret )
@@ -64,7 +67,7 @@ def getxmlrpcproxy():
    return xmlrpclib.ServerProxy( uri = config.websiteurl + "/botrunner_webservice.py" )
 
 def doping( status ):
-   return getxmlrpcproxy().ping( config.botrunnername, config.sharedsecret, status )
+   return getxmlrpcproxy().ping( config.botrunnername, config.sharedsecret, sessionid, status )
 
 def rungame( serverrequest ):
    global config, writabledatadirectory

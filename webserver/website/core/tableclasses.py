@@ -211,6 +211,17 @@ class BotRunnerAssignedOption(Base):
    def __init__(self, option ):
       self.option = option
 
+class BotRunnerSession(Base):
+   __tablename__ = 'botrunnersessions'
+
+   botrunner_id = Column(Integer,ForeignKey('botrunners.botrunner_id'), primary_key = True )
+   session_id = Column(String(255), primary_key = True)
+   lastpingstatus = Column(String(255))
+   lastpingtime = Column(String(255))
+
+   def __init__(self, session_id ):
+      self.session_id = session_id
+
 class BotRunner(Base):
    __tablename__ = 'botrunners'
 
@@ -224,6 +235,7 @@ class BotRunner(Base):
    owneraccount = relation("Account")
    options = relation("BotRunnerAssignedOption")
    supportedmaps = relation("BotRunnerSupportedMap", uselist=True )
+   sessions = relation("BotRunnerSession",uselist = True)
 
    def __init__( self, botrunner_name, botrunner_sharedsecret ):
       self.botrunner_name = botrunner_name

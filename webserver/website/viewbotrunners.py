@@ -40,39 +40,50 @@ botrunners = sqlalchemysetup.session.query(BotRunner)
 
 print "<h3>AILadder - Bot Runner List</h3>" \
 "<table border='1' padding='3'>" \
-"<tr class='tablehead'><td>Bot Runner Name</td><td>Last ping time</td><td>Last ping status</td><td>Bot Runner Owner Name:</td><td>Shared secret (only visible for your own botrunners)</td><td>Options</td></tr>"
+"<tr class='tablehead'><td>Bot Runner Name</td><td>Bot Runner Owner Name:</td><td>Shared secret (only visible for your own botrunners)</td><td>Options</td><td>Instance sessionid</td><td>Instance last ping</td><td>Instance last status</td></tr>"
 
 for botrunner in botrunners:
-   pingtimeok = False
-   lastpingtimeddate = None
-   lastpingtime =  botrunner.botrunner_lastpingtime
-   if lastpingtime != None:
-      lastpingtimedate = dates.dateStringToDateTime( lastpingtime )
-      secondssincelastping = dates.timedifftototalseconds( datetime.datetime.now() - lastpingtimedate )
-      if secondssincelastping < config.pingtimeoutminutes * 60:
-         pingtimeok = True
-
-   if pingtimeok:
-      print "<tr class='success'>"
-   else:
-      print "<tr>"
-   print "<td><a href='viewbotrunner.py?botrunnername=" + botrunner.botrunner_name + "'>" + botrunner.botrunner_name + "</a></td>"
-   print "<td>" + str( lastpingtimedate ) + "</td>"
-   print "<td>" + str( botrunner.botrunner_lastpingstatus ) + "</td>"
+   rowspan = 1
+   if len(botrunner.sessions) > 1:
+      rowspan = len(botrunner.sessions)
+   print "<tr>"
+   print "<td rowspan='" + str(rowspan) + "'><a href='viewbotrunner.py?botrunnername=" + botrunner.botrunner_name + "'>" + botrunner.botrunner_name + "</a></td>"
    if botrunner.owneraccount != None:
-      print "<td>" + botrunner.owneraccount.userfullname + "</td>"
+      print "<td rowspan='" + str(rowspan) + "'>" + botrunner.owneraccount.userfullname + "</td>"
    else:
-      print "<td>&nbsp;</td>"
+      print "<td rowspan='" + str(rowspan) + "'>&nbsp;</td>"
    if botrunner.owneraccount != None:
       if botrunner.owneraccount.username == loginhelper.gusername:
-         print "<td>" + botrunner.botrunner_sharedsecret + "</td>"
+         print "<td rowspan='" + str(rowspan) + "'>" + botrunner.botrunner_sharedsecret + "</td>"
    else:
-      print "<td>&nbsp;</td>"
+      print "<td rowspan='" + str(rowspan) + "'>&nbsp;</td>"
 
-   print "<td>"
+   print "<td rowspan='" + str(rowspan) + "'>"
    for option in botrunner.options:
       print option.option.option_name + "&nbsp;"
    print "&nbsp;</td>"
+
+   sessionindex = 0
+   for session in botrunner.sessions:
+      if sessionindex > 0:
+         print "<tr>"
+      pingtimeok = False
+      lastpingtimeddate = None
+      lastpingtime =  session.lastpingtime
+      if lastpingtime != None:
+         lastpingtimedate = dates.dateStringToDateTime( lastpingtime )
+         secondssincelastping = dates.timedifftototalseconds( datetime.datetime.now() - lastpingtimedate )
+         if secondssincelastping < config.pingtimeoutminutes * 60:
+            pingtimeok = True
+      cssclass='fail'
+      if pingtimeok:
+         cssclass='success'
+      print "<td>" + session.session_id[:5].lower() + " ... </td>"
+      print "<td class='" + cssclass + "'>" + str( lastpingtimedate ) + "</td>"
+      print "<td>" + str( session.lastpingstatus ) + "</td>"
+      if sessionindex > 0:
+         print "</tr>"
+      sessionindex = sessionindex + 1
 
    print "</tr>"
 
