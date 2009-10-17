@@ -30,8 +30,8 @@ import cgi
 
 from utils import *
 from core import *
+from core.tableclasses import *
 
-dbconnection.connectdb()
 sqlalchemysetup.setup()
 
 loginhelper.processCookie()
@@ -47,18 +47,11 @@ else:
       if roles.isInRole2( username, roles.accountadmin ):
          print "Please drop the accountadmin role from " + username + " and try again"
       else:
-         rows = dbconnection.cursor.execute( "delete accounts.* "\
-            " from accounts "\
-            " where username = %s",
-            ( username, ) )
-         if rows == 1:
-            print "Removed ok"
-         else:
-            print "Something went wrong.  Please check your values and try again."
+         sqlalchemysetup.session.query( Account ).filter( Account.username == username ).delete()
+         print "Removed ok"
    else:
       print "Please fill in the fields and try again"
 
-dbconnection.disconnectdb()
 sqlalchemysetup.close()
 
 menu.printPageBottom()
