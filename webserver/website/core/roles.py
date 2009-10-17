@@ -29,6 +29,7 @@ from utils import *
 import loginhelper
 import tableclasses
 import sqlalchemysetup
+from tableclasses import *
 
 # list rolenames here
 # they're also in the roles table, and should match
@@ -38,6 +39,10 @@ mapadmin = 'mapadmin'
 modadmin = 'modadmin'
 leagueadmin = 'leagueadmin'
 botrunneradmin = 'botrunneradmin'
+
+# returns Role object using sqlalchemy
+def getRole(rolename ):
+   return sqlalchemysetup.session.query(Role).filter(Role.role_name == rolename ).first()
 
 # returns if the logged-in user is in the named role
 def isInRole(rolename):

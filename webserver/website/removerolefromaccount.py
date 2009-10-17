@@ -26,8 +26,7 @@ import cgi
 
 from utils import *
 from core import *
-
-dbconnection.connectdb()
+from core.tableclasses import *
 
 sqlalchemysetup.setup()
 
@@ -42,21 +41,19 @@ else:
    rolename = formhelper.getValue('rolename')
 
    if username != None and rolename != '' and username != None and rolename != '':
-      rows = dbconnection.cursor.execute( "delete role_members.* "\
-         " from role_members, roles, accounts "\
-         " where role_name = %s "\
-         " and username = %s "\
-         " and role_members.role_id  = roles.role_id " \
-         " and role_members.account_id = accounts.account_id",
-         ( rolename, username ) )
-      if rows == 1:
+      account = accounthelper.getAccount( username )
+      roletoremove = None
+      for role in account.roles:
+         if role.role.role_name == rolename:
+            roletoremove = role
+      if roletoremove != None:
+         sqlalchemysetup.session.delete(role.role)
+         sqlalchemysetup.session.delete(role)
+         #account.roles.remove( role )
+         sqlalchemysetup.session.commit()
          print "Removed ok"
-      else:
-         print "Something went wrong.  Please check your values and try again."
    else:
       print "Please fill in the fields and try again"
-
-dbconnection.disconnectdb()
 
 sqlalchemysetup.close()
 

@@ -3,7 +3,7 @@
 # Copyright Hugh Perkins 2009
 # hughperkins@gmail.com http://manageddreams.com
 #
-# This program is free software; you can redistribute it and/or aiify it
+# This program is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by the
 # Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
@@ -21,34 +21,9 @@
 # http://www.opensource.org/licenses/gpl-license.php
 #
 
-import cgitb; cgitb.enable()
-import cgi
+import sqlalchemysetup
+from tableclasses import *
 
-from utils import *
-from core import *
-from core.tableclasses import *
-
-sqlalchemysetup.setup()
-
-loginhelper.processCookie()
-
-menu.printPageTop()
-
-if not roles.isInRole(roles.accountadmin):
-   print "You must be logged in as an accountadmin"
-else:
-   username = formhelper.getValue('username')
-   rolename = formhelper.getValue('rolename')
-
-   if username != None and rolename != '' and username != None and rolename != '':
-      account = accounthelper.getAccount(username)
-      account.roles.append( RoleMember( roles.getRole( rolename ) ) )
-      sqlalchemysetup.session.commit()
-      print "Added ok"
-   else:
-      print "Please fill in the fields and try again"
-
-sqlalchemysetup.close()
-
-menu.printPageBottom()
+def getAccount( username ):
+   return sqlalchemysetup.session.query(Account).filter(Account.username == username ).first()
 
