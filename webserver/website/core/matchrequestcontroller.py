@@ -54,7 +54,7 @@ def archiveoldrequests():
 def getcompatibleitemfromqueue( botrunnername ):
    archiveoldrequests()
 
-   botrunner = botrunnerhelper.getbotrunner(botrunnername)
+   botrunner = botrunnerhelper.getBotRunner( botrunnername )
 
    # Also, remove any requests that this engine was supposedly processing
    # for which there are no results

@@ -29,7 +29,7 @@ def getallais():
 
 # return list of supported (ainame,aiversion) tuples
 def getsupportedais( botrunnername ):
-   botrunner = botrunnerhelper.getbotrunner(botrunnername)
+   botrunner = botrunnerhelper.getBotRunner(botrunnername)
    if botrunner == None:
       return []
    supportedais = []

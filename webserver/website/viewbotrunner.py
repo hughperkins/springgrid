@@ -65,7 +65,7 @@ else:
 
 for option in botrunner.options:
    print "<tr><td>" + option.option.option_name + "</td>"
-   if isbotrunnerowner:
+   if isbotrunnerowner or roles.isInRole(roles.botrunneradmin):
       print "<td><a href='deleteoptionfrombotrunner.py?botrunnername=" + botrunnername + "&optionname=" + option.option.option_name + "'>Delete option</a></td>"
    print "</tr>"
 
