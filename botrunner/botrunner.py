@@ -37,21 +37,13 @@ import xmlrpclib
 
 from unitsync import unitsync as unitsyncpkg
 
+from utils import *
+
 config = None
 unitsync = None
 writabledatadirectory = None
 
 scriptdir = os.path.dirname( os.path.realpath( __file__ ) )
-
-def StringToBoolean( booleanstring ):
-   if booleanstring.lower() == "yes":
-      return True
-   if booleanstring.lower() == "true":
-      return True
-   return False
-
-def StringToInteger( integerstring ):
-   return int( integerstring )
 
 def requestgamefromwebserver():
    [result, serverrequest ] = getxmlrpcproxy().getrequest(config.botrunnername, config.sharedsecret )
@@ -61,22 +53,9 @@ def requestgamefromwebserver():
 
    if len(serverrequest) == 0:
       return None
+   print serverrequest
+   print serverrequest[0]
    return serverrequest[0]  # can't handle passing None in python 2.4
-
-def readFile( filepath ):
-   filehandle = open( filepath, "r" )
-   filecontents = ""
-   line = filehandle.readline()
-   while( line != "" ):
-      filecontents = filecontents + line
-      line = filehandle.readline()
-   filehandle.close()
-   return filecontents
-
-def writeFile( filepath, contents ):
-   filehandle = open( filepath, "w" )
-   filehandle.write( contents )
-   filehandle.close()
 
 # return xmlrpcproxy to communicate with web server
 def getxmlrpcproxy():
@@ -87,18 +66,20 @@ def doping( status ):
 
 def rungame( serverrequest ):
    global config, writabledatadirectory
-   scripttemplatecontents = readFile( scriptdir + "/" + config.scripttemplatefilename )
+   scripttemplatecontents = filehelper.readFile( scriptdir + "/" + config.scripttemplatefilename )
+
+   print serverrequest
 
    scriptcontents = scripttemplatecontents
-   scriptcontents = scriptcontents.replace("%MAP%", serverrequest['mapname'] )
-   scriptcontents = scriptcontents.replace("%MOD%", serverrequest['modname'] )
-   scriptcontents = scriptcontents.replace("%AI0%", serverrequest['ai0name'] )
-   scriptcontents = scriptcontents.replace("%AI0VERSION%", serverrequest['ai0version'] )
-   scriptcontents = scriptcontents.replace("%AI1%", serverrequest['ai1name'] )
-   scriptcontents = scriptcontents.replace("%AI1VERSION%", serverrequest['ai1version'] )
+   scriptcontents = scriptcontents.replace("%MAP%", serverrequest['map_name'] )
+   scriptcontents = scriptcontents.replace("%MOD%", serverrequest['mod_name'] )
+   scriptcontents = scriptcontents.replace("%AI0%", serverrequest['ai0_name'] )
+   scriptcontents = scriptcontents.replace("%AI0VERSION%", serverrequest['ai0_version'] )
+   scriptcontents = scriptcontents.replace("%AI1%", serverrequest['ai1_name'] )
+   scriptcontents = scriptcontents.replace("%AI1VERSION%", serverrequest['ai1_version'] )
 
    map_info = unitsyncpkg.MapInfo()
-   unitsync.GetMapInfoEx(str(serverrequest['mapname']), map_info, 1)
+   unitsync.GetMapInfoEx(str(serverrequest['map_name']), map_info, 1)
    team0startpos = map_info.StartPos[0]
    team1startpos = map_info.StartPos[1]
    # we always play team 0 on startpos0 ,and team1 on startpos1, for repeatability
@@ -111,7 +92,7 @@ def rungame( serverrequest ):
    scriptcontents = scriptcontents.replace("%TEAM1STARTPOSZ%", str( team1startpos.y ) )   
 
    scriptpath = writabledatadirectory + "/script.txt"
-   writeFile( scriptpath, scriptcontents )
+   filehelper.writeFile( scriptpath, scriptcontents )
 
    if os.path.exists( writabledatadirectory + "/infolog.txt" ):
       os.remove( writabledatadirectory + "/infolog.txt" )
@@ -120,15 +101,15 @@ def rungame( serverrequest ):
    popen = subprocess.Popen( [ config.springPath, writabledatadirectory + "/script.txt"])
    finished = False
    starttimeseconds = time.time()
-   doping("playing game " + serverrequest['ai0name'] + " vs " + serverrequest['ai1name'] + " on " + serverrequest['mapname'] + " " + serverrequest['modname'] )
+   doping("playing game " + serverrequest['ai0_name'] + " vs " + serverrequest['ai1_name'] + " on " + serverrequest['map_name'] + " " + serverrequest['mod_name'] )
    lastpingtimeseconds = time.time()
    gameresult = {}
    while not finished:
       print "waiting for game to terminate..."
       if time.time() - lastpingtimeseconds > config.pingintervalminutes * 60:
-         doping ("playing game " + serverrequest['ai0name'] + " vs " + serverrequest['ai1name'] + " on " + serverrequest['mapname'] + " " + serverrequest['modname'] )
+         doping ("playing game " + serverrequest['ai0_name'] + " vs " + serverrequest['ai1_name'] + " on " + serverrequest['map_name'] + " " + serverrequest['mod_name'] )
       if os.path.exists( writabledatadirectory + "/infolog.txt" ):
-         infologcontents = readFile( writabledatadirectory + "/infolog.txt" )
+         infologcontents = filehelper.readFile( writabledatadirectory + "/infolog.txt" )
          # print infologcontents
          ai0endstring = serverrequest['gameendstring'].replace("%TEAMNUMBER%", "0")
          ai1endstring = serverrequest['gameendstring'].replace("%TEAMNUMBER%", "1")
@@ -215,7 +196,7 @@ def uploadresulttoserver( serverrequest, gameresult ):
       requestuploadedok = False    
       while not requestuploadedok:
          try:
-            (result,errormessage ) = getxmlrpcproxy().submitresult( config.botrunnername, config.sharedsecret, serverrequest['matchrequestid'], gameresult['resultstring'], replaybinarywrapper )
+            (result,errormessage ) = getxmlrpcproxy().submitresult( config.botrunnername, config.sharedsecret, serverrequest['matchrequest_id'], gameresult['resultstring'], replaybinarywrapper )
             print "upload result: " + str( result) + " " + errormessage
             requestuploadedok = True
          except:
@@ -238,61 +219,6 @@ def snapshotdemosdirectory():
       listing.append(filename)
    return listing
 
-def getValueFromUser(questiontouser):
-   while True:
-      print questiontouser
-      inputline = sys.stdin.readline()
-      uservalue = inputline.strip()
-      if uservalue != '':
-         return uservalue
-
-def getPath( pathname, potentialpaths ):
-   # just include paths that exist
-   paths = []
-   for potentialpath in potentialpaths:
-      if os.path.exists( potentialpath ):
-         paths.append( potentialpath )
-
-   print paths
-   while True:
-      print "Please enter the number of the path to " + pathname + ":"
-      for i in xrange( len( paths ) ):
-         print str(i + 1 ) + ". " + paths[i]
-      print str( len( paths ) + 1 ) + ". custom path (eg " + potentialpaths[0] + ")"
-
-      inputline = sys.stdin.readline().strip()
-      if inputline == '':
-         continue
-      try:
-         index = int( inputline )
-      except:
-         # user didn't enter a number
-         # could be a path?
-         try:
-            if not os.path.exists( inputline ):
-               print "Not a valid path for " + pathname
-               continue
-            return inputline
-         except:
-            # probably not a spring executable
-            print "Not a valid path for " + pathname
-            continue
-         
-      if index < 1 or index > len( paths ) + 1:
-         print "Please enter a number from 1 to " + str( len( paths ) + 1 ) + "."
-         continue
-      if index <= len( paths ):
-         return paths[index - 1]
-      # user wants to enter a custom path:
-      print "Please type in the path to " + pathname + " (eg " + potentialpaths[0] + ") :"
-      inputline = sys.stdin.readline().strip()
-      if inputline == '':
-         continue
-      if not os.path.exists( inputline ):
-         print "Not a valid path for " + pathname
-         continue
-      return inputline
-
 def getSpringPath():
    potentialpaths = []
    if os.name == 'posix':
@@ -300,7 +226,7 @@ def getSpringPath():
    elif os.name == 'nt':
       potentialpaths = ( 'C:\Program Files\Spring\spring.exe', 'C:\Program Files\Spring\spring-headlessstubs.exe' )
 
-   return getPath( "the Spring executable", potentialpaths )
+   return userinput.getPath( "the Spring executable", potentialpaths )
 
 def getUnitSyncPath():
    potentialpaths = []
@@ -309,27 +235,7 @@ def getUnitSyncPath():
    elif os.name == 'nt':
       potentialpaths = ( "C:\\Program Files\\Spring\\unitsync.dll", )
 
-   return getPath( "unitsync", potentialpaths )
-
-# returns True for confirmed, otherwise False
-def getConfirmation( confirmationquestion ):
-   print confirmationquestion + " (y to confirm)"
-   confirmation = sys.stdin.readline().strip().lower()
-   if confirmation == 'y':
-      return True
-   return False
-
-# returns the entered file path or ""
-def askForPathToFile( pathName ):
-   while True:
-      print "Please enter the full path to " + pathName + ":"
-      thePath = sys.stdin.readline().strip()
-      if os.path.exists(thePath):
-         return thePath
-      else:
-         print "The specified file \"" + thePath + "\" does not exist, please try again."
-         continue
-   return ''
+   return userinput.getPath( "unitsync", potentialpaths )
 
 def  setupConfig():
    global config
@@ -341,13 +247,13 @@ def  setupConfig():
    gotdata = False
    while not gotdata:
       print ""
-      weburl = getValueFromUser("Which webserver to you want to subscribe to?  Examples:\n   - manageddreams.com/ailadder\n   - manageddreams.com/ailadderstaging\n   - localhost/ailadder")
+      weburl = userinput.getValueFromUser("Which webserver to you want to subscribe to?  Examples:\n   - manageddreams.com/ailadder\n   - manageddreams.com/ailadderstaging\n   - localhost/ailadder")
       print ""
       if weburl.lower().find("http://") == -1:
          weburl = "http://" + weburl
-      botrunnername = getValueFromUser("What name do you want to give to your botrunner?  This name will be shown on the website.")
+      botrunnername = userinput.getValueFromUser("What name do you want to give to your botrunner?  This name will be shown on the website.")
       print ""
-      botrunnersharedsecret = getValueFromUser("What sharedsecret do you want to use with this botrunner?  This will be used to authenticate your botrunner to the website.  Just pick something, and remember it.")
+      botrunnersharedsecret = userinput.getValueFromUser("What sharedsecret do you want to use with this botrunner?  This will be used to authenticate your botrunner to the website.  Just pick something, and remember it.")
       print ""
       springPath = getSpringPath()
       if springPath == '':
@@ -368,18 +274,18 @@ def  setupConfig():
       print "   spring executable path: " + springPath
       print "   UnitSync path: " + unitsyncPath
       print ""
-      if getConfirmation( "Is this correct?" ):
+      if userinput.getConfirmation( "Is this correct?" ):
          gotdata = True
 
    # that's all we need, let's create the config file...
-   templatecontents = readFile(scriptdir + "/config.py.template")
+   templatecontents = filehelper.readFile(scriptdir + "/config.py.template")
    newconfig = templatecontents
    newconfig = newconfig.replace( "WEBSITEURL", weburl )
    newconfig = newconfig.replace( "BOTRUNNERNAME", botrunnername )
    newconfig = newconfig.replace( "SHAREDSECRET", botrunnersharedsecret )
    newconfig = newconfig.replace( "SPRINGPATH", springPath )
    newconfig = newconfig.replace( "UNITSYNCPATH", unitsyncPath )
-   writeFile( scriptdir + "/config.py", newconfig )
+   filehelper.writeFile( scriptdir + "/config.py", newconfig )
 
    # and import it...
    import config

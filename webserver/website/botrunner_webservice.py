@@ -136,16 +136,21 @@ class AILadderService:
          if requestitem == None:
             return ( True, [] ) # can't return None in python 2.4
 
-         requestitem.gametimeoutminutes = config.gametimeoutminutes
-         requestitem.gameendstring = config.gameendstring
-         matchrequestcontroller.markrequestasinprogress( requestitem, botrunnername )
-         
-# return just the dictionary of values, otherwise can't be marshalled
-         dicttoreturn = {}
-         for key in requestitem.__dict__:
-            if key != '_sa_instance_state':
-               dicttoreturn[key] = requestitem.__dict__[key]
-         return (True, [ dicttoreturn ] )  
+         # convert to dict, otherwise can't marshall :-/
+         # is there a better way to do this?
+         requestitemdict = {}
+
+         requestitemdict['matchrequest_id'] = requestitem.matchrequest_id
+         requestitemdict['ai0_name'] = requestitem.ai0.ai_name
+         requestitemdict['ai0_version'] = requestitem.ai0.ai_version
+         requestitemdict['ai1_name'] = requestitem.ai1.ai_name
+         requestitemdict['ai1_version'] = requestitem.ai1.ai_version
+         requestitemdict['map_name'] = requestitem.map.map_name
+         requestitemdict['mod_name'] = requestitem.mod.mod_name
+         requestitemdict['gametimeoutminutes'] = config.gametimeoutminutes
+         requestitemdict['gameendstring'] = config.gameendstring
+
+         return (True, [ requestitemdict ] )  
       except:
          return (False,"An unexpected exception occurred: " + str( sys.exc_info() ) + "\n" + str( traceback.extract_tb( sys.exc_traceback ) ) )
 
