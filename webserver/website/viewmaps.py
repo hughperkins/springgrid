@@ -26,20 +26,25 @@ import cgitb; cgitb.enable()
 from utils import *
 from core import *
 
-dbconnection.connectdb()
+sqlalchemysetup.setup()
 
 loginhelper.processCookie()
 
 menu.printPageTop()
 
-maps = dbconnection.querytomaplist( "select map_name, map_archivechecksum, map_url from maps" )
+maps = sqlalchemysetup.session.query(tableclasses.Map)
 
 print "<h3>AILadder - Map List</h3>" \
 "<table border='1' padding='3'>" \
 "<tr class='tablehead'><td>Map name</td><td>Map archive checksum (Note: this is NOT the maphash seen in the start script)</td><td>Map download url</td></tr>"
 
 for map in maps:
-   print "<tr><td>" + map['map_name'] + "</td><td>" + map['map_archivechecksum'] + "</td><td><a href='" + map['map_url'] + "'>" + map['map_url'] + "</a></td></tr>"
+   print "<tr><td>" + map.map_name + "</td><td>" + map.map_archivechecksum + "</td>"
+   if map.map_url != None:
+      print "<td><a href='" + map.map_url + "'>" + map.map_url + "</a></td>"
+   else:
+      print "<td>&nbsp;</td>"
+   print "</tr>"
 
 print "</table>"
 
@@ -62,7 +67,7 @@ if loginhelper.gusername != '' and False:
    "</form>"
 
 
-dbconnection.disconnectdb()
+sqlalchemysetup.close()
 
 menu.printPageBottom()
 

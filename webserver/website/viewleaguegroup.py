@@ -25,8 +25,9 @@ import cgitb; cgitb.enable()
 
 from utils import *
 from core import *
+from core.tableclasses import *
 
-dbconnection.connectdb()
+sqlalchemysetup.setup()
 
 loginhelper.processCookie()
 
@@ -34,18 +35,7 @@ menu.printPageTop()
 
 leaguegroupname = formhelper.getValue('leaguegroupname')
 
-dbconnection.cursor.execute( "select "\
-   "     league_name "\
-   " from leaguegroup_leaguemembers, leaguegroups, leagues "\
-   " where leaguegroup_leaguemembers.leaguegroup_id = leaguegroups.leaguegroup_id " \
-   " and leaguegroups.leaguegroup_name = %s "\
-   " and leagues.league_id = leaguegroup_leaguemembers.league_id ",
-   (leaguegroupname, ) )
-leagues = []
-row = dbconnection.cursor.fetchone()
-while row != None:
-   leagues.append( row[0])
-   row = dbconnection.cursor.fetchone()
+leaguegroup = leaguehelper.getLeagueGroup( leaguegroupname )
 
 print "<h3>AILadder - View league group " + leaguegroupname + "</h3>" \
 "<p>A league is a specific game configuration used for testing AIs "\
@@ -56,9 +46,9 @@ print "<h3>AILadder - View league group " + leaguegroupname + "</h3>" \
 "<table border='1' padding='3'>" \
 "<tr class='tablehead'><td>Member league:</td></tr>"
 
-for league in leagues:
+for league in leaguegroup.childleagues:
    print "<tr>"
-   print "<td>" + league + "</td>"
+   print "<td>" + league.league.league_name + "</td>"
    print "</tr>"
 
 print "</table>"
@@ -69,26 +59,15 @@ if loginhelper.gusername != '':
    print "<hr />"
    print "<p />"
 
-   dbconnection.cursor.execute( "select "\
-      "  league_name "\
-      " from leagues "\
-      " where not exists ( "\
-      "    select * from leaguegroup_leaguemembers, leaguegroups " \
-      "    where leaguegroup_leaguemembers.leaguegroup_id = leaguegroups.leaguegroup_id " \
-      "    and leaguegroups.leaguegroup_name = %s "\
-      "    and leagues.league_id = leaguegroup_leaguemembers.league_id )",
-      (leaguegroupname, ) )
-   potentialleagues = []
-   row = dbconnection.cursor.fetchone()
-   while row != None:
-      potentialleagues.append( row[0])
-      row = dbconnection.cursor.fetchone()
+   potentialleaguenames = listhelper.tuplelisttolist( sqlalchemysetup.session.query(League.league_name) )
+   for league in leaguegroup.childleagues:
+      potentialleaguenames.remove( league.league.league_name )
 
    print "<h4>Add league to league group:</h4>"
    print "<form action='addleaguetoleaguegroup.py' method='post'>" \
    "<table border='1' padding='3'>" \
    "<tr><td>League name</td><td>"
-   print htmlformshelper.listToDropdown( 'leaguename', potentialleagues )
+   print htmlformshelper.listToDropdown( 'leaguename', potentialleaguenames )
    print "</td></tr>"
 
    print "<tr><td></td><td><input type='submit' value='Add' /></td></tr>" \
@@ -96,7 +75,7 @@ if loginhelper.gusername != '':
    "<input type='hidden' name='leaguegroupname' value='" + leaguegroupname + "' />"\
    "</form>"
 
-dbconnection.disconnectdb()
+sqlalchemysetup.close()
 
 menu.printPageBottom()
 

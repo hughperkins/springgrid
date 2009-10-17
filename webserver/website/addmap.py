@@ -30,8 +30,9 @@ import cgi
 
 from utils import *
 from core import *
+from core.tableclasses import *
 
-dbconnection.connectdb()
+sqlalchemysetup.setup()
 
 loginhelper.processCookie()
 
@@ -41,21 +42,21 @@ if not roles.isInRole(roles.mapadmin):
    print "You must be logged in as a mapadmin"
 else:
    mapname = formhelper.getValue("mapname")
+   maparchivechecksum = formhelper.getValue("maparchivechecksum")
    mapurl = formhelper.getValue("mapurl")
 
-   if mapname != None and mapname != "":
+   if mapname != None and mapname != "" and maparchivechecksum != None and maparchivechecksum != '':
       if mapurl == None:
          mapurl = ''
-      rows = dbconnection.cursor.execute( "insert into maps ( map_name,  map_url ) "\
-         " values ( %s, %s )", ( mapname, mapurl ) )
-      if rows == 1:
-         print "Added ok"
-      else:
-         print "Something went wrong.  Please check your values and try again."
+      map = Map( mapname, maparchivechecksum )
+      map.mapurl = mapurl
+      sqlalchemysetup.session.add( map )
+      sqlalchemysetup.session.commit()
+      print "Added ok"
    else:
       print "Please fill in the fields and try again"
 
-dbconnection.disconnectdb()
+sqlalchemysetup.close()
 
 menu.printPageBottom()
 

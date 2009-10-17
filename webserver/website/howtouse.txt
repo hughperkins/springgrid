@@ -4,6 +4,7 @@ prerequisites
 - have a webserver capable of running python scripts in cgi (tested using apache2)
 - have python installed
 - have python MySQLdb installed
+- have python sqlalchemy installed
 
 setup
 - the 'website' directory is the website, and should be published by using a virtual directory or similar

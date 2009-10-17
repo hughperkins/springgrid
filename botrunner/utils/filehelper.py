@@ -1,6 +1,6 @@
 # Copyright Hugh Perkins 2009
 # hughperkins@gmail.com http://manageddreams.com
-#
+# 
 # This program is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by the
 # Free Software Foundation; either version 2 of the License, or
@@ -19,11 +19,36 @@
 # http://www.opensource.org/licenses/gpl-license.php
 #
 
-# the leagues in a leaguegroup
-# many to one relationship
-create table leaguegroup_leaguemembers (
-   leaguegroup_id integer not null,
-   league_id integer not null,
-   primary key (leaguegroup_id, league_id )
-);
+# return contents of filepath as string
+def readFile( filepath ):
+   filehandle = open( filepath, "r" )
+   filecontents = ""
+   line = filehandle.readline()
+   while( line != "" ):
+      filecontents = filecontents + line
+      line = filehandle.readline()
+   filehandle.close()
+   return filecontents
+
+# write contents string to filepath
+def writeFile( filepath, contents ):
+   filehandle = open( filepath, "w" )
+   filehandle.write( contents )
+   filehandle.close()
+
+def test():
+   teststring = u"blah\nfoo\nhello world!T^*6789"
+   filepath = "/tmp/foo.txt"
+   writeFile( filepath, teststring )
+   newstring = readFile( filepath )
+   if newstring != teststring:
+      print "FAIL"
+      return
+
+   print "PASS"
+
+
+if __name__ == "__main__":
+   test()
+
 

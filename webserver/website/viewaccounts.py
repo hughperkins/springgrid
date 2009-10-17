@@ -25,8 +25,9 @@ import cgitb; cgitb.enable()
 
 from utils import *
 from core import *
+from core.tableclasses import *
 
-dbconnection.connectdb()
+sqlalchemysetup.setup()
 
 loginhelper.processCookie()
 
@@ -37,7 +38,7 @@ def go():
       print "Please login first before using this page."
       return
 
-   accounts = dbconnection.querytomaplist( "select username, userfullname from accounts" )
+   accounts = sqlalchemysetup.session.query( Account )
 
    print "<h3>AILadder - Account List</h3>" \
    "<table border='1' padding='3'>" \
@@ -45,9 +46,9 @@ def go():
 
    for account in accounts:
       print "<tr>"
-      print "<td><a href='viewaccount.py?username=" + account['username'] + "'>" + account['username'] + "</td><td>" + account['userfullname'] + "</a></td>"
-      if not roles.isInRole2( account['username'], roles.accountadmin ):
-         print "<td><a href='removeaccount.py?username=" + account['username'] + "'>Delete account</a></td>"
+      print "<td><a href='viewaccount.py?username=" + account.username + "'>" + account.username + "</td><td>" + account.userfullname + "</a></td>"
+      if not roles.isInRole2( account.username, roles.accountadmin ):
+         print "<td><a href='removeaccount.py?username=" + account.username + "'>Delete account</a></td>"
       else:
          print "<td>(Drop accountadmin role before deleting account)</td>"
       print "</tr>"
@@ -74,7 +75,7 @@ def go():
 
 go()
 
-dbconnection.disconnectdb()
+sqlalchemysetup.close()
 
 menu.printPageBottom()
 

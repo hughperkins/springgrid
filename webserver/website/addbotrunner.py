@@ -26,8 +26,9 @@ import cgi
 
 from utils import *
 from core import *
+from core.tableclasses import *
 
-dbconnection.connectdb()
+sqlalchemysetup.setup()
 
 loginhelper.processCookie()
 
@@ -41,19 +42,16 @@ else:
 
    if botrunnername != None and sharedsecret != None and botrunnername != '' and sharedsecret != '':
 
-      rows = dbconnection.cursor.execute( "insert into botrunners "\
-         "( botrunner_name,botrunner_owneraccountid, botrunner_sharedsecret ) "\
-         " select %s, account_id, %s from "\
-         " accounts where username = %s ",
-         ( botrunnername,sharedsecret, loginhelper.gusername, ) )
-      if rows == 1:
-         print "Added ok"
-      else:
-         print "Something went wrong.  Please check your values and try again."
+      botrunner = BotRunner( botrunnername, sharedsecret )
+      account = accounthelper.getAccount( loginhelper.gusername )
+      botrunner.owneraccount = account
+      sqlalchemysetup.session.add( botrunner )
+      sqlalchemysetup.session.commit()
+      print "Added ok"
    else:
       print "Please fill in the fields and try again"
 
-dbconnection.disconnectdb()
+sqlalchemysetup.close()
 
 menu.printPageBottom()
 

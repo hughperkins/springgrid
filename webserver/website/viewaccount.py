@@ -25,8 +25,9 @@ import cgitb; cgitb.enable()
 
 from utils import *
 from core import *
+from core.tableclasses import *
 
-dbconnection.connectdb()
+sqlalchemysetup.setup()
 
 loginhelper.processCookie()
 
@@ -34,22 +35,17 @@ menu.printPageTop()
 
 username = formhelper.getValue('username')
 
-rows = dbconnection.querytolistwithparams( "select role_name "\
-   " from roles, accounts, role_members "\
-   " where role_members.role_id = roles.role_id "\
-   " and accounts.account_id = role_members.account_id "\
-   " and accounts.username = %s",
-   (username,) )
+account = sqlalchemysetup.session.query(Account).filter(Account.username == username ).first()
 
 print "<h3>AILadder - View account " + username + "</h3>" \
 "<table border='1' padding='3'>" \
 "<tr class='tablehead'><td>Role:</td><td></td></tr>"
 
-for row in rows:
+for role in account.roles:
    print "<tr>"
-   print "<td>" + row + "</td>"
+   print "<td>" + role.role.role_name + "</td>"
    print "<td><a href='removerolefromaccount.py?"\
-      "username=" + username + "&rolename=" + row + "'>"\
+      "username=" + username + "&rolename=" + role.role.role_name + "'>"\
       "Remove from role</a></td>"
    print "</tr>"
 
@@ -61,14 +57,9 @@ if roles.isInRole(roles.accountadmin):
    print "<hr />"
    print "<p />"
 
-   potentialroles = dbconnection.querytolistwithparams("select "\
-      " role_name "\
-      " from roles "\
-      " where not exists ( select * from role_members, accounts "\
-      " where role_members.role_id = roles.role_id and "\
-      " accounts.account_id = role_members.account_id and "\
-      " accounts.username = %s ) ",
-      ( username, ) )
+   potentialroles = listhelper.tuplelisttolist( sqlalchemysetup.session.query(Role.role_name) )
+   for role in account.roles:
+      potentialroles.remove( role.role.role_name )
 
    print "<h4>Add roles to account:</h4>"
    print "<form action='addroletoaccount.py' method='post'>" \
@@ -82,7 +73,7 @@ if roles.isInRole(roles.accountadmin):
    "<input type='hidden' name='username' value='" + username + "' />"\
    "</form>"
 
-dbconnection.disconnectdb()
+sqlalchemysetup.close()
 
 menu.printPageBottom()
 

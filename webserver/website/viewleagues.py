@@ -25,20 +25,15 @@ import cgitb; cgitb.enable()
 
 from utils import *
 from core import *
+from core.tableclasses import *
 
-dbconnection.connectdb()
+sqlalchemysetup.setup()
 
 loginhelper.processCookie()
 
 menu.printPageTop()
 
-rows = dbconnection.querytomaplist( "select "\
-   "    league_name as leaguename, "\
-   "    mod_name as modname, "\
-   "    map_name as mapname "\
-   " from leagues, maps, mods " \
-   " where leagues.map_id = maps.map_id "\
-   " and leagues.mod_id = mods.mod_id " )
+leagues = sqlalchemysetup.session.query(League)
 
 print "<h3>AILadder - View leagues</h3>" \
 "<p>A league is a specific game configuration used for testing AIs "\
@@ -49,21 +44,16 @@ print "<h3>AILadder - View leagues</h3>" \
 "<table border='1' padding='3'>" \
 "<tr class='tablehead'><td>League Name:</td><td>Mod Name</td><td>Map Name</td><td>Assigned options</td></tr>"
 
-for row in rows:
+for league in leagues:
    print "<tr>"
-   print "<td><a href='viewleague.py?leaguename=" + row['leaguename'] + "'>" + row['leaguename'] + "</a></td>"
-   print "<td>" + row['modname'] + "</td>"
-   print "<td>" + row['mapname'] + "</td>"
+   print "<td><a href='viewleague.py?leaguename=" + league.league_name + "'>" + league.league_name + "</a></td>"
+   print "<td>" + league.mod.mod_name + "</td>"
+   print "<td>" + league.map.map_name + "</td>"
 
    print "<td>"
-   options = dbconnection.querytolistwithparams("select option_name "\
-      " from aioptions, leagueoptions, leagues " \
-      " where leagueoptions.option_id = aioptions.option_id "\
-      " and leagueoptions.league_id = leagues.league_id "\
-      " and league_name = %s ",
-      ( row['leaguename'], ) )
-   print ' '.join( options )
-   print "</td>"
+   for option in league.options:
+      print option.option.option_name
+   print "&nbsp;</td>"
 
    print "</tr>"
 
@@ -75,8 +65,8 @@ if loginhelper.gusername != '':
    print "<hr />"
    print "<p />"
 
-   maps = dbconnection.querytolist("select map_name from maps")
-   mods = dbconnection.querytolist("select mod_name from mods")
+   maps = listhelper.tuplelisttolist( sqlalchemysetup.session.query(Map.map_name) )
+   mods = listhelper.tuplelisttolist( sqlalchemysetup.session.query(Mod.mod_name) )
 
    print "<h4>Create new league:</h4>"
    print "<form action='addleague.py' method='post'>" \
@@ -89,7 +79,7 @@ if loginhelper.gusername != '':
    "</table>" \
    "</form>"
 
-dbconnection.disconnectdb()
+sqlalchemysetup.close()
 
 menu.printPageBottom()
 

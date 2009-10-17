@@ -23,10 +23,12 @@
 
 import cgitb; cgitb.enable()
 
+from sqlalchemy.orm import join
+
 from utils import *
 from core import *
 
-dbconnection.connectdb()
+sqlalchemysetup.setup()
 
 loginhelper.processCookie()
 
@@ -34,12 +36,10 @@ menu.printPageTop()
 
 leaguename = formhelper.getValue('leaguename')
 
-compatibleoptions = dbconnection.querytolistwithparams( "select option_name "\
-   " from leagueoptions, aioptions, leagues "\
-   " where leagueoptions.league_id = leagues.league_id "\
-   " and leagues.league_name = %s "\
-   " and leagueoptions.option_id = aioptions.option_id ",
-   ( leaguename, ) )
+compatibleoptions = listhelper.tuplelisttolist(
+   sqlalchemysetup.session.query( tableclasses.AIOption.option_name )
+      .select_from(join(join(tableclasses.AIOption,tableclasses.LeagueOption),tableclasses.League))
+      .filter(tableclasses.League.league_name == leaguename ) )
 
 print "<h3>AILadder - View League '" + leaguename + "'</h3>"
 
@@ -65,13 +65,10 @@ if roles.isInRole(roles.leagueadmin):
 
    print "<h4>Assign new options:</h4>"
 
-   potentialoptions = dbconnection.querytolistwithparams( "select option_name "\
-      " from aioptions "\
-      " where not exists ( select * from leagues, leagueoptions "\
-      " where leagueoptions.league_id = leagues.league_id "\
-      " and leagues.league_name = %s "\
-      " and leagueoptions.option_id = aioptions.option_id ) ",
-      ( leaguename, ) )
+   potentialoptions = listhelper.tuplelisttolist(
+      sqlalchemysetup.session.query(tableclasses.AIOption.option_name ) )
+   for assignedoption in compatibleoptions:
+      potentialoptions.remove(assignedoption)
   
    print "<form action='addoptiontoleague.py' method='post'>" \
    "<table border='1' padding='3'>" \
@@ -82,7 +79,7 @@ if roles.isInRole(roles.leagueadmin):
    "</form>"
 
 
-dbconnection.disconnectdb()
+sqlalchemysetup.close()
 
 menu.printPageBottom()
 

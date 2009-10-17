@@ -19,14 +19,30 @@
 # http://www.opensource.org/licenses/gpl-license.php
 #
 
-create table maps (
-   map_id integer not null auto_increment,
-   map_name varchar(255) not null,
-   map_archivechecksum long,
-   map_url varchar(255) not null default '',
+# maybe there is some standard junit type thing for python (pyunit perhaps?)
+# anyway, for now, until someone points out the standard way of doing this
 
-   primary key (map_id)
-);
+def testBoolean( description, testvalue, targetvalue ):
+   if testvalue == targetvalue:
+      print "Testing " + description + ": PASS"
+      return True
+   else:
+      print "Testing " + description + ": FAIL: " + str(testvalue) + " vs " + str(targetvalue)
+      return False
 
-alter table maps add unique key (map_name);
+# self test function
+def test():
+   if testBoolean("check for true", True, True ) == False:
+      print 'FAIL'
+      return
+   if testBoolean("check for true", False, False ) == False:
+      print 'FAIL'
+      return
+   if testBoolean("check for false, should print FAIL", True, False ) == True:
+      print 'FAIL'
+      return
+   if testBoolean("check for false, should print FAIL", False, True ) == True:
+      print 'FAIL'
+      return
+   print 'PASS'
 

@@ -19,13 +19,13 @@
 # http://www.opensource.org/licenses/gpl-license.php
 #
 
-# list of allowed ai options
-# one could create a constraint on the ais_allowedoptions table based on
-# this table for example
-
-create table aioptions (
-   option_id integer not null auto_increment,
-   option_name varchar(255),
-   primary key(option_id)
-);
+# give it for example [('a','b'),('c','d')] and it will return:
+# ['a','c'], taking the first item in each tuple
+# used for example for turning the results of an sqlalchemy query to a single 
+# column into a bog-standard list
+def tuplelisttolist( tuplelist ):
+   resultlist = []
+   for tuple in tuplelist:
+      resultlist.append(tuple[0])
+   return resultlist
 

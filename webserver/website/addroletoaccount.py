@@ -26,8 +26,9 @@ import cgi
 
 from utils import *
 from core import *
+from core.tableclasses import *
 
-dbconnection.connectdb()
+sqlalchemysetup.setup()
 
 loginhelper.processCookie()
 
@@ -40,21 +41,14 @@ else:
    rolename = formhelper.getValue('rolename')
 
    if username != None and rolename != '' and username != None and rolename != '':
-      rows = dbconnection.cursor.execute( "insert into role_members "\
-         "( role_id, account_id ) "\
-         " select role_id, account_id from "\
-         " roles, accounts "\
-         " where role_name = %s "\
-         " and username = %s ",
-         ( rolename, username ) )
-      if rows == 1:
-         print "Added ok"
-      else:
-         print "Something went wrong.  Please check your values and try again."
+      account = accounthelper.getAccount(username)
+      account.roles.append( RoleMember( roles.getRole( rolename ) ) )
+      sqlalchemysetup.session.commit()
+      print "Added ok"
    else:
       print "Please fill in the fields and try again"
 
-dbconnection.disconnectdb()
+sqlalchemysetup.close()
 
 menu.printPageBottom()
 

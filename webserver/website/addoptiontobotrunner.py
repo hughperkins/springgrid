@@ -30,8 +30,9 @@ import cgi
 
 from utils import *
 from core import *
+from core.tableclasses import *
 
-dbconnection.connectdb()
+sqlalchemysetup.setup()
 
 loginhelper.processCookie()
 
@@ -50,26 +51,29 @@ def go():
       return
 
    botrunnerownername = botrunnerhelper.getOwnerUsername( botrunnername ) 
-   if botrunnerownername != loginhelper.getUsername():
-      print "You must be the botrunner owner"
+   if botrunnerownername != loginhelper.getUsername() and not roles.isInRole(roles.botrunneradmin):
+      print "You must be the botrunner owner or in role botrunneradmin"
       return
 
-   rows = dbconnection.cursor.execute( "insert into botrunner_assignedoptions "\
-         "( botrunner_id, botrunner_option_id  ) "\
-         " select botrunner_id, botrunner_option_id "\
-         " from botrunners, botrunner_options "\
-         " where botrunners.botrunner_name = %s "\
-         " and botrunner_option_name = %s ",
-       ( botrunnername, optionname ) )
-   if rows != 1:
+   botrunner = sqlalchemysetup.session.query(BotRunner).filter(BotRunner.botrunner_name == botrunnername ).first()
+   if botrunner == None:
       print "Something went wrong.  Please check your values and try again."
       return
+
+   option = sqlalchemysetup.session.query(AIOption).filter(AIOption.option_name == optionname ).first()
+   if option == None:
+      print "Something went wrong.  Please check your values and try again."
+      return
+
+   botrunner.options.append( BotRunnerAssignedOption(option))
+
+   sqlalchemysetup.session.commit()
 
    print "Added ok"
 
 go()
 
-dbconnection.disconnectdb()
+sqlalchemysetup.close()
 
 menu.printPageBottom()
 

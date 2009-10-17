@@ -25,8 +25,9 @@ import cgitb; cgitb.enable()
 
 from utils import *
 from core import *
+from core.tableclasses import *
 
-dbconnection.connectdb()
+sqlalchemysetup.setup()
 
 loginhelper.processCookie()
 
@@ -34,36 +35,19 @@ menu.printPageTop()
 
 botrunnername = formhelper.getValue("botrunnername")
 
-dbconnection.dictcursor.execute( "select "\
-   "    username, "\
-   "    userfullname, "\
-   "    botrunner_sharedsecret "\
-   " from botrunners " \
-   "  left join accounts "\
-   " on botrunners.botrunner_owneraccountid = accounts.account_id "\
-   " where botrunners.botrunner_name = %s "\
-,
-   (botrunnername ) )
-row = dbconnection.dictcursor.fetchone()
+botrunner = sqlalchemysetup.session.query(BotRunner).filter(BotRunner.botrunner_name == botrunnername ).first()
 
-isbotrunnerowner = ( loginhelper.isLoggedOn() and row['username'] != None and row['username'] == loginhelper.getUsername() )
-
-options = dbconnection.querytolistwithparams( "select botrunner_option_name "\
-      " from botrunner_options, botrunner_assignedoptions, botrunners "\
-      " where botrunners.botrunner_name = %s "\
-      " and botrunner_assignedoptions.botrunner_id = botrunners.botrunner_id "\
-      " and botrunner_options.botrunner_option_id = botrunner_assignedoptions.botrunner_option_id ",
-      ( botrunnername, ) )
+isbotrunnerowner = ( loginhelper.isLoggedOn() and botrunner.owneraccount != None and botrunner.owneraccount.username == loginhelper.getUsername() )
 
 print "<h3>AILadder - Bot Runner '" + botrunnername + "'</h3>" \
 "<table border='1' padding='3'>"
 
-if row['userfullname'] != None:
-   print "<tr><td>Bot runner owner: </td><td>" + row['userfullname'] + "</td></tr>"
+if botrunner.owneraccount != None:
+   print "<tr><td>Bot runner owner: </td><td>" + botrunner.owneraccount.userfullname + "</td></tr>"
 else:
-   print "<tr><td>Bot runner owner: </td></tr>"
+   print "<tr><td>Bot runner owner: </td><td>None assigned</td></tr>"
 if isbotrunnerowner:
-   print "<tr><td>Shared secret: </td><td>" + row['botrunner_sharedsecret'] + "</td></tr>"
+   print "<tr><td>Shared secret: </td><td>" + botrunner.botrunner_sharedsecret + "</td></tr>"
 else:
    print "<tr><td>Shared secret: </td><td>&lt;only visible to owner&gt;</td></tr>"
 
@@ -79,56 +63,38 @@ if isbotrunnerowner:
 else:
    print "<tr class='tablehead'><td>Option name</td></tr>"
 
-for option in options:
-   print "<tr><td>" + option + "</td>"
-   if isbotrunnerowner:
-      print "<td><a href='deleteoptionfrombotrunner.py?botrunnername=" + botrunnername + "&optionname=" + option + "'>Delete option</a></td>"
+for option in botrunner.options:
+   print "<tr><td>" + option.option.option_name + "</td>"
+   if isbotrunnerowner or roles.isInRole(roles.botrunneradmin):
+      print "<td><a href='deleteoptionfrombotrunner.py?botrunnername=" + botrunnername + "&optionname=" + option.option.option_name + "'>Delete option</a></td>"
    print "</tr>"
 
 print "</table>"
 
 print "<h3>Supported Maps</h3>"
 
-maps = dbconnection.querytolistwithparams( "select map_name "\
-   " from maps, botrunner_supportedmaps, botrunners "\
-   " where botrunners   .botrunner_id = botrunner_supportedmaps.botrunner_id "\
-   " and maps.map_id = botrunner_supportedmaps.map_id "\
-   " and botrunners.botrunner_name = %s ",
-   ( botrunnername ) )
 print "<table>"
 print "<tr class='tablehead'><td>Map</td>"
-for map in maps:
-   print "<tr class='success'><td>" + map + "</td>"
+for map in botrunner.supportedmaps:
+   print "<tr class='success'><td>" + map.map.map_name + "</td>"
 print "</table>"
 
 print "<h3>Supported Mods</h3>"
 
-mods = dbconnection.querytolistwithparams( "select mod_name "\
-   " from mods, botrunner_supportedmods, botrunners "\
-   " where botrunners   .botrunner_id = botrunner_supportedmods.botrunner_id "\
-   " and mods.mod_id = botrunner_supportedmods.mod_id "\
-   " and botrunners.botrunner_name = %s ",
-   ( botrunnername ) )
 print "<table>"
 print "<tr class='tablehead'><td>Mod</td>"
-for mod in mods:
-   print "<tr class='success'><td>" + mod + "</td>"
+for mod in botrunner.supportedmods:
+   print "<tr class='success'><td>" + mod.mod.mod_name + "</td>"
 print "</table>"
 
-if row['username'] == loginhelper.getUsername():
-
+if isbotrunnerowner or roles.isInRole(roles.botrunneradmin):
    print "<p />"
    print "<hr />"
    print "<p />"
 
-   potentialoptions = dbconnection.querytolistwithparams( "select botrunner_option_name "\
-         " from botrunner_options where not exists( "\
-         " select * from botrunner_assignedoptions, botrunners "\
-         " where botrunners.botrunner_name = %s "\
-         " and botrunner_assignedoptions.botrunner_id = botrunners.botrunner_id "\
-         " and botrunner_options.botrunner_option_id = botrunner_assignedoptions.botrunner_option_id "
-         " ) ",
-         ( botrunnername, ) )
+   potentialoptions = listhelper.tuplelisttolist( sqlalchemysetup.session.query(AIOption.option_name) )
+   for option in botrunner.options:
+      potentialoptions.remove(option.option.option_name )
 
    print "<h4>Add new options to engine:</h4>"
    print "<form action='addoptiontobotrunner.py' method='post'>" \
@@ -139,7 +105,7 @@ if row['username'] == loginhelper.getUsername():
    "<input type='hidden' name='botrunnername' value='" + botrunnername + "' />"\
    "</form>"
 
-dbconnection.disconnectdb()
+sqlalchemysetup.close()
 
 menu.printPageBottom()
 

@@ -26,36 +26,13 @@ import cgitb; cgitb.enable()
 from utils import *
 from core import *
 
-dbconnection.connectdb()
+sqlalchemysetup.setup()
 
 loginhelper.processCookie()
 
 menu.printPageTop()
 
-requests = dbconnection.querytomaplist( "select matchrequestqueue.matchrequest_id as matchrequestid, " \
-      "ai0.ai_name as ai0name, "\
-      "ai0.ai_version as ai0version, "\
-      "ai1.ai_name as ai1name, "\
-      "ai1.ai_version as ai1version, "\
-      "map_name as mapname, "\
-      "mod_name as modname, " \
-      "matchrequests_inprogress.datetimeassigned, "\
-      "botrunner_name as botrunnername "\
-      "from ais as ai0, "\
-      "   ais as ai1, "\
-      "   maps, "\
-      "   mods, "\
-      "   matchrequestqueue "\
-      " left join matchrequests_inprogress "\
-      "   on matchrequests_inprogress.matchrequest_id = matchrequestqueue.matchrequest_id " \
-      " left join botrunners "\
-      "   on botrunners.botrunner_id = matchrequests_inprogress.botrunner_id"\
-      " where ai0.ai_id = matchrequestqueue.ai0_id "\
-      "   and ai1.ai_id = matchrequestqueue.ai1_id "\
-      "   and maps.map_id = matchrequestqueue.map_id "\
-      "   and mods.mod_id = matchrequestqueue.mod_id "\
-      "   and not exists ( select * from matchresults " \
-             " where matchresults.matchrequest_id = matchrequestqueue.matchrequest_id )" )
+requests = sqlalchemysetup.session.query(tableclasses.MatchRequest)
 
 print "<h3>AILadder - Match requests</h3>" \
 "<table border='1' padding='3'>" \
@@ -73,32 +50,34 @@ print "<td>datetimeassigned</td>"
 print "</tr>"
 
 for request in requests:
-   if request['botrunnername'] != None:
+   if request.matchresult != None:
+      continue
+   if request.matchrequestinprogress != None:
       print "<tr class='inprogress'>"
    else:
       print "<tr>"
-   print "<td>" + str(request['matchrequestid']) + "</td>"
-   print "<td>" + request['ai0name'] + "</td>"
-   print "<td>" + request['ai0version'] + "</td>"
-   print "<td>" + request['ai1name'] + "</td>"
-   print "<td>" + request['ai1version'] + "</td>"
-   print "<td>" + request['mapname'] + "</td>"
-   print "<td>" + request['modname'] + "</td>"
+   print "<td>" + str(request.matchrequest_id) + "</td>"
+   print "<td>" + request.ai0.ai_name + "</td>"
+   print "<td>" + request.ai0.ai_version + "</td>"
+   print "<td>" + request.ai1.ai_name + "</td>"
+   print "<td>" + request.ai1.ai_version + "</td>"
+   print "<td>" + request.map.map_name + "</td>"
+   print "<td>" + request.mod.mod_name + "</td>"
    print "<td>"
-   options = dbconnection.querytolistwithparams("select option_name "\
-      " from aioptions, matchrequest_options " \
-      " where aioptions.option_id = matchrequest_options.option_id "\
-      " and matchrequest_options.matchrequest_id = %s ",
-      ( request['matchrequestid'], ) )
-   print ' '.join( options )
-   print "</td>"
-   print "<td>" + str(request['botrunnername']) + "</td>"
-   print "<td>" + str(request['datetimeassigned']) + "</td>"
+   for option in request.options:
+      print option.option.option_name + "&nbsp;" 
+   print "&nbsp;</td>"
+   if request.matchrequestinprogress != None:
+      print "<td>" + request.matchrequestinprogress.botrunner.botrunner_name + "</td>"
+      print "<td>" + request.matchrequestinprogress.datetimeassigned + "</td>"
+   else:
+      print "<td>&nbsp;</td>"
+      print "<td>&nbsp;</td>"
    print "</tr>"
 
 print "</table>"
 
-dbconnection.disconnectdb()
+sqlalchemysetup.close()
 
 menu.printPageBottom()
 

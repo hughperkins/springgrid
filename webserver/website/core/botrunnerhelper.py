@@ -22,7 +22,9 @@
 import cgi
 
 from utils import *
-#from core import *
+import sqlalchemysetup
+import tableclasses
+from tableclasses import *
 
 botrunnername = ""
 
@@ -33,37 +35,33 @@ def botrunnerauthorized():
    sharedsecret = formhelper.getValue("sharedsecret")
    return validatesharedsecret( botrunnername, sharedsecret )
 
+def getBotRunner(botrunnername ):
+   return sqlalchemysetup.session.query(tableclasses.BotRunner).filter(tableclasses.BotRunner.botrunner_name == botrunnername ).first()
+
 def validatesharedsecret(lbotrunnername, sharedsecret):
    global botrunnername
-   rows = dbconnection.cursor.execute("select botrunner_sharedsecret from botrunners where botrunner_name=%s", (lbotrunnername,) )
-   if rows == 0:  # Never seen this botrunner before, just add it
-      dbconnection.cursor.execute("insert into botrunners (botrunner_name, botrunner_sharedsecret ) "\
-         " values ( %s, %s ) ",
-         ( lbotrunnername, sharedsecret ) )
+
+   botrunner = getBotRunner( lbotrunnername )
+
+   if botrunner == None: 
+      # Never seen this botrunner before, just add it
+      botrunner = BotRunner( lbotrunnername, sharedsecret )
+      sqlalchemysetup.session.add(botrunner)
+      sqlalchemysetup.session.commit()
+
       # if this fails, return true anyway
       return True
-   elif rows >= 1:
-      row = dbconnection.cursor.fetchone()
-      if row == None:
-         return False
-      actualsharedsecret = row[0]
-      if actualsharedsecret == sharedsecret:
+   else:
+      if botrunner.botrunner_sharedsecret == sharedsecret:
          botrunnername = lbotrunnername
          return True
       return False
 
 def getOwnerUsername(botrunnername):
-   rows = dbconnection.cursor.execute("select username from "\
-      " botrunners, accounts " \
-      " where botrunners.botrunner_owneraccountid = account_id "\
-      " and botrunners.botrunner_name = %s ",
-      ( botrunnername ) )
-   if rows == 0:
-      return ''
-   row = dbconnection.cursor.fetchone()
-   if row == None:
-      return
-   return row[0]
-
-
+   botrunner = getBotRunner( botrunnername )
+   if botrunner == None:
+      return None
+   if botrunner.owneraccount == None:
+      return None
+   return botrunner.owneraccount.username
 

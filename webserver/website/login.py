@@ -29,7 +29,7 @@ import cgi
 from utils import *
 from core import *
 
-dbconnection.connectdb()
+sqlalchemysetup.setup()
 
 username = formhelper.getValue('username')
 password = formhelper.getValue('password')
@@ -47,7 +47,7 @@ else:
 
    print loginhelper.loginhtml
 
-dbconnection.disconnectdb()
+sqlalchemysetup.close()
 
 menu.printPageBottom()
 

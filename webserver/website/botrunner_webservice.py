@@ -43,11 +43,12 @@ class AILadderService:
       if not botrunnerhelper.validatesharedsecret(botrunnername, sharedsecret):
          return (False, "Not authenticated")
 
-      dbconnection.dictcursor.execute("update botrunners " \
-         " set botrunner_lastpingstatus = %s, "\
-         " botrunner_lastpingtime = %s " \
-         " where botrunners.botrunner_name = %s  ",
-         ( status, dates.dateTimeToDateString( datetime.datetime.now() ), botrunnername ) )
+      botrunner = sqlalchemysetup.session.query(tableclasses.BotRunner).filter(tableclasses.BotRunner.botrunner_name == botrunnername ).first()
+      if botrunner == None:
+         return (False,'')
+      botrunner.botrunner_lastpingtime = dates.dateTimeToDateString( datetime.datetime.now() )
+      botrunner.botrunner_lastpingstatus = status
+      sqlalchemysetup.session.commit()
       return (True,'')
 
    # return (True,'') if goes ok, otherwise (False,message)
@@ -124,7 +125,7 @@ class AILadderService:
 
          return (True,'received replay file raw length: ' + str( len( replaycontentsraw ) ) )
       except:
-         return (False,"unexpected exception: " + str( sys.exc_info() ) )
+         return (False,"An unexpected exception occurred: " + str( sys.exc_info() ) + "\n" + str( traceback.extract_tb( sys.exc_traceback ) ) )
 
    # returns (True, request) (True, None) or (False, errormessage)
    def getrequest( self, botrunnername, sharedsecret ):
@@ -135,10 +136,21 @@ class AILadderService:
          if requestitem == None:
             return ( True, [] ) # can't return None in python 2.4
 
-         requestitem['gametimeoutminutes'] = config.gametimeoutminutes
-         requestitem['gameendstring'] = config.gameendstring
-         matchrequestcontroller.markrequestasinprogress( requestitem['matchrequestid'], botrunnername )
-         return (True, [ requestitem ] )
+         # convert to dict, otherwise can't marshall :-/
+         # is there a better way to do this?
+         requestitemdict = {}
+
+         requestitemdict['matchrequest_id'] = requestitem.matchrequest_id
+         requestitemdict['ai0_name'] = requestitem.ai0.ai_name
+         requestitemdict['ai0_version'] = requestitem.ai0.ai_version
+         requestitemdict['ai1_name'] = requestitem.ai1.ai_name
+         requestitemdict['ai1_version'] = requestitem.ai1.ai_version
+         requestitemdict['map_name'] = requestitem.map.map_name
+         requestitemdict['mod_name'] = requestitem.mod.mod_name
+         requestitemdict['gametimeoutminutes'] = config.gametimeoutminutes
+         requestitemdict['gameendstring'] = config.gameendstring
+
+         return (True, [ requestitemdict ] )  
       except:
          return (False,"An unexpected exception occurred: " + str( sys.exc_info() ) + "\n" + str( traceback.extract_tb( sys.exc_traceback ) ) )
 
@@ -147,10 +159,10 @@ handler.register_instance( AILadderService() )
 handler.register_introspection_functions()
 
 if __name__ == '__main__':
-   dbconnection.connectdb()
+   sqlalchemysetup.setup()
    try:
       handler.handle_request()
    except:
       print str( sys.exc_value )
-   dbconnection.disconnectdb()
+   sqlalchemysetup.close()
 

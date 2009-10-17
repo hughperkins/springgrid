@@ -26,20 +26,25 @@ import cgitb; cgitb.enable()
 from utils import *
 from core import *
 
-dbconnection.connectdb()
+sqlalchemysetup.setup()
 
 loginhelper.processCookie()
 
 menu.printPageTop()
 
-mods = dbconnection.querytomaplist( "select mod_name, mod_archivechecksum, mod_url from mods" )
+mods = sqlalchemysetup.session.query(tableclasses.Mod)
 
 print "<h3>AILadder - Mod List</h3>" \
 "<table border='1' padding='3'>" \
 "<tr class='tablehead'><td>Mod name</td><td>Mod archive checksum (Note: NOT the same as the maphash in the startscript)</td><td>Mod download url</td></tr>"
 
 for mod in mods:
-   print "<tr><td>" + mod['mod_name'] + "</td><td>" + mod['mod_archivechecksum'] + "</td><td><a href='" + mod['mod_url'] + "'>" + mod['mod_url'] + "</a></td></tr>"
+   print "<tr><td>" + mod.mod_name + "</td><td>" + mod.mod_archivechecksum + "</td><td>"
+   if mod.mod_url != None:
+      print "<a href='" + str(mod.mod_url) + "'>" + str(mod.mod_url) + "</a></td>"
+   else:
+      print "&nbsp;"
+   print "</td></tr>"
 
 print "</table>"
 
@@ -63,7 +68,7 @@ if loginhelper.gusername != '' and False:
    "</table>" \
    "</form>"
 
-dbconnection.disconnectdb()
+sqlalchemysetup.close()
 
 menu.printPageBottom()
 

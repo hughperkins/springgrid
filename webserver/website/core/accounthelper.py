@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 # Copyright Hugh Perkins 2009
 # hughperkins@gmail.com http://manageddreams.com
 #
@@ -19,10 +21,9 @@
 # http://www.opensource.org/licenses/gpl-license.php
 #
 
-# options, like cheatingon etc
-create table matchrequest_options (
-   matchrequest_id integer not null,
-   option_id integer not null,
-   primary key ( matchrequest_id, option_id )
-);
+import sqlalchemysetup
+from tableclasses import *
+
+def getAccount( username ):
+   return sqlalchemysetup.session.query(Account).filter(Account.username == username ).first()
 

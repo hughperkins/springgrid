@@ -50,11 +50,9 @@ ai1nameversion = formhelper.getValue("ai1nameversion")
 ai1name = ai1nameversion.split("|")[0]
 ai1version = ai1nameversion.split("|")[1]
 mapname = formhelper.getValue("mapname")
-# matchrequest.maphash = formhelper.getValue("maphash")
 modname = formhelper.getValue("modname")
-# matchrequest.modhash = formhelper.getValue("modhash")
 
-dbconnection.connectdb()
+sqlalchemysetup.setup()
 
 loginhelper.processCookie()
 
@@ -65,53 +63,28 @@ if loginhelper.isLoggedOn():
     #  print "Submitted"
       # could be nice to print out queue here, or make another page for that
 
-   # we need to get the matchrequestid first, otherwise we 
-   # can't retrieve it reliably
-   # if someone beats us to it on that id, we'll get a unique
-   # row violation, which is ok
-   matchrequestid = 1
-   rows = dbconnection.dictcursor.execute("select max(matchrequest_id) as max "\
-      " from matchrequestqueue " )
-   if rows > 0:
-      row = dbconnection.dictcursor.fetchone()
-      if row['max'] != None:
-         matchrequestid = row['max'] + 1
-   rows = dbconnection.cursor.execute("insert into matchrequestqueue (matchrequest_id, ai0_id, ai1_id, map_id, mod_id) " \
-      " select %s, ai0.ai_id, ai1.ai_id, map_id, mod_id " \
-      " from ais ai0, ais ai1, maps, mods " \
-      " where ai0.ai_name = %s " \
-      " and ai0.ai_version = %s " \
-      " and ai1.ai_name = %s " \
-      " and ai1.ai_version =%s " \
-      " and maps.map_name = %s " \
-      " and mods.mod_name =%s ",
-      (matchrequestid, ai0name, ai0version, ai1name, ai1version,
-      mapname, modname, ) )
-   if rows == 1:
-      #print dbconnection.cursor.fetchone()[0]
+   map = sqlalchemysetup.session.query(tableclasses.Map).filter(tableclasses.Map.map_name == mapname ).first()
+   mod = sqlalchemysetup.session.query(tableclasses.Mod).filter(tableclasses.Mod.mod_name == modname ).first()
+   ai0 = sqlalchemysetup.session.query(tableclasses.AI).filter(tableclasses.AI.ai_name == ai0name ).filter(tableclasses.AI.ai_version == ai0version ).first()
+   ai1 = sqlalchemysetup.session.query(tableclasses.AI).filter(tableclasses.AI.ai_name == ai1name ).filter(tableclasses.AI.ai_version == ai1version ).first()
 
-      # add options:
-      options = dbconnection.querytolist("select option_name from aioptions")
-      selectedoptions = []
-      # get selected options from form submission:
-      for option in options:
-         if formhelper.getValue( "option_" + option ) != None:
-            selectedoptions.append( option )
-      # add to db
-      for option in selectedoptions:
-         dbconnection.cursor.execute("insert into matchrequest_options "\
-            " ( matchrequest_id, option_id ) " \
-            " select %s, option_id "\
-            " from aioptions "\
-            " where aioptions.option_name = %s ",
-            (matchrequestid,option) )
-      print "Submitted ok"
-   else:
-      print "Not submitted, please check your values and try again."
+   matchrequest = tableclasses.MatchRequest( ai0, ai1, map, mod )
+   sqlalchemysetup.session.add( matchrequest )
+
+   # add options:
+   availableoptions = sqlalchemysetup.session.query(tableclasses.AIOption)
+   # get selected options from form submission:
+   for option in availableoptions:
+      if formhelper.getValue( "option_" + option.option_name ) != None:
+         matchrequest.options.append( tableclasses.MatchRequestOption( option ) )
+
+   sqlalchemysetup.session.commit()
+
+   print "Submitted ok."
 else:
    print "Please login first."
 
-dbconnection.disconnectdb()
+sqlalchemysetup.close()
 
 menu.printPageBottom()
 

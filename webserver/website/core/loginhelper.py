@@ -22,17 +22,20 @@
 # functions for login, cookies etc...
 
 import Cookie
-import MySQLdb
 import random
 import cgi
 import string
 import os
 import os.path
+import md5
 
-import dbconnection
+from sqlalchemy.orm import join
 
-import stringhelper
-   
+from utils import *
+
+import sqlalchemysetup
+import tableclasses
+
 gusername = ""  # first call loginhelper.processCookie().  If the user
                 # is already logged in after that, then gusername will no
                 # longer be blank
@@ -62,8 +65,10 @@ def createSalt():
 
 # returns True if password correct, otherwise false
 def validateUsernamePassword( username, password ):
-   rows = dbconnection.cursor.execute( "select username from accounts where username=%s and passwordhash = md5(concat(%s, passwordsalt))", ( username, password, ) )
-   return ( rows == 1 )
+   account = sqlalchemysetup.session.query(tableclasses.Account).filter( tableclasses.Account.username == username ).first()
+   if account == None:
+      return False
+   return account.checkPassword( password )
 
 def logonUser(username, password):
    global gusername
@@ -81,21 +86,23 @@ def logonUser(username, password):
    cookie = Cookie.SimpleCookie()
    cookie["cookiereference"] = cookiereference
 
-   dbconnection.cursor.execute("delete from cookies where username=%s", (username,))
-   dbconnection.cursor.execute("insert into cookies (username,cookiereference)" \
-         " values (%s, %s )", (username, cookiereference, ) )
+   accountrow = sqlalchemysetup.session.query(tableclasses.Account).filter(tableclasses.Account.username == username ).first()
+   if accountrow == None:
+      loginhtml =  "<h4>Logon error: Please check your username and password.</h4>"
+      return 
+
+   cookierow = tableclasses.Cookie( cookiereference, accountrow )
+   sqlalchemysetup.session.add(cookierow)
+   sqlalchemysetup.session.commit()
 
    gusername = username
    loginhtml = "<p>Logged in as: " + gusername + "</p>"
 
 def changePassword( username, password ):
-   passwordsalt = createSalt()
-   rows = dbconnection.cursor.execute( "update accounts "\
-      " set passwordsalt = %s, "\
-      " passwordhash = md5( concat( %s, %s ) ) "\
-      " where username = %s ",
-      ( passwordsalt, password, passwordsalt, username, ) )
-   return (rows == 1 )
+   account = sqlalchemysetup.session.query(tableclasses.Account).filter( tableclasses.Account.username == username ).first()
+   account.changePassword( password )
+   sqlalchemysetup.session.commit()
+   return True
 
 def processCookie():
   global cookie, cookiereference, gusername, loginhtml
@@ -111,13 +118,12 @@ def processCookie():
 
   cookiereference = str( cookie["cookiereference"].value )
 
-  dbconnection.cursor.execute("select username from cookies where cookiereference=%s", (cookiereference,))
-  row = dbconnection.cursor.fetchone()
-
-  if row == None:
+  cookierow = sqlalchemysetup.session.query(tableclasses.Cookie).filter(tableclasses.Cookie.cookiereference == cookiereference ).first()
+  if cookierow == None:
      return
 
-  gusername = row[0]
+  # Note: could consider migrating from username string to account object
+  gusername = cookierow.account.username
 
   if gusername == '':
      return
@@ -127,7 +133,10 @@ def processCookie():
 def logoutUser():
    global cookie, cookiereference, gusername, loginhtml
    
-   dbconnection.cursor.execute("delete from cookies where username=%s", (gusername,))
+   cookierow = sqlalchemysetup.session.query(tableclasses.Cookie).select_from(join(tableclasses.Cookie,tableclasses.Account)).filter(tableclasses.Account.username == gusername ).first()
+   if cookierow != None:
+      sqlalchemysetup.session.delete(cookierow)
+      sqlalchemysetup.session.commit()
    
    cookiereference = '0'
    cookie = Cookie.SimpleCookie()

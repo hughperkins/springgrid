@@ -23,7 +23,13 @@
 
 # manages roles
 
+from sqlalchemy.orm import join
+
 from utils import *
+import loginhelper
+import tableclasses
+import sqlalchemysetup
+from tableclasses import *
 
 # list rolenames here
 # they're also in the roles table, and should match
@@ -32,6 +38,11 @@ aiadmin = 'aiadmin'
 mapadmin = 'mapadmin'
 modadmin = 'modadmin'
 leagueadmin = 'leagueadmin'
+botrunneradmin = 'botrunneradmin'
+
+# returns Role object using sqlalchemy
+def getRole(rolename ):
+   return sqlalchemysetup.session.query(Role).filter(Role.role_name == rolename ).first()
 
 # returns if the logged-in user is in the named role
 def isInRole(rolename):
@@ -48,22 +59,15 @@ def isInRole2(username, rolename):
    if rolename == '':
       print "ERROR: no rolename specified"
       return False
+
    # validate rolename:
-   rows = dbconnection.cursor.execute("select role_name "\
-      " from roles "\
-      " where role_name = %s ",
-      ( rolename, ) )
-   if rows != 1:
+   rolerow = sqlalchemysetup.session.query(tableclasses.Role).filter(tableclasses.Role.role_name == rolename ).first()
+   if rolerow == None:
       print "ERROR: invalid rolename specified"
       return False
-   rows = dbconnection.cursor.execute("select role_name "\
-      " from role_members, accounts, roles "\
-      " where role_name = %s "\
-      " and username = %s "\
-      " and roles.role_id = role_members.role_id "\
-      " and accounts.account_id = role_members.account_id ",
-      ( rolename, username, ) )
-   return ( rows == 1 )
+
+   rolerow = sqlalchemysetup.session.query(tableclasses.Role).select_from(join(join(tableclasses.Role,tableclasses.RoleMember),tableclasses.Account)).filter(tableclasses.Role.role_name == rolename ).filter(tableclasses.Account.username == username ).first()
+   return ( rolerow != None )
 
 # self test function
 def test():

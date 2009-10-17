@@ -30,8 +30,9 @@ import cgi
 
 from utils import *
 from core import *
+from core.tableclasses import *
 
-dbconnection.connectdb()
+sqlalchemysetup.setup()
 
 loginhelper.processCookie()
 
@@ -50,26 +51,20 @@ def go():
       return
 
    botrunnerownername = botrunnerhelper.getOwnerUsername( botrunnername ) 
-   if botrunnerownername != loginhelper.getUsername():
-      print "You must be the botrunner owner"
+   if botrunnerownername != loginhelper.getUsername() and not roles.isInRole( roles.botrunneradmin ):
+      print "You must be the botrunner owner or a botrunneradmin"
       return
 
-   rows = dbconnection.cursor.execute( "delete botrunner_assignedoptions.* "\
-         " from botrunner_assignedoptions, botrunners, botrunner_options "\
-         " where botrunners.botrunner_name = %s "\
-         " and botrunner_option_name = %s "\
-         " and botrunner_assignedoptions.botrunner_id = botrunners.botrunner_id "\
-         " and botrunner_assignedoptions.botrunner_option_id = botrunner_options.botrunner_option_id ",
-       ( botrunnername, optionname ) )
-   if rows != 1:
-      print "Something went wrong.  Please check your values and try again."
-      return
+   botrunner = botrunnerhelper.getBotRunner( botrunnername )
+   for option in botrunner.options:
+      if option.option.option_name == optionname:
+         sqlalchemysetup.session.delete( option )
 
    print "Removed ok"
 
 go()
 
-dbconnection.disconnectdb()
+sqlalchemysetup.close()
 
 menu.printPageBottom()
 

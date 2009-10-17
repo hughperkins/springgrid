@@ -1,7 +1,9 @@
+#!/usr/bin/python
+
 # Copyright Hugh Perkins 2009
 # hughperkins@gmail.com http://manageddreams.com
 #
-# This program is free software; you can redistribute it and/or modify it
+# This program is free software; you can redistribute it and/or aiify it
 # under the terms of the GNU General Public License as published by the
 # Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
@@ -19,11 +21,12 @@
 # http://www.opensource.org/licenses/gpl-license.php
 #
 
-# list of mods that each AI can use
-create table ai_allowedmods (
-   ai_id integer not null,
-   mod_id integer not null,
+import sqlalchemysetup
+from tableclasses import *
 
-   primary key (ai_id, mod_id)
-);
+def getLeague( league_name ):
+   return sqlalchemysetup.session.query(League).filter( League.league_name == league_name ).first()
+
+def getLeagueGroup( leaguegroup_name ):
+   return sqlalchemysetup.session.query(LeagueGroup).filter( LeagueGroup.leaguegroup_name == leaguegroup_name ).first()
 

@@ -30,8 +30,9 @@ import cgi
 
 from utils import *
 from core import *
+from core.tableclasses import *
 
-dbconnection.connectdb()
+sqlalchemysetup.setup()
 
 loginhelper.processCookie()
 
@@ -44,21 +45,14 @@ else:
    aioption = formhelper.getValue("aioption")
 
    if leaguename != None and aioption != None and leaguename != "" and aioption != "":
-      rows = dbconnection.cursor.execute( "insert into leagueoptions "\
-         "( league_id, option_id  ) "\
-         " select league_id, option_id "\
-         " from leagues, aioptions "\
-         " where leagues.league_name = %s "\
-         " and aioptions.option_name = %s ",
-         ( leaguename, aioption ) )
-      if rows == 1:
-         print "Added ok"
-      else:
-         print "Something went wrong.  Please check your values and try again."
+      league = leaguehelper.getLeague( leaguename )
+      league.options.append( LeagueOption( aihelper.getAIOption( aioption ) ) )
+      sqlalchemysetup.session.commit()
+      print "Added ok"
    else:
       print "Please fill in the fields and try again"
 
-dbconnection.disconnectdb()
+sqlalchemysetup.close()
 
 menu.printPageBottom()
 

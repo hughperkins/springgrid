@@ -29,7 +29,7 @@ import cgi
 from utils import *
 from core import *
 
-dbconnection.connectdb()
+sqlalchemysetup.setup()
 
 loginhelper.processCookie()
 
@@ -42,6 +42,6 @@ print "<h4>Logged out.</h4>"
 
 menu.printPageBottom()
 
-dbconnection.disconnectdb()
+sqlalchemysetup.close()
 
 

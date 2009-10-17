@@ -24,21 +24,17 @@
 import sys
 import os
 
-from utils import dbconnection
+from core import sqlalchemysetup
 
 scriptdir = os.path.dirname( os.path.realpath( __file__ ) )
 
-def create(user,password,dbname,hostname):
+def create():
    print "creating all..."
-   exceptions = setupdb.createall(user,password,dbname,hostname)
-   for exceptionstring in exceptions:
-      print " exception: " + exceptionstring
+   sqlalchemysetup.createalltables()
 
-def drop(user,password,dbname,hostname):
+def drop():
    print "dropping all..."
-   exceptions = setupdb.dropall(user,password,dbname,hostname)
-   for exceptionstring in exceptions:
-      print " exception: " + exceptionstring
+   sqlalchemysetup.dropalltables()
 
 def usage():
    print "Usage: " + sys.argv[0] + " username password dbname dbhostname [create|drop]"
@@ -56,23 +52,19 @@ def main():
    hostname = sys.argv[4]
    action = sys.argv[5]
 
-   # add db directory to module paths
-   sys.path.append("db")
-   import setupdb
-
    if action == 'create':
-      dbconnection.connectdbwiththesecredentials(username, password, dbname, hostname )
-      create(username,password,dbname,hostname)
-      dbconnection.disconnectdb()
+      sqlalchemysetup.setupwithcredentials('mysql', username, password, hostname, dbname )
+      create()
+      sqlalchemysetup.close()
    elif action == 'drop':
-      dbconnection.connectdbwiththesecredentials(username, password, dbname, hostname )
-      drop(username,password,dbname,hostname)
-      dbconnection.disconnectdb()
+      sqlalchemysetup.setupwithcredentials('mysql', username, password, hostname, dbname )
+      drop()
+      sqlalchemysetup.close()
    elif action == 'reload':
-      dbconnection.connectdbwiththesecredentials(username, password, dbname, hostname )
-      drop(username,password,dbname,hostname)
-      create(username,password,dbname,hostname)
-      dbconnection.disconnectdb()
+      sqlalchemysetup.setupwithcredentials('mysql', username, password, hostname, dbname )
+      drop()
+      create()
+      sqlalchemysetup.close()
    else:
       usage()
 

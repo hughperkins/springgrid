@@ -26,13 +26,13 @@ import cgitb; cgitb.enable()
 from utils import *
 from core import *
 
-dbconnection.connectdb()
+sqlalchemysetup.setup()
 
 loginhelper.processCookie()
 
 menu.printPageTop()
 
-ais = dbconnection.querytomaplist( "select ai_name, ai_version, ai_downloadurl from ais" )
+ais = sqlalchemysetup.session.query(tableclasses.AI)
 
 print "<h3>AILadder - AI List</h3>"
 
@@ -41,21 +41,18 @@ print "<table border='1' padding='3'>" \
 
 for ai in ais:
    print "<tr>"
-   print "<td><a href='viewai.py?ainame=" + ai['ai_name'] + "&aiversion=" + ai['ai_version'] + "'>" + ai['ai_name'] + "</a></td>"
-   print "<td>" + ai['ai_version'] + "</td>"
+   print "<td><a href='viewai.py?ainame=" + ai.ai_name + "&aiversion=" + ai.ai_version + "'>" + ai.ai_name + "</a></td>"
+   print "<td>" + ai.ai_version + "</td>"
 
    print "<td>"
-   options = dbconnection.querytolistwithparams("select option_name "\
-      " from aioptions, ai_allowedoptions, ais " \
-      " where aioptions.option_id = ai_allowedoptions.option_id "\
-      " and ai_allowedoptions.ai_id = ais.ai_id "\
-      " and ais.ai_name = %s "\
-      " and ais.ai_version = %s ",
-      ( ai['ai_name'], ai['ai_version'] ) )
-   print ' '.join( options )
-   print "</td>"
+   for option in ai.allowedoptions:
+      print option.option.option_name + "&nbsp;"
+   print "&nbsp;</td>"
 
-   print "<td><a href='" + ai['ai_downloadurl'] + "'>" + ai['ai_downloadurl'] + "</a></td>"
+   if ai.ai_downloadurl != None:
+      print "<td><a href='" + str(ai.ai_downloadurl) + "'>" + ai.ai_downloadurl + "</a></td>"
+   else:
+      print "<td>&nbsp;</td>"
    print "</tr>"
 
 print "</table>"
@@ -78,12 +75,7 @@ if loginhelper.gusername != '':
    "</table>" \
    "</form>" 
 
-
-#print "</body>" \
-#"</html>"
-
 menu.printPageBottom()
 
-dbconnection.disconnectdb()
-
+sqlalchemysetup.close()
 

@@ -26,8 +26,9 @@ import cgi
 
 from utils import *
 from core import *
+from core.tableclasses import *
 
-dbconnection.connectdb()
+sqlalchemysetup.setup()
 
 loginhelper.processCookie()
 
@@ -41,22 +42,17 @@ else:
    mapname = formhelper.getValue('mapname')
 
    if leaguename != None and modname != None and mapname != None and leaguename != '' and modname != '' and mapname != '':
-      rows = dbconnection.cursor.execute( "insert into leagues "\
-         "( league_name, league_creatorid, mod_id, map_id ) "\
-         " select %s, account_id, mod_id, map_id from "\
-         " accounts, maps, mods "\
-         " where username = %s "\
-         " and mod_name = %s "\
-         " and map_name = %s ",
-         ( leaguename, loginhelper.gusername, modname, mapname, ) )
-      if rows == 1:
-         print "Added ok"
-      else:
-         print "Something went wrong.  Please check your values and try again."
+      map = maphelper.getMap(mapname)
+      mod = modhelper.getMod(modname)
+      account = accounthelper.getAccount( loginhelper.gusername )
+      league = League( leaguename, account, mod, map )
+      sqlalchemysetup.session.add( league )
+      sqlalchemysetup.session.commit()
+      print "Added ok"
    else:
       print "Please fill in the fields and try again"
 
-dbconnection.disconnectdb()
+sqlalchemysetup.close()
 
 menu.printPageBottom()
 
