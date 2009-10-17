@@ -291,8 +291,7 @@ def  setupConfig():
    import config
    return True
 
-def registermaps():
-   registeredmaps = getxmlrpcproxy().getsupportedmaps( config.botrunnername, config.sharedsecret )
+def registermaps(registeredmaps):
    print registeredmaps
 
    multicall = xmlrpclib.MultiCall(getxmlrpcproxy())
@@ -315,8 +314,7 @@ def registermaps():
    if total > 0:
       print str(successcount) + " successes out of " + str(total)
 
-def registermods():
-   registeredmods = getxmlrpcproxy().getsupportedmods( config.botrunnername, config.sharedsecret )
+def registermods(registeredmods):
    print registeredmods
 
    multicall = xmlrpclib.MultiCall(getxmlrpcproxy())
@@ -338,8 +336,7 @@ def registermods():
    if total > 0:
       print str(successcount) + " successes out of " + str(total)
 
-def registerais():
-   registeredais = getxmlrpcproxy().getsupportedais( config.botrunnername, config.sharedsecret )
+def registerais(registeredais):
    print registeredais
 
    multicall = xmlrpclib.MultiCall(getxmlrpcproxy())
@@ -366,6 +363,21 @@ def registerais():
    if total > 0:
       print str(successcount) + " successes out of " + str(total)
 
+# we do a single multicall to retrieve all registerdd mods, maps and ais
+# first, which should speed up launch after initial launch
+def registercapabilities():
+   multicall = xmlrpclib.MultiCall(getxmlrpcproxy())
+   multicall.getsupportedmaps( config.botrunnername, config.sharedsecret )
+   multicall.getsupportedmods( config.botrunnername, config.sharedsecret )
+   multicall.getsupportedais( config.botrunnername, config.sharedsecret )
+   resultsets = multicall()
+   registeredmaps = resultsets[0]
+   registeredmods = resultsets[1]
+   registeredais = resultsets[2]
+   registermaps(registeredmaps)
+   registermods(registeredmods)
+   registerais(registeredais)
+
 def go():
    global config, unitsync, writabledatadirectory, demosdirectorylistingbeforegame
    # check for config, question user if doesn't exist
@@ -391,9 +403,7 @@ def go():
       print "Please make sure it is a valid AI Ladder URL, and you can connect to it."
       return
 
-   registermaps()
-   registermods()
-   registerais()
+   registercapabilities()
 
    while True:
       print "Checking for new request..."
