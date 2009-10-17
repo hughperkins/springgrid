@@ -30,9 +30,9 @@ import cgi
 
 from utils import *
 from core import *
+from core.tableclasses import *
 
 sqlalchemysetup.setup()
-dbconnection.connectdb()
 
 loginhelper.processCookie()
 
@@ -46,21 +46,17 @@ else:
    aioption = formhelper.getValue("aioption")
 
    if aiversion != None and ainame != None and aioption != None and ainame != "" and aiversion != "" and aioption != "":
-      rows = dbconnection.cursor.execute( "delete ai_allowedoptions.* from ai_allowedoptions, ais, aioptions "\
-         " where ais.ai_name = %s "\
-         " and ais.ai_version = %s "\
-         " and aioptions.option_name = %s "
-         " and ai_allowedoptions.ai_id = ais.ai_id "\
-         " and ai_allowedoptions.option_id = aioptions.option_id ",
-         ( ainame, aiversion, aioption ) )
-      if rows == 1:
-         print "Option removed ok"
-      else:
-         print "Something went wrong.  Please check your values and try again."
+      ai = aihelper.getAI( ainame, aiversion )
+      optiontoremove = None
+      for option in ai.allowedoptions:
+         if option.option.option_name == aioption:
+            optiontoremove = option
+      sqlalchemysetup.session.delete( optiontoremove )
+      sqlalchemysetup.session.commit()
+      print "Option removed ok"
    else:
       print "Please fill in the fields and try again"
 
-dbconnection.disconnectdb()
 sqlalchemysetup.close()
 
 menu.printPageBottom()

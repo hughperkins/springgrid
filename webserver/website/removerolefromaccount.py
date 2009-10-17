@@ -47,7 +47,7 @@ else:
          if role.role.role_name == rolename:
             roletoremove = role
       if roletoremove != None:
-         sqlalchemysetup.session.delete(role.role)
+         #sqlalchemysetup.session.delete(role.role)
          sqlalchemysetup.session.delete(role)
          #account.roles.remove( role )
          sqlalchemysetup.session.commit()

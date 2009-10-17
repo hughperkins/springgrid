@@ -26,10 +26,9 @@ import cgi
 
 from utils import *
 from core import *
+from core.tableclasses import *
 
 sqlalchemysetup.setup()
-
-dbconnection.connectdb()
 
 loginhelper.processCookie()
 
@@ -43,22 +42,12 @@ else:
    aioption = formhelper.getValue("aioption")
 
    if aiversion != None and ainame != None and aioption != None and ainame != "" and aiversion != "" and aioption != "":
-      rows = dbconnection.cursor.execute( "insert into ai_allowedoptions "\
-         "( ai_id, option_id  ) "\
-         " select ai_id, option_id "\
-         " from ais, aioptions "\
-         " where ais.ai_name = %s "\
-         " and ais.ai_version = %s "\
-         " and aioptions.option_name = %s ",
-         ( ainame, aiversion, aioption ) )
-      if rows == 1:
-         print "Added ok"
-      else:
-         print "Something went wrong.  Please check your values and try again."
+      ai = aihelper.getAI( ainame, aiversion )
+      ai.allowedoptions.append(AIAllowedOption( aihelper.getAIOption( aioption ) ) )
+      sqlalchemysetup.session.commit()
+      print "Added ok"
    else:
       print "Please fill in the fields and try again"
-
-dbconnection.disconnectdb()
 
 sqlalchemysetup.close()
 

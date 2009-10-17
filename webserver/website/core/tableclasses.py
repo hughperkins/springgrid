@@ -153,6 +153,9 @@ class AIAllowedOption(Base):
    ai = relation("AI")
    option = relation("AIOption")
 
+   def __init__ ( self, option ):
+      self.option = option
+
 class Cookie(Base):
    __tablename__ = 'cookies'
 

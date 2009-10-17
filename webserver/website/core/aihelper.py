@@ -40,11 +40,14 @@ def getsupportedais( botrunnername ):
       supportedais.append( [ ai.ai_name, ai.ai_version ] )
    return supportedais
 
-def getai( ainame, aiversion ):
+def getAI( ainame, aiversion ):
    return sqlalchemysetup.session.query(AI).filter(AI.ai_name == ainame ).filter(AI.ai_version == aiversion ).first()
 
+def getAIOption( optionname ):
+   return sqlalchemysetup.session.query(AIOption).filter(AIOption.option_name == optionname ).first()
+
 def addaiifdoesntexist(ainame, aiversion):
-   ai = getai( ainame, aiversion )
+   ai = getAI( ainame, aiversion )
    if ai == None:
       try:
          ai = AI(ainame, aiversion )
