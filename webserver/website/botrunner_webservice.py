@@ -50,7 +50,7 @@ class AILadderService:
 
       targetsession = None
       for session in botrunner.sessions:
-         if session.session_id == sessionid:
+         if session.botrunner_session_id == sessionid:
             targetsession = session
 
       if targetsession == None:
@@ -138,11 +138,11 @@ class AILadderService:
          return (False,"An unexpected exception occurred: " + str( sys.exc_info() ) + "\n" + str( traceback.extract_tb( sys.exc_traceback ) ) )
 
    # returns (True, request) (True, None) or (False, errormessage)
-   def getrequest( self, botrunnername, sharedsecret ):
+   def getrequest( self, botrunnername, sharedsecret, sessionid ):
       try:
          if not botrunnerhelper.validatesharedsecret(botrunnername, sharedsecret):
             return (False, "Not authenticated")
-         requestitem = matchrequestcontroller.getcompatibleitemfromqueue(botrunnername)
+         requestitem = matchrequestcontroller.getcompatibleitemfromqueue(botrunnername, sessionid)
          if requestitem == None:
             return ( True, [] ) # can't return None in python 2.4
 

@@ -51,17 +51,19 @@ def archiveoldrequests():
 # can handle
 # for now, it just returns the first item in the queue
 # we need to only take things that arent in the inprogress queue of course...
-def getcompatibleitemfromqueue( botrunnername ):
+def getcompatibleitemfromqueue( botrunnername, sessionid ):
    archiveoldrequests()
 
    botrunner = botrunnerhelper.getBotRunner( botrunnername )
+   botrunnersession = botrunnerhelper.getBotRunnerSession( botrunnername, sessionid )
 
    # Also, remove any requests that this engine was supposedly processing
    # for which there are no results
    matchrequests = sqlalchemysetup.session.query(MatchRequest).filter( MatchRequest.matchresult == None ).filter( MatchRequest.matchrequestinprogress != None )
    for matchrequest in matchrequests:
       if matchrequest.matchrequestinprogress.botrunner is botrunner:
-         sqlalchemysetup.session.delete( matchrequest.matchrequestinprogress )
+         if matchrequest.matchrequestinprogress.botrunnersession is botrunnersession:
+            sqlalchemysetup.session.delete( matchrequest.matchrequestinprogress )
    sqlalchemysetup.session.commit()
 
    # now we've archived the old requests, we just pick a request
@@ -79,7 +81,7 @@ def getcompatibleitemfromqueue( botrunnername ):
             modok = True
       if mapok and modok:
          # mark request in progress:
-         matchrequest.matchrequestinprogress = MatchRequestInProgress( botrunner, dates.dateTimeToDateString( datetime.datetime.now() ) )
+         matchrequest.matchrequestinprogress = MatchRequestInProgress( botrunner, botrunnersession, dates.dateTimeToDateString( datetime.datetime.now() ) )
 
          return matchrequest
 

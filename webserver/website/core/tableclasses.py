@@ -25,7 +25,7 @@ import sqlalchemy
 import sqlalchemy.ext.declarative
 import sqlalchemy.orm
 
-from sqlalchemy import Column, String, Integer, ForeignKey
+from sqlalchemy import Column, String, Integer, ForeignKey, and_
 from sqlalchemy.orm import backref, relation
 
 from utils import *
@@ -212,15 +212,15 @@ class BotRunnerAssignedOption(Base):
       self.option = option
 
 class BotRunnerSession(Base):
-   __tablename__ = 'botrunnersessions'
+   __tablename__ = 'botrunner_sessions'
 
    botrunner_id = Column(Integer,ForeignKey('botrunners.botrunner_id'), primary_key = True )
-   session_id = Column(String(255), primary_key = True)
+   botrunner_session_id = Column(String(255), primary_key = True)
    lastpingstatus = Column(String(255))
    lastpingtime = Column(String(255))
 
-   def __init__(self, session_id ):
-      self.session_id = session_id
+   def __init__(self, botrunner_session_id ):
+      self.botrunner_session_id = botrunner_session_id
 
 class BotRunner(Base):
    __tablename__ = 'botrunners'
@@ -228,8 +228,6 @@ class BotRunner(Base):
    botrunner_id = Column(Integer,primary_key=True)
    botrunner_name = Column(String(255))
    botrunner_sharedsecret = Column(String(255))
-   botrunner_lastpingtime = Column(String(255))
-   botrunner_lastpingstatus = Column(String(255))
    botrunner_owneraccountid = Column(Integer, ForeignKey('accounts.account_id') )
 
    owneraccount = relation("Account")
@@ -289,13 +287,16 @@ class MatchRequestInProgress(Base):
    __tablename__ = 'matchrequests_inprogress'
 
    matchrequest_id = Column(Integer,ForeignKey('matchrequestqueue.matchrequest_id'),primary_key=True )
-   botrunner_id = Column(Integer,ForeignKey('botrunners.botrunner_id'))
+   botrunner_id = Column(Integer,ForeignKey('botrunners.botrunner_id'),ForeignKey('botrunner_sessions.botrunner_id'))
+   botrunner_session_id = Column(String(255),ForeignKey('botrunner_sessions.botrunner_session_id'))
    datetimeassigned = Column(String(255))
 
    botrunner= relation("BotRunner")
+   botrunnersession = relation("BotRunnerSession", primaryjoin=and_( botrunner_id == BotRunnerSession.botrunner_id, botrunner_session_id == BotRunnerSession.botrunner_session_id ) )
 
-   def __init__(self, botrunner, datetimeassigned ):
+   def __init__(self, botrunner, botrunnersession, datetimeassigned ):
       self.botrunner = botrunner
+      self.botrunnersession = botrunnersession
       self.datetimeassigned = datetimeassigned
 
 class MatchResult(Base):

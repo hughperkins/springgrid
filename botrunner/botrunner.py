@@ -34,6 +34,7 @@ from xml.dom import minidom
 import tarfile
 import base64
 import xmlrpclib
+from optparse import OptionParser
 
 from unitsync import unitsync as unitsyncpkg
 
@@ -45,12 +46,24 @@ writabledatadirectory = None
 
 scriptdir = os.path.dirname( os.path.realpath( __file__ ) )
 
-sessionid = stringhelper.getRandomAlphaNumericString(60)
-print "Sessionid: " + sessionid
+options = {}
+args = {}
+
+def parseopts():
+   global sessionid, options, args
+
+   parser = OptionParser()
+   parser.add_option( "--sessionid", help = 'force sessionid to specific string', dest = 'sessionid' )
+   parser.add_option( "--no-register-capabilities", help = 'do not register maps, mods or ais with web service', dest = 'noregistercapabilities', action='store_true' )
+
+   (options, args ) = parser.parse_args()
+
+   sessionid = options.sessionid
 
 def requestgamefromwebserver():
+   global sessionid
    try:
-      [result, serverrequest ] = getxmlrpcproxy().getrequest(config.botrunnername, config.sharedsecret )
+      [result, serverrequest ] = getxmlrpcproxy().getrequest(config.botrunnername, config.sharedsecret, sessionid )
       if not result:
          print "Something went wrong: " + serverrequest
          return None
@@ -67,6 +80,7 @@ def getxmlrpcproxy():
    return xmlrpclib.ServerProxy( uri = config.websiteurl + "/botrunner_webservice.py" )
 
 def doping( status ):
+   global sessionid
    return getxmlrpcproxy().ping( config.botrunnername, config.sharedsecret, sessionid, status )
 
 def rungame( serverrequest ):
@@ -383,6 +397,10 @@ def registercapabilities():
 
 def go():
    global config, unitsync, writabledatadirectory, demosdirectorylistingbeforegame
+   global sessionid, options
+
+   parseopts()
+
    # check for config, question user if doesn't exist
    try:
       import config
@@ -399,6 +417,10 @@ def go():
    writabledatadirectory = unitsync.GetWritableDataDirectory()
 
    try:
+      if sessionid == None:
+         sessionid = stringhelper.getRandomAlphaNumericString(60)
+      print "Sessionid: " + sessionid
+      
       doping("Connection Test!")
       print "Connection test to server " + config.websiteurl + " was successfull."
    except:
@@ -406,7 +428,8 @@ def go():
       print "Please make sure it is a valid AI Ladder URL, and you can connect to it."
       return
 
-   registercapabilities()
+   if not options.noregistercapabilities:
+      registercapabilities()
 
    while True:
       print "Checking for new request..."

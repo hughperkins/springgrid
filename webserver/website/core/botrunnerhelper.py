@@ -36,7 +36,16 @@ def botrunnerauthorized():
    return validatesharedsecret( botrunnername, sharedsecret )
 
 def getBotRunner(botrunnername ):
-   return sqlalchemysetup.session.query(tableclasses.BotRunner).filter(tableclasses.BotRunner.botrunner_name == botrunnername ).first()
+   return sqlalchemysetup.session.query(BotRunner).filter(tableclasses.BotRunner.botrunner_name == botrunnername ).first()
+
+def getBotRunnerSession(botrunnername, botrunner_session_id ):
+   botrunner = getBotRunner( botrunnername )
+   if botrunner == None:
+      return None
+   for session in botrunner.sessions:
+      if session.botrunner_session_id == botrunner_session_id:
+         return session
+   return None
 
 def validatesharedsecret(lbotrunnername, sharedsecret):
    global botrunnername

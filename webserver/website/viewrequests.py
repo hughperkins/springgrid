@@ -46,6 +46,7 @@ print "<td>mapname</td>"
 print "<td>modname</td>"
 print "<td>options</td>"
 print "<td>botrunnername</td>"
+print "<td>botrunnerinstanceid</td>"
 print "<td>datetimeassigned</td>"
 print "</tr>"
 
@@ -69,6 +70,7 @@ for request in requests:
    print "&nbsp;</td>"
    if request.matchrequestinprogress != None:
       print "<td>" + request.matchrequestinprogress.botrunner.botrunner_name + "</td>"
+      print "<td>" + str( request.matchrequestinprogress.botrunnersession.botrunner_session_id ) + "</td>"
       print "<td>" + request.matchrequestinprogress.datetimeassigned + "</td>"
    else:
       print "<td>&nbsp;</td>"

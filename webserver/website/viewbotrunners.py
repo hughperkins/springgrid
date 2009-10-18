@@ -78,7 +78,7 @@ for botrunner in botrunners:
       cssclass='fail'
       if pingtimeok:
          cssclass='success'
-      print "<td>" + session.session_id[:5].lower() + " ... </td>"
+      print "<td>" + session.botrunner_session_id[:5].lower() + " ... </td>"
       print "<td class='" + cssclass + "'>" + str( lastpingtimedate ) + "</td>"
       print "<td>" + str( session.lastpingstatus ) + "</td>"
       if sessionindex > 0:
