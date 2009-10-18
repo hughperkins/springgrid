@@ -34,10 +34,17 @@ import sqlalchemysetup
 import botrunnerhelper
 
 # go through matchrequests_inprogress table, and remove any rows
-# older than a certain time
-# placeholder for now
+# where the session is older than a certain time
 def archiveoldrequests():
-   pass
+   matchrequests = sqlalchemysetup.session.query(MatchRequest).filter(MatchRequest.matchresult == None).filter(MatchRequest.matchrequestinprogress != None )
+   for matchrequest in matchrequests:
+      lastpingtime = dates.dateStringToDateTime( matchrequest.matchrequestinprogress.botrunnersession.lastpingtime )
+      secondssincelastping = dates.timedifftototalseconds( datetime.datetime.now() - lastpingtime )
+      if secondssincelastping > config.expiresessionminutes * 60:
+         sqlalchemysetup.session.delete( matchrequest.matchrequestinprogress.botrunnersession )
+         sqlalchemysetup.session.delete( matchrequest.matchrequestinprogress )
+   sqlalchemysetup.session.commit()
+      
    #dbconnection.cursor.execute("select matchrequest_id, datetimeassigned from matchrequests_inprogress")
    #row = dbconnection.cursor.fetchone()
    #while row != None:

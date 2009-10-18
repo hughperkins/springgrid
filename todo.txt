@@ -3,6 +3,7 @@ what is being worked on at the moment:
   scheduling
 
 todo:
+- move some config values to a table
 - add botrunner howto to website
 - add subscription to each league for each ai
 - add scheduler, to queue up matchrequests for each league
@@ -38,6 +39,10 @@ not sure if actually necessary (so: to test/investigate):
 - add gameendstring to per-mod config
 
 done:
+- add botrunner sessions
+- add commandline arguments parsing
+- add multicall for capability registration
+- migrate to sqlalchemy
 - remove _drop.sql files, rename _create.sql files to drop _create prefix
 - add possibility to describe which maps and mods a botrunner supports on website, and take
   into account when botrunner makes requests to the website

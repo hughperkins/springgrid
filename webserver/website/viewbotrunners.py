@@ -73,7 +73,7 @@ for botrunner in botrunners:
       if lastpingtime != None:
          lastpingtimedate = dates.dateStringToDateTime( lastpingtime )
          secondssincelastping = dates.timedifftototalseconds( datetime.datetime.now() - lastpingtimedate )
-         if secondssincelastping < config.pingtimeoutminutes * 60:
+         if secondssincelastping < config.expiresessionminutes * 60:
             pingtimeok = True
       cssclass='fail'
       if pingtimeok:
