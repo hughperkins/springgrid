@@ -1,2 +1,0 @@
-include docs *.txt
-include docs conf.py

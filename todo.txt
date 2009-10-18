@@ -3,7 +3,6 @@ what is being worked on at the moment:
   scheduling
 
 todo:
-- do something about sqlalchemy setup
 - move some config values to a table
 - add botrunner howto to website
 - add subscription to each league for each ai
