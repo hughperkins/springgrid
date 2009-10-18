@@ -116,6 +116,7 @@ def go():
    from utils import filehelper
    templatecontents = filehelper.readFile("config.py.template")
    # substitute in connection details
+   templatecontents = templatecontents.replace("DBENGINE", 'mysql' ) #hardcode for now, can make a better form in the future...
    templatecontents = templatecontents.replace("DBNAME", dbname )
    templatecontents = templatecontents.replace("DBPASS", dbpassword )
    templatecontents = templatecontents.replace("DBHOST", dbhost )
