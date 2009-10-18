@@ -35,3 +35,7 @@ CMakeFiles
 Makefile
 cmake_install.cmake
 
+# Sqlalchemy build
+webserver/dependencies/SQLAlchemy-0.5.6/build
+webserver/dependencies/SQLAlchemy-0.5.6/dist
+

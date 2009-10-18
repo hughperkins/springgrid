@@ -69,7 +69,6 @@ doc/_static/init.js
 doc/_static/jquery.js
 doc/_static/pygments.css
 doc/_static/searchtools.js
-doc/build/Makefile
 doc/build/conf.py
 doc/build/copyright.rst
 doc/build/dbengine.rst
@@ -280,7 +279,6 @@ lib/sqlalchemy/sql/util.py
 lib/sqlalchemy/sql/visitors.py
 lib/sqlalchemy/test/__init__.py
 lib/sqlalchemy/test/assertsql.py
-lib/sqlalchemy/test/config.py
 lib/sqlalchemy/test/engines.py
 lib/sqlalchemy/test/noseplugin.py
 lib/sqlalchemy/test/orm.py
