@@ -34,14 +34,18 @@ session = None
 def setupwithcredentials( rdbmsname, dbuser, dbpassword, dbhost, dbname ):
    global engine,Session,session
 
-   engine = sqlalchemy.create_engine( rdbmsname + '://' + dbuser + ":" + dbpassword + "@" + dbhost + "/" + dbname, echo=False)
+   engine = None
+   if rdbmsname == 'sqlite':
+      engine = sqlalchemy.create_engine( 'sqlite:///' + dbname, echo=False)
+   else:
+      engine = sqlalchemy.create_engine( rdbmsname + '://' + dbuser + ":" + dbpassword + "@" + dbhost + "/" + dbname, echo=False)
    Session = sqlalchemy.orm.sessionmaker(bind=engine)
    session = Session()
 
 def setup():
    global engine,Session,session
 
-   setupwithcredentials( 'mysql', config.dbuser, config.dbpassword, config.dbhost, config.dbname )
+   setupwithcredentials( config.dbengine, config.dbuser, config.dbpassword, config.dbhost, config.dbname )
 
 def close():
    session.commit()

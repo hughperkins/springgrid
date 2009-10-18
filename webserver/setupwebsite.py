@@ -130,7 +130,7 @@ def main():
          os.makedirs( websitedir + reldir )
       for file in files:
          shutil.copy( root + "/" + file, websitedir + reldir + "/" + file )
-   if not ospath.exists(websitedir + "/replays"):
+   if not os.path.exists(websitedir + "/replays"):
       os.makedirs(websitedir + "/replays")
    print " ... done"
 
