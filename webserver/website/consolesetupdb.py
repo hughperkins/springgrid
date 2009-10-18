@@ -23,8 +23,11 @@
 
 import sys
 import os
+from optparse import OptionParser
 
 from core import sqlalchemysetup
+
+import config
 
 scriptdir = os.path.dirname( os.path.realpath( __file__ ) )
 
@@ -37,31 +40,24 @@ def drop():
    sqlalchemysetup.dropalltables()
 
 def usage():
-   print "Usage: " + sys.argv[0] + " username password dbname dbhostname [create|drop]"
-
-setupdb = None
+   print sys.argv[0] + " [create|drop|reload]"
 
 def main():
-   global setupdb
-   if len( sys.argv) < 6:
+   if len(sys.argv) < 2:
       usage()
       return
-   username = sys.argv[1]
-   password = sys.argv[2]
-   dbname = sys.argv[3]
-   hostname = sys.argv[4]
-   action = sys.argv[5]
 
+   action = sys.argv[1]
    if action == 'create':
-      sqlalchemysetup.setupwithcredentials('mysql', username, password, hostname, dbname )
+      sqlalchemysetup.setupwithcredentials( config.dbengine, config.dbuser, config.dbpassword, config.dbhost, config.dbname )
       create()
       sqlalchemysetup.close()
    elif action == 'drop':
-      sqlalchemysetup.setupwithcredentials('mysql', username, password, hostname, dbname )
+      sqlalchemysetup.setupwithcredentials( config.dbengine, config.dbuser, config.dbpassword, config.dbhost, config.dbname )
       drop()
       sqlalchemysetup.close()
    elif action == 'reload':
-      sqlalchemysetup.setupwithcredentials('mysql', username, password, hostname, dbname )
+      sqlalchemysetup.setupwithcredentials( config.dbengine, config.dbuser, config.dbpassword, config.dbhost, config.dbname )
       drop()
       create()
       sqlalchemysetup.close()
