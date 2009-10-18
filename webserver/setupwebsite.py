@@ -155,19 +155,23 @@ def main():
    dbengine = userinput.choice("Do you want to use mysql (needs mysql, recommended), or sqlite, for the website database?", {'mysql':'mysql','sqlite':'sqlite'} )
 
    configcontents = filehelper.readFile(websitedir + "/config.py.template" )
+   dbuser = None
+   dbpassword = None
+   dbhost = None
+   dbname = None
    if dbengine == 'sqlite':
       gotpath = False
       while not gotpath:
          print ""
-         dbpath = userinput.getValueFromUser("Please enter the full path to use for the sqlite database")
-         print "checking if directory " + os.path.dirname( dbpath ) + " exists..."
-         if os.path.exists( os.path.dirname( dbpath ) ):
+         dbname = userinput.getValueFromUser("Please enter the full path to use for the sqlite database")
+         print "checking if directory " + os.path.dirname( dbname ) + " exists..."
+         if os.path.exists( os.path.dirname( dbname ) ):
             print " ... exists. Ok."
             gotpath = True
          else:
             print " ... does not exist."
       configcontents = configcontents.replace("DBENGINE",'sqlite')
-      configcontents = configcontents.replace("DBNAME", dbpath )
+      configcontents = configcontents.replace("DBNAME", dbname )
    elif dbengine == 'mysql':
       gotcredentials = False
       while not gotcredentials:
@@ -198,7 +202,7 @@ def main():
    print ""
    print "Populating database ..."
    from core import sqlalchemysetup
-   sqlalchemysetup.setup()
+   sqlalchemysetup.setupwithcredentials( dbengine, dbuser, dbpassword, dbhost, dbname )
    sqlalchemysetup.reloadalltables()
    sqlalchemysetup.close()
    print " ... done"
