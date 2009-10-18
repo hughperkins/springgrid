@@ -35,6 +35,8 @@ def setupwithcredentials( rdbmsname, dbuser, dbpassword, dbhost, dbname ):
    global engine,Session,session
 
    engine = None
+   if rdbmsname == None:
+      rdbmsname = 'mysql'
    if rdbmsname == 'sqlite':
       engine = sqlalchemy.create_engine( 'sqlite:///' + dbname, echo=False)
    else:
