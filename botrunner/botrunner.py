@@ -39,7 +39,11 @@ from optparse import OptionParser
 from unitsync import unitsync as unitsyncpkg
 
 from utils import *
-import version
+version = None
+try:
+   import version
+except:
+   pass
 
 config = None
 unitsync = None
@@ -405,7 +409,10 @@ def go():
 
    if options.version:
       print ""
-      print "AILadder, version: " + version.version
+      if version != None:
+         print "AILadder, version: " + version.version
+      else:
+         print "AILadder, version: dev code, not a versioned release."
       print ""
       return
 
