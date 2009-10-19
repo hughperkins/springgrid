@@ -37,140 +37,254 @@ class Unitsync:
 			ctypes.windll.LoadLibrary(locationdir + "/SDL.dll" )
 			self.unitsync = ctypes.windll.LoadLibrary(location)
 
-	def GetNextError(self): return c_char_p(self.unitsync.GetNextError()).value
-	def GetSpringVersion(self): return c_char_p(self.unitsync.GetSpringVersion()).value
-	def Init(self, isServer, id): return c_int(self.unitsync.Init(isServer, id)).value
-	def UnInit(self): return (self.unitsync.UnInit()).value
-	def GetWritableDataDirectory(self): return c_char_p(self.unitsync.GetWritableDataDirectory()).value
-	def ProcessUnits(self): return c_int(self.unitsync.ProcessUnits()).value
-	def ProcessUnitsNoChecksum(self): return c_int(self.unitsync.ProcessUnitsNoChecksum()).value
-	def GetUnitCount(self): return c_int(self.unitsync.GetUnitCount()).value
-	def GetUnitName(self, unit): return c_char_p(self.unitsync.GetUnitName(unit)).value
-	def GetFullUnitName(self, unit): return c_char_p(self.unitsync.GetFullUnitName(unit)).value
-	def AddArchive(self, name): return (self.unitsync.AddArchive(name)).value
-	def AddAllArchives(self, root): return (self.unitsync.AddAllArchives(root)).value
-	def RemoveAllArchives(self): return (self.unitsync.RemoveAllArchives()).value
-	def GetArchiveChecksum(self, arname): return c_uint(self.unitsync.GetArchiveChecksum(arname)).value
-	def GetArchivePath(self, arname): return c_char_p(self.unitsync.GetArchivePath(arname)).value
-	def GetMapCount(self): return c_int(self.unitsync.GetMapCount()).value
-	def GetMapName(self, index): return c_char_p(self.unitsync.GetMapName(index)).value
-	def GetMapInfoEx(self, name, outInfo, version): return c_int(self.unitsync.GetMapInfoEx(name, pointer(outInfo), version)).value
-	def GetMapInfo(self, name, outInfo): return c_int(self.unitsync.GetMapInfo(name, pointer(outInfo))).value
-	def GetMapMinHeight(self, name): return c_float(self.unitsync.GetMapMinHeight(name)).value
-	def GetMapMaxHeight(self, name): return c_float(self.unitsync.GetMapMaxHeight(name)).value
-	def GetMapArchiveCount(self, mapName): return c_int(self.unitsync.GetMapArchiveCount(mapName)).value
-	def GetMapArchiveName(self, index): return c_char_p(self.unitsync.GetMapArchiveName(index)).value
-	def GetMapChecksum(self, index): return c_uint(self.unitsync.GetMapChecksum(index)).value
-	def GetMapChecksumFromName(self, mapName): return c_uint(self.unitsync.GetMapChecksumFromName(mapName)).value
-	def GetMinimap(self, filename, miplevel): return c_char_p(self.unitsync.GetMinimap(filename, miplevel)).value
-	def GetInfoMapSize(self, filename, name, width, height): return c_int(self.unitsync.GetInfoMapSize(filename, name, width, height)).value
-	def GetInfoMap(self, filename, name, data, typeHint): return c_int(self.unitsync.GetInfoMap(filename, name, data, typeHint)).value
-	def GetSkirmishAICount(self): return c_int(self.unitsync.GetSkirmishAICount()).value
-	def GetSkirmishAIInfoCount(self, index): return c_int(self.unitsync.GetSkirmishAIInfoCount(index)).value
-	def GetInfoKey(self, index): return c_char_p(self.unitsync.GetInfoKey(index)).value
-	def GetInfoValue(self, index): return c_char_p(self.unitsync.GetInfoValue(index)).value
-	def GetInfoDescription(self, index): return c_char_p(self.unitsync.GetInfoDescription(index)).value
-	def GetSkirmishAIOptionCount(self, index): return c_int(self.unitsync.GetSkirmishAIOptionCount(index)).value
-	def GetPrimaryModCount(self): return c_int(self.unitsync.GetPrimaryModCount()).value
-	def GetPrimaryModName(self, index): return c_char_p(self.unitsync.GetPrimaryModName(index)).value
-	def GetPrimaryModShortName(self, index): return c_char_p(self.unitsync.GetPrimaryModShortName(index)).value
-	def GetPrimaryModVersion(self, index): return c_char_p(self.unitsync.GetPrimaryModVersion(index)).value
-	def GetPrimaryModMutator(self, index): return c_char_p(self.unitsync.GetPrimaryModMutator(index)).value
-	def GetPrimaryModGame(self, index): return c_char_p(self.unitsync.GetPrimaryModGame(index)).value
-	def GetPrimaryModShortGame(self, index): return c_char_p(self.unitsync.GetPrimaryModShortGame(index)).value
-	def GetPrimaryModDescription(self, index): return c_char_p(self.unitsync.GetPrimaryModDescription(index)).value
-	def GetPrimaryModArchive(self, index): return c_char_p(self.unitsync.GetPrimaryModArchive(index)).value
-	def GetPrimaryModArchiveCount(self, index): return c_int(self.unitsync.GetPrimaryModArchiveCount(index)).value
-	def GetPrimaryModArchiveList(self, arnr): return c_char_p(self.unitsync.GetPrimaryModArchiveList(arnr)).value
-	def GetPrimaryModIndex(self, name): return c_int(self.unitsync.GetPrimaryModIndex(name)).value
-	def GetPrimaryModChecksum(self, index): return c_uint(self.unitsync.GetPrimaryModChecksum(index)).value
-	def GetPrimaryModChecksumFromName(self, name): return c_uint(self.unitsync.GetPrimaryModChecksumFromName(name)).value
-	def GetSideCount(self): return c_int(self.unitsync.GetSideCount()).value
-	def GetSideName(self, side): return c_char_p(self.unitsync.GetSideName(side)).value
-	def GetSideStartUnit(self, side): return c_char_p(self.unitsync.GetSideStartUnit(side)).value
-	def GetMapOptionCount(self, name): return c_int(self.unitsync.GetMapOptionCount(name)).value
-	def GetModOptionCount(self): return c_int(self.unitsync.GetModOptionCount()).value
-	def GetCustomOptionCount(self, filename): return c_int(self.unitsync.GetCustomOptionCount(filename)).value
-	def GetOptionKey(self, optIndex): return c_char_p(self.unitsync.GetOptionKey(optIndex)).value
-	def GetOptionScope(self, optIndex): return c_char_p(self.unitsync.GetOptionScope(optIndex)).value
-	def GetOptionName(self, optIndex): return c_char_p(self.unitsync.GetOptionName(optIndex)).value
-	def GetOptionSection(self, optIndex): return c_char_p(self.unitsync.GetOptionSection(optIndex)).value
-	def GetOptionStyle(self, optIndex): return c_char_p(self.unitsync.GetOptionStyle(optIndex)).value
-	def GetOptionDesc(self, optIndex): return c_char_p(self.unitsync.GetOptionDesc(optIndex)).value
-	def GetOptionType(self, optIndex): return c_int(self.unitsync.GetOptionType(optIndex)).value
-	def GetOptionBoolDef(self, optIndex): return c_int(self.unitsync.GetOptionBoolDef(optIndex)).value
-	def GetOptionNumberDef(self, optIndex): return c_float(self.unitsync.GetOptionNumberDef(optIndex)).value
-	def GetOptionNumberMin(self, optIndex): return c_float(self.unitsync.GetOptionNumberMin(optIndex)).value
-	def GetOptionNumberMax(self, optIndex): return c_float(self.unitsync.GetOptionNumberMax(optIndex)).value
-	def GetOptionNumberStep(self, optIndex): return c_float(self.unitsync.GetOptionNumberStep(optIndex)).value
-	def GetOptionStringDef(self, optIndex): return c_char_p(self.unitsync.GetOptionStringDef(optIndex)).value
-	def GetOptionStringMaxLen(self, optIndex): return c_int(self.unitsync.GetOptionStringMaxLen(optIndex)).value
-	def GetOptionListCount(self, optIndex): return c_int(self.unitsync.GetOptionListCount(optIndex)).value
-	def GetOptionListDef(self, optIndex): return c_char_p(self.unitsync.GetOptionListDef(optIndex)).value
-	def GetOptionListItemKey(self, optIndex, itemIndex): return c_char_p(self.unitsync.GetOptionListItemKey(optIndex, itemIndex)).value
-	def GetOptionListItemName(self, optIndex, itemIndex): return c_char_p(self.unitsync.GetOptionListItemName(optIndex, itemIndex)).value
-	def GetOptionListItemDesc(self, optIndex, itemIndex): return c_char_p(self.unitsync.GetOptionListItemDesc(optIndex, itemIndex)).value
-	def GetModValidMapCount(self): return c_int(self.unitsync.GetModValidMapCount()).value
-	def GetModValidMap(self, index): return c_char_p(self.unitsync.GetModValidMap(index)).value
-	def OpenFileVFS(self, name): return c_int(self.unitsync.OpenFileVFS(name)).value
-	def CloseFileVFS(self, handle): return (self.unitsync.CloseFileVFS(handle)).value
-	def ReadFileVFS(self, handle, buf, length): return c_int(self.unitsync.ReadFileVFS(handle, buf, length)).value
-	def FileSizeVFS(self, handle): return c_int(self.unitsync.FileSizeVFS(handle)).value
-	def InitFindVFS(self, pattern): return c_int(self.unitsync.InitFindVFS(pattern)).value
-	def InitDirListVFS(self, path, pattern, modes): return c_int(self.unitsync.InitDirListVFS(path, pattern, modes)).value
-	def InitSubDirsVFS(self, path, pattern, modes): return c_int(self.unitsync.InitSubDirsVFS(path, pattern, modes)).value
-	def FindFilesVFS(self, handle, nameBuf, size): return c_int(self.unitsync.FindFilesVFS(handle, nameBuf, size)).value
-	def OpenArchive(self, name): return c_int(self.unitsync.OpenArchive(name)).value
-	def OpenArchiveType(self, name, type): return c_int(self.unitsync.OpenArchiveType(name, type)).value
-	def CloseArchive(self, archive): return (self.unitsync.CloseArchive(archive)).value
-	def FindFilesArchive(self, archive, cur, nameBuf, size): return c_int(self.unitsync.FindFilesArchive(archive, cur, nameBuf, size)).value
-	def OpenArchiveFile(self, archive, name): return c_int(self.unitsync.OpenArchiveFile(archive, name)).value
-	def ReadArchiveFile(self, archive, handle, buffer, numBytes): return c_int(self.unitsync.ReadArchiveFile(archive, handle, buffer, numBytes)).value
-	def CloseArchiveFile(self, archive, handle): return (self.unitsync.CloseArchiveFile(archive, handle)).value
-	def SizeArchiveFile(self, archive, handle): return c_int(self.unitsync.SizeArchiveFile(archive, handle)).value
-	def SetSpringConfigFile(self, filenameAsAbsolutePath): return (self.unitsync.SetSpringConfigFile(filenameAsAbsolutePath)).value
-	def GetSpringConfigFile(self): return c_char_p(self.unitsync.GetSpringConfigFile()).value
-	def GetSpringConfigString(self, name, defvalue): return c_char_p(self.unitsync.GetSpringConfigString(name, defvalue)).value
-	def GetSpringConfigInt(self, name, defvalue): return c_int(self.unitsync.GetSpringConfigInt(name, defvalue)).value
-	def GetSpringConfigFloat(self, name, defvalue): return c_float(self.unitsync.GetSpringConfigFloat(name, defvalue)).value
-	def SetSpringConfigString(self, name, value): return (self.unitsync.SetSpringConfigString(name, value)).value
-	def SetSpringConfigInt(self, name, value): return (self.unitsync.SetSpringConfigInt(name, value)).value
-	def SetSpringConfigFloat(self, name, value): return (self.unitsync.SetSpringConfigFloat(name, value)).value
-	def lpClose(self): return (self.unitsync.lpClose()).value
-	def lpOpenFile(self, filename, fileModes, accessModes): return c_int(self.unitsync.lpOpenFile(filename, fileModes, accessModes)).value
-	def lpOpenSource(self, source, accessModes): return c_int(self.unitsync.lpOpenSource(source, accessModes)).value
-	def lpExecute(self): return c_int(self.unitsync.lpExecute()).value
-	def lpErrorLog(self): return c_char_p(self.unitsync.lpErrorLog()).value
-	def lpAddTableInt(self, key, override): return (self.unitsync.lpAddTableInt(key, override)).value
-	def lpAddTableStr(self, key, override): return (self.unitsync.lpAddTableStr(key, override)).value
-	def lpEndTable(self): return (self.unitsync.lpEndTable()).value
-	def lpAddIntKeyIntVal(self, key, val): return (self.unitsync.lpAddIntKeyIntVal(key, val)).value
-	def lpAddStrKeyIntVal(self, key, val): return (self.unitsync.lpAddStrKeyIntVal(key, val)).value
-	def lpAddIntKeyBoolVal(self, key, val): return (self.unitsync.lpAddIntKeyBoolVal(key, val)).value
-	def lpAddStrKeyBoolVal(self, key, val): return (self.unitsync.lpAddStrKeyBoolVal(key, val)).value
-	def lpAddIntKeyFloatVal(self, key, val): return (self.unitsync.lpAddIntKeyFloatVal(key, val)).value
-	def lpAddStrKeyFloatVal(self, key, val): return (self.unitsync.lpAddStrKeyFloatVal(key, val)).value
-	def lpAddIntKeyStrVal(self, key, val): return (self.unitsync.lpAddIntKeyStrVal(key, val)).value
-	def lpAddStrKeyStrVal(self, key, val): return (self.unitsync.lpAddStrKeyStrVal(key, val)).value
-	def lpRootTable(self): return c_int(self.unitsync.lpRootTable()).value
-	def lpRootTableExpr(self, expr): return c_int(self.unitsync.lpRootTableExpr(expr)).value
-	def lpSubTableInt(self, key): return c_int(self.unitsync.lpSubTableInt(key)).value
-	def lpSubTableStr(self, key): return c_int(self.unitsync.lpSubTableStr(key)).value
-	def lpSubTableExpr(self, expr): return c_int(self.unitsync.lpSubTableExpr(expr)).value
-	def lpPopTable(self): return (self.unitsync.lpPopTable()).value
-	def lpGetKeyExistsInt(self, key): return c_int(self.unitsync.lpGetKeyExistsInt(key)).value
-	def lpGetKeyExistsStr(self, key): return c_int(self.unitsync.lpGetKeyExistsStr(key)).value
-	def lpGetIntKeyType(self, key): return c_int(self.unitsync.lpGetIntKeyType(key)).value
-	def lpGetStrKeyType(self, key): return c_int(self.unitsync.lpGetStrKeyType(key)).value
-	def lpGetIntKeyListCount(self): return c_int(self.unitsync.lpGetIntKeyListCount()).value
-	def lpGetIntKeyListEntry(self, index): return c_int(self.unitsync.lpGetIntKeyListEntry(index)).value
-	def lpGetStrKeyListCount(self): return c_int(self.unitsync.lpGetStrKeyListCount()).value
-	def lpGetStrKeyListEntry(self, index): return c_char_p(self.unitsync.lpGetStrKeyListEntry(index)).value
-	def lpGetIntKeyIntVal(self, key, defVal): return c_int(self.unitsync.lpGetIntKeyIntVal(key, defVal)).value
-	def lpGetStrKeyIntVal(self, key, defVal): return c_int(self.unitsync.lpGetStrKeyIntVal(key, defVal)).value
-	def lpGetIntKeyBoolVal(self, key, defVal): return c_int(self.unitsync.lpGetIntKeyBoolVal(key, defVal)).value
-	def lpGetStrKeyBoolVal(self, key, defVal): return c_int(self.unitsync.lpGetStrKeyBoolVal(key, defVal)).value
-	def lpGetIntKeyFloatVal(self, key, defVal): return c_float(self.unitsync.lpGetIntKeyFloatVal(key, defVal)).value
-	def lpGetStrKeyFloatVal(self, key, defVal): return c_float(self.unitsync.lpGetStrKeyFloatVal(key, defVal)).value
-	def lpGetIntKeyStrVal(self, key, defVal): return c_char_p(self.unitsync.lpGetIntKeyStrVal(key, defVal)).value
-	def lpGetStrKeyStrVal(self, key, defVal): return c_char_p(self.unitsync.lpGetStrKeyStrVal(key, defVal)).value
+		unitsync.GetNextError.restype = c_char_p
+		unitsync.GetSpringVersion.restype = c_char_p
+		unitsync.Init.restype = c_int
+		unitsync.GetWritableDataDirectory.restype = c_char_p
+		unitsync.ProcessUnits.restype = c_int
+		unitsync.ProcessUnitsNoChecksum.restype = c_int
+		unitsync.GetUnitCount.restype = c_int
+		unitsync.GetUnitName.restype = c_char_p
+		unitsync.GetFullUnitName.restype = c_char_p
+		unitsync.GetArchiveChecksum.restype = c_uint
+		unitsync.GetArchivePath.restype = c_char_p
+		unitsync.GetMapCount.restype = c_int
+		unitsync.GetMapName.restype = c_char_p
+		unitsync.GetMapInfoEx.restype = c_int
+		unitsync.GetMapInfo.restype = c_int
+		unitsync.GetMapMinHeight.restype = c_float
+		unitsync.GetMapMaxHeight.restype = c_float
+		unitsync.GetMapArchiveCount.restype = c_int
+		unitsync.GetMapArchiveName.restype = c_char_p
+		unitsync.GetMapChecksum.restype = c_uint
+		unitsync.GetMapChecksumFromName.restype = c_uint
+		unitsync.GetMinimap.restype = c_char_p
+		unitsync.GetInfoMapSize.restype = c_int
+		unitsync.GetInfoMap.restype = c_int
+		unitsync.GetSkirmishAICount.restype = c_int
+		unitsync.GetSkirmishAIInfoCount.restype = c_int
+		unitsync.GetInfoKey.restype = c_char_p
+		unitsync.GetInfoValue.restype = c_char_p
+		unitsync.GetInfoDescription.restype = c_char_p
+		unitsync.GetSkirmishAIOptionCount.restype = c_int
+		unitsync.GetPrimaryModCount.restype = c_int
+		unitsync.GetPrimaryModName.restype = c_char_p
+		unitsync.GetPrimaryModShortName.restype = c_char_p
+		unitsync.GetPrimaryModVersion.restype = c_char_p
+		unitsync.GetPrimaryModMutator.restype = c_char_p
+		unitsync.GetPrimaryModGame.restype = c_char_p
+		unitsync.GetPrimaryModShortGame.restype = c_char_p
+		unitsync.GetPrimaryModDescription.restype = c_char_p
+		unitsync.GetPrimaryModArchive.restype = c_char_p
+		unitsync.GetPrimaryModArchiveCount.restype = c_int
+		unitsync.GetPrimaryModArchiveList.restype = c_char_p
+		unitsync.GetPrimaryModIndex.restype = c_int
+		unitsync.GetPrimaryModChecksum.restype = c_uint
+		unitsync.GetPrimaryModChecksumFromName.restype = c_uint
+		unitsync.GetSideCount.restype = c_int
+		unitsync.GetSideName.restype = c_char_p
+		unitsync.GetSideStartUnit.restype = c_char_p
+		unitsync.GetMapOptionCount.restype = c_int
+		unitsync.GetModOptionCount.restype = c_int
+		unitsync.GetCustomOptionCount.restype = c_int
+		unitsync.GetOptionKey.restype = c_char_p
+		unitsync.GetOptionScope.restype = c_char_p
+		unitsync.GetOptionName.restype = c_char_p
+		unitsync.GetOptionSection.restype = c_char_p
+		unitsync.GetOptionStyle.restype = c_char_p
+		unitsync.GetOptionDesc.restype = c_char_p
+		unitsync.GetOptionType.restype = c_int
+		unitsync.GetOptionBoolDef.restype = c_int
+		unitsync.GetOptionNumberDef.restype = c_float
+		unitsync.GetOptionNumberMin.restype = c_float
+		unitsync.GetOptionNumberMax.restype = c_float
+		unitsync.GetOptionNumberStep.restype = c_float
+		unitsync.GetOptionStringDef.restype = c_char_p
+		unitsync.GetOptionStringMaxLen.restype = c_int
+		unitsync.GetOptionListCount.restype = c_int
+		unitsync.GetOptionListDef.restype = c_char_p
+		unitsync.GetOptionListItemKey.restype = c_char_p
+		unitsync.GetOptionListItemName.restype = c_char_p
+		unitsync.GetOptionListItemDesc.restype = c_char_p
+		unitsync.GetModValidMapCount.restype = c_int
+		unitsync.GetModValidMap.restype = c_char_p
+		unitsync.OpenFileVFS.restype = c_int
+		unitsync.ReadFileVFS.restype = c_int
+		unitsync.FileSizeVFS.restype = c_int
+		unitsync.InitFindVFS.restype = c_int
+		unitsync.InitDirListVFS.restype = c_int
+		unitsync.InitSubDirsVFS.restype = c_int
+		unitsync.FindFilesVFS.restype = c_int
+		unitsync.OpenArchive.restype = c_int
+		unitsync.OpenArchiveType.restype = c_int
+		unitsync.FindFilesArchive.restype = c_int
+		unitsync.OpenArchiveFile.restype = c_int
+		unitsync.ReadArchiveFile.restype = c_int
+		unitsync.SizeArchiveFile.restype = c_int
+		unitsync.GetSpringConfigFile.restype = c_char_p
+		unitsync.GetSpringConfigString.restype = c_char_p
+		unitsync.GetSpringConfigInt.restype = c_int
+		unitsync.GetSpringConfigFloat.restype = c_float
+		unitsync.lpOpenFile.restype = c_int
+		unitsync.lpOpenSource.restype = c_int
+		unitsync.lpExecute.restype = c_int
+		unitsync.lpErrorLog.restype = c_char_p
+		unitsync.lpRootTable.restype = c_int
+		unitsync.lpRootTableExpr.restype = c_int
+		unitsync.lpSubTableInt.restype = c_int
+		unitsync.lpSubTableStr.restype = c_int
+		unitsync.lpSubTableExpr.restype = c_int
+		unitsync.lpGetKeyExistsInt.restype = c_int
+		unitsync.lpGetKeyExistsStr.restype = c_int
+		unitsync.lpGetIntKeyType.restype = c_int
+		unitsync.lpGetStrKeyType.restype = c_int
+		unitsync.lpGetIntKeyListCount.restype = c_int
+		unitsync.lpGetIntKeyListEntry.restype = c_int
+		unitsync.lpGetStrKeyListCount.restype = c_int
+		unitsync.lpGetStrKeyListEntry.restype = c_char_p
+		unitsync.lpGetIntKeyIntVal.restype = c_int
+		unitsync.lpGetStrKeyIntVal.restype = c_int
+		unitsync.lpGetIntKeyBoolVal.restype = c_int
+		unitsync.lpGetStrKeyBoolVal.restype = c_int
+		unitsync.lpGetIntKeyFloatVal.restype = c_float
+		unitsync.lpGetStrKeyFloatVal.restype = c_float
+		unitsync.lpGetIntKeyStrVal.restype = c_char_p
+		unitsync.lpGetStrKeyStrVal.restype = c_char_p
+
+	def GetNextError(self): return self.unitsync.GetNextError()
+	def GetSpringVersion(self): return self.unitsync.GetSpringVersion()
+	def Init(self, isServer, id): return self.unitsync.Init(isServer, id)
+	def UnInit(self): return self.unitsync.UnInit()
+	def GetWritableDataDirectory(self): return self.unitsync.GetWritableDataDirectory()
+	def ProcessUnits(self): return self.unitsync.ProcessUnits()
+	def ProcessUnitsNoChecksum(self): return self.unitsync.ProcessUnitsNoChecksum()
+	def GetUnitCount(self): return self.unitsync.GetUnitCount()
+	def GetUnitName(self, unit): return self.unitsync.GetUnitName(unit)
+	def GetFullUnitName(self, unit): return self.unitsync.GetFullUnitName(unit)
+	def AddArchive(self, name): return self.unitsync.AddArchive(name)
+	def AddAllArchives(self, root): return self.unitsync.AddAllArchives(root)
+	def RemoveAllArchives(self): return self.unitsync.RemoveAllArchives()
+	def GetArchiveChecksum(self, arname): return self.unitsync.GetArchiveChecksum(arname)
+	def GetArchivePath(self, arname): return self.unitsync.GetArchivePath(arname)
+	def GetMapCount(self): return self.unitsync.GetMapCount()
+	def GetMapName(self, index): return self.unitsync.GetMapName(index)
+	def GetMapInfoEx(self, name, outInfo, version): return self.unitsync.GetMapInfoEx(name, pointer(outInfo), version)
+	def GetMapInfo(self, name, outInfo): return self.unitsync.GetMapInfo(name, pointer(outInfo))
+	def GetMapMinHeight(self, name): return self.unitsync.GetMapMinHeight(name)
+	def GetMapMaxHeight(self, name): return self.unitsync.GetMapMaxHeight(name)
+	def GetMapArchiveCount(self, mapName): return self.unitsync.GetMapArchiveCount(mapName)
+	def GetMapArchiveName(self, index): return self.unitsync.GetMapArchiveName(index)
+	def GetMapChecksum(self, index): return self.unitsync.GetMapChecksum(index)
+	def GetMapChecksumFromName(self, mapName): return self.unitsync.GetMapChecksumFromName(mapName)
+	def GetMinimap(self, filename, miplevel): return self.unitsync.GetMinimap(filename, miplevel)
+	def GetInfoMapSize(self, filename, name, width, height): return self.unitsync.GetInfoMapSize(filename, name, width, height)
+	def GetInfoMap(self, filename, name, data, typeHint): return self.unitsync.GetInfoMap(filename, name, data, typeHint)
+	def GetSkirmishAICount(self): return self.unitsync.GetSkirmishAICount()
+	def GetSkirmishAIInfoCount(self, index): return self.unitsync.GetSkirmishAIInfoCount(index)
+	def GetInfoKey(self, index): return self.unitsync.GetInfoKey(index)
+	def GetInfoValue(self, index): return self.unitsync.GetInfoValue(index)
+	def GetInfoDescription(self, index): return self.unitsync.GetInfoDescription(index)
+	def GetSkirmishAIOptionCount(self, index): return self.unitsync.GetSkirmishAIOptionCount(index)
+	def GetPrimaryModCount(self): return self.unitsync.GetPrimaryModCount()
+	def GetPrimaryModName(self, index): return self.unitsync.GetPrimaryModName(index)
+	def GetPrimaryModShortName(self, index): return self.unitsync.GetPrimaryModShortName(index)
+	def GetPrimaryModVersion(self, index): return self.unitsync.GetPrimaryModVersion(index)
+	def GetPrimaryModMutator(self, index): return self.unitsync.GetPrimaryModMutator(index)
+	def GetPrimaryModGame(self, index): return self.unitsync.GetPrimaryModGame(index)
+	def GetPrimaryModShortGame(self, index): return self.unitsync.GetPrimaryModShortGame(index)
+	def GetPrimaryModDescription(self, index): return self.unitsync.GetPrimaryModDescription(index)
+	def GetPrimaryModArchive(self, index): return self.unitsync.GetPrimaryModArchive(index)
+	def GetPrimaryModArchiveCount(self, index): return self.unitsync.GetPrimaryModArchiveCount(index)
+	def GetPrimaryModArchiveList(self, arnr): return self.unitsync.GetPrimaryModArchiveList(arnr)
+	def GetPrimaryModIndex(self, name): return self.unitsync.GetPrimaryModIndex(name)
+	def GetPrimaryModChecksum(self, index): return self.unitsync.GetPrimaryModChecksum(index)
+	def GetPrimaryModChecksumFromName(self, name): return self.unitsync.GetPrimaryModChecksumFromName(name)
+	def GetSideCount(self): return self.unitsync.GetSideCount()
+	def GetSideName(self, side): return self.unitsync.GetSideName(side)
+	def GetSideStartUnit(self, side): return self.unitsync.GetSideStartUnit(side)
+	def GetMapOptionCount(self, name): return self.unitsync.GetMapOptionCount(name)
+	def GetModOptionCount(self): return self.unitsync.GetModOptionCount()
+	def GetCustomOptionCount(self, filename): return self.unitsync.GetCustomOptionCount(filename)
+	def GetOptionKey(self, optIndex): return self.unitsync.GetOptionKey(optIndex)
+	def GetOptionScope(self, optIndex): return self.unitsync.GetOptionScope(optIndex)
+	def GetOptionName(self, optIndex): return self.unitsync.GetOptionName(optIndex)
+	def GetOptionSection(self, optIndex): return self.unitsync.GetOptionSection(optIndex)
+	def GetOptionStyle(self, optIndex): return self.unitsync.GetOptionStyle(optIndex)
+	def GetOptionDesc(self, optIndex): return self.unitsync.GetOptionDesc(optIndex)
+	def GetOptionType(self, optIndex): return self.unitsync.GetOptionType(optIndex)
+	def GetOptionBoolDef(self, optIndex): return self.unitsync.GetOptionBoolDef(optIndex)
+	def GetOptionNumberDef(self, optIndex): return self.unitsync.GetOptionNumberDef(optIndex)
+	def GetOptionNumberMin(self, optIndex): return self.unitsync.GetOptionNumberMin(optIndex)
+	def GetOptionNumberMax(self, optIndex): return self.unitsync.GetOptionNumberMax(optIndex)
+	def GetOptionNumberStep(self, optIndex): return self.unitsync.GetOptionNumberStep(optIndex)
+	def GetOptionStringDef(self, optIndex): return self.unitsync.GetOptionStringDef(optIndex)
+	def GetOptionStringMaxLen(self, optIndex): return self.unitsync.GetOptionStringMaxLen(optIndex)
+	def GetOptionListCount(self, optIndex): return self.unitsync.GetOptionListCount(optIndex)
+	def GetOptionListDef(self, optIndex): return self.unitsync.GetOptionListDef(optIndex)
+	def GetOptionListItemKey(self, optIndex, itemIndex): return self.unitsync.GetOptionListItemKey(optIndex, itemIndex)
+	def GetOptionListItemName(self, optIndex, itemIndex): return self.unitsync.GetOptionListItemName(optIndex, itemIndex)
+	def GetOptionListItemDesc(self, optIndex, itemIndex): return self.unitsync.GetOptionListItemDesc(optIndex, itemIndex)
+	def GetModValidMapCount(self): return self.unitsync.GetModValidMapCount()
+	def GetModValidMap(self, index): return self.unitsync.GetModValidMap(index)
+	def OpenFileVFS(self, name): return self.unitsync.OpenFileVFS(name)
+	def CloseFileVFS(self, handle): return self.unitsync.CloseFileVFS(handle)
+	def ReadFileVFS(self, handle, buf, length): return self.unitsync.ReadFileVFS(handle, buf, length)
+	def FileSizeVFS(self, handle): return self.unitsync.FileSizeVFS(handle)
+	def InitFindVFS(self, pattern): return self.unitsync.InitFindVFS(pattern)
+	def InitDirListVFS(self, path, pattern, modes): return self.unitsync.InitDirListVFS(path, pattern, modes)
+	def InitSubDirsVFS(self, path, pattern, modes): return self.unitsync.InitSubDirsVFS(path, pattern, modes)
+	def FindFilesVFS(self, handle, nameBuf, size): return self.unitsync.FindFilesVFS(handle, nameBuf, size)
+	def OpenArchive(self, name): return self.unitsync.OpenArchive(name)
+	def OpenArchiveType(self, name, type): return self.unitsync.OpenArchiveType(name, type)
+	def CloseArchive(self, archive): return self.unitsync.CloseArchive(archive)
+	def FindFilesArchive(self, archive, cur, nameBuf, size): return self.unitsync.FindFilesArchive(archive, cur, nameBuf, size)
+	def OpenArchiveFile(self, archive, name): return self.unitsync.OpenArchiveFile(archive, name)
+	def ReadArchiveFile(self, archive, handle, buffer, numBytes): return self.unitsync.ReadArchiveFile(archive, handle, buffer, numBytes)
+	def CloseArchiveFile(self, archive, handle): return self.unitsync.CloseArchiveFile(archive, handle)
+	def SizeArchiveFile(self, archive, handle): return self.unitsync.SizeArchiveFile(archive, handle)
+	def SetSpringConfigFile(self, filenameAsAbsolutePath): return self.unitsync.SetSpringConfigFile(filenameAsAbsolutePath)
+	def GetSpringConfigFile(self): return self.unitsync.GetSpringConfigFile()
+	def GetSpringConfigString(self, name, defvalue): return self.unitsync.GetSpringConfigString(name, defvalue)
+	def GetSpringConfigInt(self, name, defvalue): return self.unitsync.GetSpringConfigInt(name, defvalue)
+	def GetSpringConfigFloat(self, name, defvalue): return self.unitsync.GetSpringConfigFloat(name, defvalue)
+	def SetSpringConfigString(self, name, value): return self.unitsync.SetSpringConfigString(name, value)
+	def SetSpringConfigInt(self, name, value): return self.unitsync.SetSpringConfigInt(name, value)
+	def SetSpringConfigFloat(self, name, value): return self.unitsync.SetSpringConfigFloat(name, value)
+	def lpClose(self): return self.unitsync.lpClose()
+	def lpOpenFile(self, filename, fileModes, accessModes): return self.unitsync.lpOpenFile(filename, fileModes, accessModes)
+	def lpOpenSource(self, source, accessModes): return self.unitsync.lpOpenSource(source, accessModes)
+	def lpExecute(self): return self.unitsync.lpExecute()
+	def lpErrorLog(self): return self.unitsync.lpErrorLog()
+	def lpAddTableInt(self, key, override): return self.unitsync.lpAddTableInt(key, override)
+	def lpAddTableStr(self, key, override): return self.unitsync.lpAddTableStr(key, override)
+	def lpEndTable(self): return self.unitsync.lpEndTable()
+	def lpAddIntKeyIntVal(self, key, val): return self.unitsync.lpAddIntKeyIntVal(key, val)
+	def lpAddStrKeyIntVal(self, key, val): return self.unitsync.lpAddStrKeyIntVal(key, val)
+	def lpAddIntKeyBoolVal(self, key, val): return self.unitsync.lpAddIntKeyBoolVal(key, val)
+	def lpAddStrKeyBoolVal(self, key, val): return self.unitsync.lpAddStrKeyBoolVal(key, val)
+	def lpAddIntKeyFloatVal(self, key, val): return self.unitsync.lpAddIntKeyFloatVal(key, val)
+	def lpAddStrKeyFloatVal(self, key, val): return self.unitsync.lpAddStrKeyFloatVal(key, val)
+	def lpAddIntKeyStrVal(self, key, val): return self.unitsync.lpAddIntKeyStrVal(key, val)
+	def lpAddStrKeyStrVal(self, key, val): return self.unitsync.lpAddStrKeyStrVal(key, val)
+	def lpRootTable(self): return self.unitsync.lpRootTable()
+	def lpRootTableExpr(self, expr): return self.unitsync.lpRootTableExpr(expr)
+	def lpSubTableInt(self, key): return self.unitsync.lpSubTableInt(key)
+	def lpSubTableStr(self, key): return self.unitsync.lpSubTableStr(key)
+	def lpSubTableExpr(self, expr): return self.unitsync.lpSubTableExpr(expr)
+	def lpPopTable(self): return self.unitsync.lpPopTable()
+	def lpGetKeyExistsInt(self, key): return self.unitsync.lpGetKeyExistsInt(key)
+	def lpGetKeyExistsStr(self, key): return self.unitsync.lpGetKeyExistsStr(key)
+	def lpGetIntKeyType(self, key): return self.unitsync.lpGetIntKeyType(key)
+	def lpGetStrKeyType(self, key): return self.unitsync.lpGetStrKeyType(key)
+	def lpGetIntKeyListCount(self): return self.unitsync.lpGetIntKeyListCount()
+	def lpGetIntKeyListEntry(self, index): return self.unitsync.lpGetIntKeyListEntry(index)
+	def lpGetStrKeyListCount(self): return self.unitsync.lpGetStrKeyListCount()
+	def lpGetStrKeyListEntry(self, index): return self.unitsync.lpGetStrKeyListEntry(index)
+	def lpGetIntKeyIntVal(self, key, defVal): return self.unitsync.lpGetIntKeyIntVal(key, defVal)
+	def lpGetStrKeyIntVal(self, key, defVal): return self.unitsync.lpGetStrKeyIntVal(key, defVal)
+	def lpGetIntKeyBoolVal(self, key, defVal): return self.unitsync.lpGetIntKeyBoolVal(key, defVal)
+	def lpGetStrKeyBoolVal(self, key, defVal): return self.unitsync.lpGetStrKeyBoolVal(key, defVal)
+	def lpGetIntKeyFloatVal(self, key, defVal): return self.unitsync.lpGetIntKeyFloatVal(key, defVal)
+	def lpGetStrKeyFloatVal(self, key, defVal): return self.unitsync.lpGetStrKeyFloatVal(key, defVal)
+	def lpGetIntKeyStrVal(self, key, defVal): return self.unitsync.lpGetIntKeyStrVal(key, defVal)
+	def lpGetStrKeyStrVal(self, key, defVal): return self.unitsync.lpGetStrKeyStrVal(key, defVal)
