@@ -157,8 +157,8 @@ class AILadderService:
          requestitemdict['ai1_version'] = requestitem.ai1.ai_version
          requestitemdict['map_name'] = requestitem.map.map_name
          requestitemdict['mod_name'] = requestitem.mod.mod_name
-         requestitemdict['gametimeoutminutes'] = config.gametimeoutminutes
-         requestitemdict['gameendstring'] = config.gameendstring
+         requestitemdict['gametimeoutminutes'] = confighelper.getValue('gametimeoutminutes')
+         requestitemdict['gameendstring'] = confighelper.getValue('gameendstring')
 
          return (True, [ requestitemdict ] )  
       except:
