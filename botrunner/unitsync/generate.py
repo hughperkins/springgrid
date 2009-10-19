@@ -61,10 +61,13 @@ class Unitsync:
 
 argv = sys.argv
 if len(argv) < 2:
-	print 'must be passed unitsync_api.h to generate bindings'
-	print 'if on windows, you can simply drag the file onto this one'
-	time.sleep(30)
-	sys.exit(1)
+	if os.path.isfile('./unitsync_api.h'):
+		argv.append('./unitsync_api.h')
+	else:
+		print 'must be passed unitsync_api.h to generate bindings'
+		print 'if on windows, you can simply drag the file onto this one'
+		time.sleep(30)
+		sys.exit(1)
 
 name = argv[1]
 if not os.path.isfile(name):
@@ -125,6 +128,14 @@ for line in data.split('\n'):
 f = open('unitsync.py', 'w')
 f.write(baseScript)
 f.write(classBase)
+
+for (name, returnType, args) in functions:
+	if returnType:
+		text = 'unitsync.%s.restype = %s' % (name, returnType)
+		f.write('\n\t\t%s'%text)
+
+f.write('\n')
+
 for (name, returnType, args) in functions:
 	defTemp = []
 	callTemp = []
@@ -137,6 +148,7 @@ for (name, returnType, args) in functions:
 	
 	callArgs = ', '.join(callTemp)
 	defArgs = ('self, '+', '.join(defTemp)) if defTemp else 'self'
-	text = 'def %s(%s): return %s(self.unitsync.%s(%s)).value' % (name, defArgs, returnType, name, callArgs)
+	text = 'def %s(%s): return self.unitsync.%s(%s)' % (name, defArgs, name, callArgs)
+	#text = 'def %s(%s): return %s(self.unitsync.%s(%s)).value' % (name, defArgs, returnType, name, callArgs)
 	f.write('\n\t%s'%text)
 f.close()
