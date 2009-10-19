@@ -2,6 +2,8 @@ Notes:
 - put description of each branch separately, different lines, so don't get merge cnoflicts
 - when adding/changing lines, only add lines for the current branch, so don't get merge conflicts
 
-
+configindb:
+- moved configuration values, except for those needed to connect to database, into 
+  new db table 'config'
 
 
