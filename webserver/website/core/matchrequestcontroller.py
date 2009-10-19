@@ -25,13 +25,12 @@ import datetime
 
 from sqlalchemy.orm import join
 
-import config
-
 from utils import *
 #from core import *
 from tableclasses import *
 import sqlalchemysetup
 import botrunnerhelper
+import confighelper
 
 # go through matchrequests_inprogress table, and remove any rows
 # where the session is older than a certain time
@@ -40,7 +39,7 @@ def archiveoldrequests():
    for matchrequest in matchrequests:
       lastpingtime = dates.dateStringToDateTime( matchrequest.matchrequestinprogress.botrunnersession.lastpingtime )
       secondssincelastping = dates.timedifftototalseconds( datetime.datetime.now() - lastpingtime )
-      if secondssincelastping > config.expiresessionminutes * 60:
+      if secondssincelastping > confighelper.getValue('expiresessionminutes') * 60:
          sqlalchemysetup.session.delete( matchrequest.matchrequestinprogress.botrunnersession )
          sqlalchemysetup.session.delete( matchrequest.matchrequestinprogress )
    sqlalchemysetup.session.commit()
