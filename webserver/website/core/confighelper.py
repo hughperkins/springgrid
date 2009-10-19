@@ -27,7 +27,7 @@ from tableclasses import *
 
 # get an appropriately typed config value, indexed by key_name
 def getValue( key_name ):
-   configrow = sqlalchemysetup.session.query(Config).filter(Config.key_name == key_name ).first()
+   configrow = sqlalchemysetup.session.query(Config).filter(Config.config_key == key_name ).first()
    if configrow == None:
       return None
    return configrow.getValue()
