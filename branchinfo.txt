@@ -1,0 +1,7 @@
+Notes: 
+- put description of each branch separately, different lines, so don't get merge cnoflicts
+- when adding/changing lines, only add lines for the current branch, so don't get merge conflicts
+
+
+
+
