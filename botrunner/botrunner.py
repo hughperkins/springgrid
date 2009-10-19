@@ -39,6 +39,7 @@ from optparse import OptionParser
 from unitsync import unitsync as unitsyncpkg
 
 from utils import *
+import version
 
 config = None
 unitsync = None
@@ -55,6 +56,7 @@ def parseopts():
    parser = OptionParser()
    parser.add_option( "--sessionid", help = 'force sessionid to specific string', dest = 'sessionid' )
    parser.add_option( "--no-register-capabilities", help = 'do not register maps, mods or ais with web service', dest = 'noregistercapabilities', action='store_true' )
+   parser.add_option( "--version", '-V', help = 'show version', dest = 'version', action='store_true' )
 
    (options, args ) = parser.parse_args()
 
@@ -400,6 +402,12 @@ def go():
    global sessionid, options
 
    parseopts()
+
+   if options.version:
+      print ""
+      print "AILadder, version: " + version.version
+      print ""
+      return
 
    # check for config, question user if doesn't exist
    try:

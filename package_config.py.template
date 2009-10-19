@@ -1,0 +1,10 @@
+# copy this file to package_config.py, and tweak to your requirements
+
+# used as input to an scp command like:
+# scp botrunner-0.6.tar.bz2 packagescpdestination/botrunner-0.6.tar.bz2
+packagescpdestination = 'someuser@somehost:/home/someuser/somewebsite/download'
+
+# used to print the download link.  used like:
+# print packagewebsiteurl + "/botrunner-0.6.tar.bz2"
+packagewebsiteurl = 'http://somehost.com/download'
+
