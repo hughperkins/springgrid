@@ -185,7 +185,8 @@ def main():
          engine = sqlalchemy.create_engine('mysql://' + dbuser + ":" + dbpassword + "@" + dbhost + "/" + dbname )
          try:
             print "Checking connection to database..."
-            engine.connect()
+            connection = engine.connect()
+            connection.close()
             print " ... succeeded"
             gotcredentials = True
          except:
