@@ -19,6 +19,9 @@
 # http://www.opensource.org/licenses/gpl-license.php
 #
 
+import sys
+import os
+
 # returns True for confirmed, otherwise False
 def getConfirmation( confirmationquestion ):
    print confirmationquestion + " (y to confirm)"
