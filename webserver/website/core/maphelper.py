@@ -63,5 +63,5 @@ def setbotrunnersupportsthismap( botrunnername, mapname ):
    map = getMap(mapname)
    botrunner.supportedmaps.append(BotRunnerSupportedMap(map))
    sqlalchemysetup.session.commit()
-   return (True,mapname)
+   return (True,'')
 
