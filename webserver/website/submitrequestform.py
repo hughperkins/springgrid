@@ -35,8 +35,6 @@ from core import *
 
 sqlalchemysetup.setup()
 
-menu.printPageTop()
-
 ais = sqlalchemysetup.session.query( tableclasses.AI.ai_name, tableclasses.AI.ai_version )
 maps = listhelper.tuplelisttolist( sqlalchemysetup.session.query( tableclasses.Map.map_name ) )
 mods = listhelper.tuplelisttolist( sqlalchemysetup.session.query( tableclasses.Mod.mod_name ) )
@@ -49,24 +47,7 @@ for ai in ais:
    aivalues.append( ai.ai_name + " " + ai.ai_version )
    aiitems.append( ai.ai_name + "|" + ai.ai_version )
 
-print "<h3>AILadder - submit game request</h3>" \
-"<form action='submitrequest.py' method='post'>" \
-"<table border='1' padding='3'>" \
-"<tr><td>AI0 name</td><td>" + htmlformshelper.itemsandvaluesToDropdown("ai0nameversion", aiitems, aivalues ) + "</td></tr>" \
-"<tr><td>AI1 name</td><td>" + htmlformshelper.itemsandvaluesToDropdown("ai1nameversion", aiitems, aivalues  ) + "</td></tr>" \
-"<tr><td>Map</td><td>" + htmlformshelper.listToDropdown("mapname", maps) + "</td></tr>" \
-"<tr><td>Mod</td><td>" + htmlformshelper.listToDropdown("modname", mods) + "</td></tr>"
-
-print "<tr><td>Options:</td><td>"
-for option in options:
-   print "<input type='checkbox' name='option_" + option + "' >" + option + "</input><br />"
-print "</td></tr>"
-
-print "<tr><td></td><td><input type='submit' value='Submit Request' /></td></tr>" \
-"</table>" \
-"</form>"
+jinjahelper.rendertemplate('submitrequestform.html', ais = ais, maps = maps, mods = mods, aivalues = aivalues, aiitems = aiitems, options = options )
 
 sqlalchemysetup.close()
-
-menu.printPageBottom()
 

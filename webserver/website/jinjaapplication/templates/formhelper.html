@@ -1,0 +1,16 @@
+{% macro listtodropdown(controlname, itemlist) %}
+<select name='{{controlname}}'>
+   {% for listitem in itemlist %}
+      <option value='{{listitem}}'>{{listitem}}</option>
+   {% endfor %}
+</select>
+{% endmacro %}
+
+{% macro itemsandvaluestodropdown( controlname, itemlist, valuelist ) %}
+   <select name='{{controlname}}'>
+   {% for item in itemlist %}
+      <option value='{{item}}'>{{valuelist[loop.index0]}}</option>
+   {% endfor %}
+   </select>
+{% endmacro %}
+
