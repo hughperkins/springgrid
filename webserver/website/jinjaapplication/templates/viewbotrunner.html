@@ -1,0 +1,76 @@
+{% extends 'menu.html' %}
+
+{% import 'formhelper.html' as formhelper %}
+
+{% block content %}
+
+<h3>AILadder - Bot Runner '{{botrunner.botrunner_name}}'</h3>" \
+"<table border='1' padding='3'>"
+
+{% if botrunner.owneraccount != none %}
+   <tr><td>Bot runner owner: </td><td>{{botrunner.owneraccount.userfullname}}</td></tr>"
+{% else %}
+   <tr><td>Bot runner owner: </td><td>None assigned</td></tr>
+{% endfor %}
+{% if isbotrunnerowner %}
+   <tr><td>Shared secret: </td><td>{{botrunner.botrunner_sharedsecret}}</td></tr>
+{% else %}
+   <tr><td>Shared secret: </td><td>&lt;only visible to owner&gt;</td></tr>
+{% endif %}
+
+</table>
+
+<h3>Assigned options</h3>
+
+<table>
+
+
+{% if isbotrunnerowner %}
+   <tr class='tablehead'><td>Option name</td><td></td></tr>
+{% else %}
+   <tr class='tablehead'><td>Option name</td></tr>
+{% endif %}
+
+{% for option in botrunner.options %}
+   <tr><td>{{option.option.option_name}}</td>
+   if isbotrunnerowner or roles.isInRole(roles.botrunneradmin):
+      <td><a href='deleteoptionfrombotrunner.py?botrunnername={{botrunner.botrunner_name}}&optionname={{option.option.option_name}}'>Delete option</a></td>
+   </tr>
+{% endfor %}
+
+</table>
+
+<h3>Supported Maps</h3>
+
+<table>
+<tr class='tablehead'><td>Map</td>
+{% for map in botrunner.supportedmaps %}
+   <tr class='success'><td>{{map.map.map_name}}</td>
+{% endfor %}
+</table>
+
+<h3>Supported Mods</h3>
+
+<table>
+<tr class='tablehead'><td>Mod</td>
+{% for mod in botrunner.supportedmods %}
+   <tr class='success'><td>{{mod.mod.mod_name}}</td>
+{% endfor %}
+</table>"
+
+{% if showform %}
+   <p />
+   <hr />
+   <p />
+
+   <h4>Add new options to engine:</h4>
+   <form action='addoptiontobotrunner.py' method='post'>
+   <table border='1' padding='3'>
+   <tr><td>Option to add:</td><td>{{formhelper.listtodropdown( 'optionname', potentialoptions )}}</td></tr>
+   <tr><td></td><td><input type='submit' value='Add' /></td></tr>
+   </table>
+   <input type='hidden' name='botrunnername' value='{{botrunner.botrunner_name}}' />
+   </form>
+
+{% endblock %}
+
