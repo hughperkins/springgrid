@@ -36,10 +36,8 @@ sqlalchemysetup.setup()
 
 loginhelper.processCookie()
 
-menu.printPageTop()
-
 if not roles.isInRole(roles.leagueadmin):
-   print "You must be logged in as a leagueadmin"
+   jinjahelper.message( "You must be logged in as a leagueadmin" )
 else:
    leaguename = formhelper.getValue("leaguename")
    aioption = formhelper.getValue("aioption")
@@ -48,11 +46,10 @@ else:
       league = leaguehelper.getLeague( leaguename )
       league.options.append( LeagueOption( aihelper.getAIOption( aioption ) ) )
       sqlalchemysetup.session.commit()
-      print "Added ok"
+      jinjahelper.message( "Added ok" )
    else:
-      print "Please fill in the fields and try again"
+      jinjahelper.message( "Please fill in the fields and try again" )
 
 sqlalchemysetup.close()
 
-menu.printPageBottom()
 

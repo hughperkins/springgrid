@@ -32,10 +32,8 @@ sqlalchemysetup.setup()
 
 loginhelper.processCookie()
 
-menu.printPageTop()
-
 if loginhelper.gusername == '':
-   print "You must login first"
+   jinjahelper.message( "You must login first" )
 else:
    leaguegroupname = formhelper.getValue('leaguegroupname')
    leaguename = formhelper.getValue('leaguename')
@@ -45,11 +43,9 @@ else:
       league = leaguehelper.getLeague(leaguename)
       leaguegroup.childleagues.append(LeagueGroupLeagueMember(league))
       sqlalchemysetup.session.commit()
-      print "Added ok"
+      jinjahelper.message( "Added ok" )
    else:
-      print "Please fill in the fields and try again"
+      jinjahelper.message( "Please fill in the fields and try again" )
 
 sqlalchemysetup.close()
-
-menu.printPageBottom()
 

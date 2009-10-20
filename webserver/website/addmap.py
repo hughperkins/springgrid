@@ -36,10 +36,8 @@ sqlalchemysetup.setup()
 
 loginhelper.processCookie()
 
-menu.printPageTop()
-
 if not roles.isInRole(roles.mapadmin):
-   print "You must be logged in as a mapadmin"
+   jinjahelper.message( "You must be logged in as a mapadmin" )
 else:
    mapname = formhelper.getValue("mapname")
    maparchivechecksum = formhelper.getValue("maparchivechecksum")
@@ -52,11 +50,10 @@ else:
       map.mapurl = mapurl
       sqlalchemysetup.session.add( map )
       sqlalchemysetup.session.commit()
-      print "Added ok"
+      jinjahelper.message( "Added ok" )
    else:
-      print "Please fill in the fields and try again"
+      jinjahelper.message( "Please fill in the fields and try again" )
 
 sqlalchemysetup.close()
 
-menu.printPageBottom()
 

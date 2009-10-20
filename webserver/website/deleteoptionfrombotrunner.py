@@ -36,23 +36,21 @@ sqlalchemysetup.setup()
 
 loginhelper.processCookie()
 
-menu.printPageTop()
-
 def go():
    botrunnername = formhelper.getValue('botrunnername')
    optionname = formhelper.getValue('optionname')
 
    if not loginhelper.isLoggedOn():
-      print "Please logon first."
+      jinjahelper.message( "Please logon first." )
       return
 
    if botrunnername == None or optionname == None or botrunnername == '' or optionname == '':
-      print "Please fill in the fields and try again"
+      jinjahelper.message( "Please fill in the fields and try again" )
       return
 
    botrunnerownername = botrunnerhelper.getOwnerUsername( botrunnername ) 
    if botrunnerownername != loginhelper.getUsername() and not roles.isInRole( roles.botrunneradmin ):
-      print "You must be the botrunner owner or a botrunneradmin"
+      jinjahelper.message( "You must be the botrunner owner or a botrunneradmin" )
       return
 
    botrunner = botrunnerhelper.getBotRunner( botrunnername )
@@ -60,11 +58,9 @@ def go():
       if option.option.option_name == optionname:
          sqlalchemysetup.session.delete( option )
 
-   print "Removed ok"
+   jinjahelper.message( "Removed ok" )
 
 go()
 
 sqlalchemysetup.close()
-
-menu.printPageBottom()
 

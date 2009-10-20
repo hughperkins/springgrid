@@ -36,10 +36,8 @@ sqlalchemysetup.setup()
 
 loginhelper.processCookie()
 
-menu.printPageTop()
-
 if not roles.isInRole(roles.aiadmin):
-   print "You must be logged in as an aiadmin"
+   jinjahelper.message( "You must be logged in as an aiadmin" )
 else:
    ainame = formhelper.getValue("ainame")
    aiversion = formhelper.getValue("aiversion")
@@ -53,12 +51,10 @@ else:
       ai.owneraccount = accounthelper.getAccount( loginhelper.gusername )
       sqlalchemysetup.session.add(ai)
       sqlalchemysetup.session.commit()
-      print "Added ok"
+      jinjahelper.message( "Added ok" )
    else:
-      print "Please fill in the fields and try again"
+      jinjahelper.message( "Please fill in the fields and try again" )
 
 sqlalchemysetup.close()
-
-menu.printPageBottom()
 
 

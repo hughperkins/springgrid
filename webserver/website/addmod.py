@@ -36,10 +36,8 @@ sqlalchemysetup.setup()
 
 loginhelper.processCookie()
 
-menu.printPageTop()
-
 if not roles.isInRole(roles.modadmin):
-   print "You must be logged in as a modadmin"
+   jinjahelper.message( "You must be logged in as a modadmin" )
 else:
    modname = formhelper.getValue("modname")
    modarchivechecksum = formhelper.getValue("modarchivechecksum")
@@ -52,11 +50,9 @@ else:
       mod.modurl = modurl
       sqlalchemysetup.session.add( mod )
       sqlalchemysetup.session.commit()
-      print "Added ok"
+      jinjahelper.message( "Added ok" )
    else:
-      print "Please fill in the fields and try again"
+      jinjahelper.message( "Please fill in the fields and try again" )
 
 sqlalchemysetup.close()
-
-menu.printPageBottom()
-
+\
