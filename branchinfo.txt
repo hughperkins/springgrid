@@ -2,8 +2,16 @@ Notes:
 - put description of each branch separately, different lines, so don't get merge cnoflicts
 - when adding/changing lines, only add lines for the current branch, so don't get merge conflicts
 
+branch doublepackager:
+- created package.py, which:
+  - creates botrunner/version.py, and webserver/website/version.py
+  - adds these to git, commits them, and tags them with the version
+  - uses git archive to creates two tar.bz2 packages, one for botrunner directory, and one for webserver directory
+  - uploads the packages to a configured webdirectory
+- added SQLAlchemy and VirtualEnv to new dependencies directory
+- installation of website is now by doing "python websitesetup.py" in webserver directory
+
 configindb:
 - moved configuration values, except for those needed to connect to database, into 
   new db table 'config'
-
 

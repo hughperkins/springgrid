@@ -35,8 +35,12 @@ CMakeFiles
 Makefile
 cmake_install.cmake
 
-#sqlite db
-ailadder
+# Sqlalchemy build
+webserver/dependencies/SQLAlchemy-0.5.6/build
+webserver/dependencies/SQLAlchemy-0.5.6/dist
+
+# package.py config file
+package_config.py
 
 package_config.py
 webserver/dependencies/SQLAlchemy-0.5.6/build

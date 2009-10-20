@@ -31,17 +31,23 @@ from utils import *
 from core import *
 from core.tableclasses import *
 
+version = None
+try:
+   import version
+except:
+   pass
+
 sqlalchemysetup.setup()
 
 loginhelper.processCookie()
 
 try:
    import version
-   version = version.version
+   versionstring = version.version
 except:
-   version = 'Unversioned dev code, not a versioned release.'
+   versionstring = 'Unversioned dev code, not a versioned release.'
 
-jinjahelper.rendertemplate('about.html', version=version, isloggedin = loginhelper.isLoggedOn(), loginhelper = loginhelper, menus = menu.getmenus() )
+jinjahelper.rendertemplate('about.html', version=versionstring, isloggedin = loginhelper.isLoggedOn(), loginhelper = loginhelper, menus = menu.getmenus() )
 
 sqlalchemysetup.close()
 

@@ -21,38 +21,17 @@
 # http://www.opensource.org/licenses/gpl-license.php
 #
 
-try:
-   # if we can import config, then we already configured the website and set up the database
-   import config
-   print "Content-type: text/html\n\n"
-   print "Unauthorized"
-except:
-   print "Content-type: text/html\n\n"
-   print "<html>"
-   print "<head>"
-   print "<title>AILadder - setup</title>"
-   print "</head>"
-   print "<body>"
-   print "<h3>AILadder - setup</h3>"
-   print "<p>Welcome to AILadder. This page should guide you through configuration.</p>"
-   print "<p>Since you're seeing this page, it looks like you've got a working webserver and web-browser, and it looks like python is setup to run as cgi for .py and .cgi files.  Great!</p>"
-   print "<p>To go further, you'll need the following:</p>"
-   print "<ul>"
-   print "<li>A MySQL database, and a username and password with write access to it</li>"
-   print "<li>Python MySQLdb needs to be installed</li>"
-   print "<li>the website directory should be writable by the webserver</li>"
-   print "</ul>"
-   print "<p>... then just fill in the database connection details click 'Setup'.</p>"
-   print "<p>Please ensure the database exists already, that the user you specify has access to that database, and that the database is running</p>"
-   print "<form method='post' action='websetupdb.py'>"
-   print "<table cellpadding='3' border='1'>"
-   print "<tr><td>MySQL database name:</td><td><input type='text' name='dbname' value='ailadder'></td></tr>"
-   print "<tr><td>MySQL database hostname:</td><td><input type='text' name='dbhost' value='localhost'></td></tr>"
-   print "<tr><td>MySQL database username:</td><td><input type='text' name='dbuser' value=''></td></tr>"
-   print "<tr><td>MySQL database password:</td><td><input type='password' name='dbpassword' value=''></td></tr>"
-   print "<tr><td></td><td><input type='submit' value='Setup'></td></tr>"
-   print "</table>"
-   print "</form>"
-   print "</body>"
-   print "</html>"
+print "Content-type: text/html\n\n"
+print "<html>"
+print "<head>"
+print "<title>AILadder - setup</title>"
+print "</head>"
+print "<body>"
+print "<h3>AILadder - setup</h3>"
+print "<p>Setup is now from the commandline</p>"
+print "<p>Please open a shell to your webserver machine, change into the website package directory ('webserver' directory if you are using git), and run:</p>"\
+   "<pre>python websitesetup.py</pre>"
+print "<p> ... which should guide you through the next steps.</p>"
+print "</body>"
+print "</html>"
 
