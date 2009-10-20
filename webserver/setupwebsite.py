@@ -65,19 +65,30 @@ def main():
    if not checkpythonversion():
       return
 
+   neededpackages = []
+
    print "Check sqlalchemy..."
-   sqlalchemyinstalled = False
    try:
       import sqlalchemy
-      sqlalchemyinstalled = True
       print "checked sqlalchemy: already installed.  Good."
    except:
-      pass
+      neededpackages.append('sqlalchemy')
+      print "... need to install sqlalchemy"
+   print ""
+
+   print "Check jinja2..."
+   try:
+      import jinja2
+      print "checked jinja2: already installed.  Good."
+   except:
+      neededpackages.append('jinja2')
+      print "... need to install jinja2"
+   print ""
 
    newpythonexecutable = None
-   if not sqlalchemyinstalled:
-      print "sqlalchemy is need to run AILadder website."
-      print "It can be installed globally, or in a virtual environment."
+   if len(neededpackages) > 0:
+      print "We need to install some packages to run AILadder website."
+      print "They can be installed globally, or in a virtual environment."
       print "If you are on a dedicated machine, global installation is probably best."
       print "If you are on a shared webhosting, you probably should use a virtual environment."
       installlocation = userinput.choice("Please choose target installation environment", { 'global': 'install globally', 'virtualenv': 'install to virtual environment' } )
@@ -92,9 +103,14 @@ def main():
             installlocation = 'virtualenv'
 
       if installlocation == 'global':
-         os.chdir(scriptdir + "/dependencies/SQLAlchemy-0.5.6")
-         popen = subprocess.Popen([sys.executable, "setup.py","install"] )
-         popen.wait()
+         if 'sqlalchemy' in neededpackages:
+            os.chdir(scriptdir + "/dependencies/SQLAlchemy-0.5.6")
+            popen = subprocess.Popen([sys.executable, "setup.py","install"] )
+            popen.wait()
+         if 'jinja2' in neededpackages:
+            os.chdir(scriptdir + "/dependencies/Jinja2-2.2.1")
+            popen = subprocess.Popen([sys.executable, "setup.py","install"] )
+            popen.wait()
       elif installlocation == 'virtualenv':
          virtualenvpath = ''
          while virtualenvpath == '':
@@ -104,9 +120,15 @@ def main():
             popen = subprocess.Popen([sys.executable, "virtualenv.py", virtualenvpath] )
             popen.wait()
             newpythonexecutable = virtualenvpath + "/bin/python"
-            os.chdir(scriptdir + "/dependencies/SQLAlchemy-0.5.6")
-            popen = subprocess.Popen([newpythonexecutable, "setup.py","install"] )
-            popen.wait()
+
+            if 'sqlalchemy' in neededpackages:
+               os.chdir(scriptdir + "/dependencies/SQLAlchemy-0.5.6")
+               popen = subprocess.Popen([newpythonexecutable, "setup.py","install"] )
+               popen.wait()
+            if 'jinja2' in neededpackages:
+               os.chdir(scriptdir + "/dependencies/Jinja2-2.2.1")
+               popen = subprocess.Popen([newpythonexecutable, "setup.py","install"] )
+               popen.wait()
 
             print "Restarting in virtual environment..."
             popen = subprocess.Popen([newpythonexecutable, scriptdir + "/" + sys.argv[0] ], stdin = sys.stdin, stdout = sys.stdout )
