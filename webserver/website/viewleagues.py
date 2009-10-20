@@ -31,55 +31,15 @@ sqlalchemysetup.setup()
 
 loginhelper.processCookie()
 
-menu.printPageTop()
-
 leagues = sqlalchemysetup.session.query(League)
 
-print "<h3>AILadder - View leagues</h3>" \
-"<p>A league is a specific game configuration used for testing AIs "\
-" against each other</p>"\
-"<p>For example, a league could be a specific map, mod, and certain options,"\
-" like say cheating on, or cheating off</p>"\
-"<p>You can group leagues together in leaguegroups.</p>"\
-"<table border='1' padding='3'>" \
-"<tr class='tablehead'><td>League Name:</td><td>Mod Name</td><td>Map Name</td><td>Assigned options</td></tr>"
+showform = loginhelper.gusername != ''
 
-for league in leagues:
-   print "<tr>"
-   print "<td><a href='viewleague.py?leaguename=" + league.league_name + "'>" + league.league_name + "</a></td>"
-   print "<td>" + league.mod.mod_name + "</td>"
-   print "<td>" + league.map.map_name + "</td>"
+maps = listhelper.tuplelisttolist( sqlalchemysetup.session.query(Map.map_name) )
+mods = listhelper.tuplelisttolist( sqlalchemysetup.session.query(Mod.mod_name) )
 
-   print "<td>"
-   for option in league.options:
-      print option.option.option_name
-   print "&nbsp;</td>"
-
-   print "</tr>"
-
-print "</table>"
-
-if loginhelper.gusername != '':
-
-   print "<p />"
-   print "<hr />"
-   print "<p />"
-
-   maps = listhelper.tuplelisttolist( sqlalchemysetup.session.query(Map.map_name) )
-   mods = listhelper.tuplelisttolist( sqlalchemysetup.session.query(Mod.mod_name) )
-
-   print "<h4>Create new league:</h4>"
-   print "<form action='addleague.py' method='post'>" \
-   "<table border='1' padding='3'>" \
-   "<tr><td>League name</td><td><input name='leaguename'</td></tr>"
-   print "<tr><td>Mod name</td><td>" + htmlformshelper.listToDropdown( 'modname', mods ) + "</td></tr>"
-   print "<tr><td>Map name</td><td>" + htmlformshelper.listToDropdown( 'mapname', maps ) + "</td></tr>"   
-
-   print "<tr><td></td><td><input type='submit' value='Add' /></td></tr>" \
-   "</table>" \
-   "</form>"
+jinjahelper.rendertemplate('viewleagues.html', leagues = leagues, showform = showform, maps = maps, mods = mods )
 
 sqlalchemysetup.close()
 
-menu.printPageBottom()
 
