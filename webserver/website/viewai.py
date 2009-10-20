@@ -31,51 +31,18 @@ sqlalchemysetup.setup()
 
 loginhelper.processCookie()
 
-menu.printPageTop()
-
 ainame = formhelper.getValue('ainame')
 aiversion = formhelper.getValue('aiversion')
 
 ai = sqlalchemysetup.session.query(AI).filter(AI.ai_name == ainame).filter(AI.ai_version == aiversion).first()
 
-print "<h3>AILadder - View AI '" + ainame + " " + aiversion + "'</h3>"
+showform = roles.isInRole(roles.aiadmin)
 
-print "<p>This page can configure the options compatible with one ai</p>"
-print "<p>For example, if it can run when cheating is allowed, then add the option 'cheatingallowed', or, if it can run when cheating is banned, then add the option 'cheatingequalslose'</p>"
-
-print "<table border='1' padding='3'>" \
-"<tr><td>Compatible options</td><td></td></tr>"
-
+potentialoptions = listhelper.tuplelisttolist( sqlalchemysetup.session.query(AIOption.option_name) )
 for option in ai.allowedoptions:
-   print "<tr>"
-   print "<td>" + option.option.option_name + "</td>"
-   print "<td><a href='deleteoptionfromai.py?ainame=" + ainame + "&aiversion=" + aiversion + "&aioption=" + option.option.option_name + "'>Remove option</a></td>"
-   print "</tr>"
-
-print "</table>"
-
-if roles.isInRole(roles.aiadmin):
-
-   print "<p />"
-   print "<hr />"
-   print "<p />"
-
-   print "<h4>Add new compatible options:</h4>"
-
-   potentialoptions = listhelper.tuplelisttolist( sqlalchemysetup.session.query(AIOption.option_name) )
-   for option in ai.allowedoptions:
-      potentialoptions.remove(option.option.option_name )
+   potentialoptions.remove(option.option.option_name )
   
-   print "<form action='addoptiontoai.py' method='post'>" \
-   "<table border='1' padding='3'>" \
-   "<tr><td>Option to add:</td><td>" + htmlformshelper.listToDropdown( 'aioption', potentialoptions ) + "</td></tr>" \
-   "<tr><td></td><td><input type='submit' value='Add' /></td></tr>" \
-   "</table>" \
-   "<input type='hidden' name='ainame' value='" + ainame + "' />" \
-   "<input type='hidden' name='aiversion' value='" + aiversion + "' />" \
-   "</form>"
-
-menu.printPageBottom()
+jinjahelper.rendertemplate('viewai.html', ai = ai, potentialoptions = potentialoptions, showform = showform )
 
 sqlalchemysetup.close()
 

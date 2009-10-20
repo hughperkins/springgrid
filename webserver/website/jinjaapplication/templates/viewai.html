@@ -1,0 +1,40 @@
+{% extends 'menu.html' %}
+
+{% import 'formhelper.html' as formhelper %}
+{% block content %}
+
+<h3>AILadder - View AI {{ai.ai_name}} {{ai.ai_version}}</h3>
+
+<p>This page can configure the options compatible with one ai</p>
+<p>For example, if it can run when cheating is allowed, then add the option 'cheatingallowed', or, if it can run when cheating is banned, then add the option 'cheatingequalslose'.</p>
+
+<table border='1' padding='3'>
+<tr><td>Compatible options</td><td></td></tr>
+
+{% for option in ai.allowedoptions %}
+   <tr>
+   <td>{{option.option.option_name}}</td>
+   <td><a href='deleteoptionfromai.py?ainame={{ai.ai_name}}&aiversion={{ai.ai_version}}&aioption={{option.option.option_name}}'>Remove option</a></td>
+   </tr>
+{% endfor %}
+</table>
+
+{% if showform %}
+   <p />
+   <hr />
+   <p />
+
+   <h4>Add new compatible options:</h4>
+
+   <form action='addoptiontoai.py' method='post'>
+   <table border='1' padding='3'>
+   <tr><td>Option to add:</td><td>{{formhelper.listtodropdown( 'aioption', potentialoptions )}}</td></tr>
+   <tr><td></td><td><input type='submit' value='Add' /></td></tr>
+   </table>
+   <input type='hidden' name='ainame' value='{{ai.ai_name}}' />
+   <input type='hidden' name='aiversion' value='{{ai.ai_version}}' />
+   </form>
+{% endif %}
+
+{% endblock %}
+
