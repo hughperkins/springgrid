@@ -96,6 +96,9 @@ class AILadderService:
       if not aihelper.addaiifdoesntexist(ainame, aiversion):
          return (False, "Couldn't register ai")
 
+      if not aihelper.setbotrunnersupportsthisai( botrunnername, ainame, aiversion ):
+         return (False, "couldn't mark ai as supported for botrunner")
+
       return (True,'')
 
    def getsupportedmods( self, botrunnername, sharedsecret ):

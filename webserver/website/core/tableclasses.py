@@ -188,13 +188,23 @@ class BotRunnerSupportedMap(Base):
    def __init__(self, map ):
       self.map = map
 
+class BotRunnerSupportedAI(Base):
+   __tablename__ = 'botrunner_supportedais'
+
+   botrunner_id = Column(Integer,ForeignKey('botrunners.botrunner_id'), primary_key = True)
+   ai_id = Column(Integer,ForeignKey('ais.ai_id'), primary_key = True )
+
+   ai = relation("AI")
+
+   def __init__ (self, ai ):
+      self.ai = ai
+
 class BotRunnerSupportedMod(Base):
    __tablename__ = 'botrunner_supportedmods'
 
    botrunner_id = Column(Integer,ForeignKey('botrunners.botrunner_id'),primary_key=True)
    mod_id = Column(Integer,ForeignKey('mods.mod_id'),primary_key=True)
 
-   botrunner = relation("BotRunner",backref='supportedmods')
    mod = relation("Mod")
 
    def __init__(self, mod ):
@@ -233,6 +243,8 @@ class BotRunner(Base):
    owneraccount = relation("Account")
    options = relation("BotRunnerAssignedOption")
    supportedmaps = relation("BotRunnerSupportedMap", uselist=True )
+   supportedmods = relation("BotRunnerSupportedMod", uselist=True )
+   supportedais = relation("BotRunnerSupportedAI", uselist = True )
    sessions = relation("BotRunnerSession",uselist = True)
 
    def __init__( self, botrunner_name, botrunner_sharedsecret ):

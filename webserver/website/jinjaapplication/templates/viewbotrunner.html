@@ -41,6 +41,15 @@
 
 </table>
 
+<h3>Supported AIs</h3>
+
+<table>
+<tr class='tablehead'><td>AI Name</td><td>AI Version</td></tr>
+{% for ai in botrunner.supportedais %}
+   <tr class='success'><td>{{ai.ai.ai_name|e}}</td><td>{{ai.ai.ai_version|e}}</td></tr>
+{% endfor %}
+</table>
+
 <h3>Supported Maps</h3>
 
 <table>
