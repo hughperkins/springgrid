@@ -24,6 +24,8 @@ import menu
 
 # renders templatename, passing in named args
 def rendertemplate( templatename, **args ):
+   if not args.has_key('menus'):
+      args['menus'] = menu.getmenus()
    env = jinja2.Environment( loader=jinja2.PackageLoader('jinjaapplication', 'templates'))
    template = env.get_template(templatename)
    print template.render( **args )
