@@ -1,0 +1,45 @@
+{% extends 'menu.html' %}
+
+{% block content %}
+
+<h3>AILadder - Mod List</h3>
+<table border='1' padding='3'>
+<tr class='tablehead'><td>Mod name</td><td>Mod archive checksum (Note: NOT the same as the maphash in the startscript)</td><td>Mod download url</td></tr>
+
+  {% for mod in mods %}
+   <tr>
+   <td>{{mod.mod_name}}</td>
+   <td>{{mod.mod_archivechecksum}}</td>
+   <td>
+      {% if mod.mod_url != None %}
+         <a href='{{mod.mod_url}}'>{{mod.mod_url}}</a>
+      {% else %}
+         &nbsp;"
+      {% endif %}
+   </td>
+   </tr>
+  {% endfor %}
+</table>
+
+{% if showform %}
+   <p />
+   <hr />
+   <p />
+
+   <h4>Register new mod:</h4>
+   <p>Note: the modname and the modhash should be set to whatever is used "
+   in the startscript, so an easy way to get them is to start a game "
+   from the lobby, then look at the file 'script.txt' in the spring "
+   game directory</p>
+   <form action='addmod.py' method='post'>
+   <table border='1' padding='3'>
+   <tr><td>Mod name</td><td><input name='modname'</td></tr>
+   <tr><td>Mod hash</td><td><input name='modhash'</td></tr>
+   <tr><td>Mod download url</td><td><input name='modurl'</td></tr>
+   <tr><td></td><td><input type='submit' value='Add' /></td></tr>
+   </table>
+   </form>"
+{% endif %}
+
+{% endblock %}
+

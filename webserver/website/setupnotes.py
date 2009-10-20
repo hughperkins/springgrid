@@ -26,11 +26,5 @@ import cgitb; cgitb.enable()
 from utils import *
 from core import *
 
-menu.printPageTop()
-
-print "<pre>"
-print filehelper.readFile("howtouse.txt")
-print "</pre>"
-
-menu.printPageBottom()
+jinjahelper.message( "<pre>" + filehelper.readFile("howtouse.txt") + "</pre>" )
 
