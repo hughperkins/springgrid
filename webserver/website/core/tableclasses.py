@@ -378,7 +378,47 @@ def LeagueGroupLeagueGroupMember(Base):
    def __init__(self, leaguegroup ):
       self.leaguegroup = leaguegroup
 
+# simple flat config for now
+class Config(Base):
+   __tablename__ = 'config'
+
+   config_key = Column(String(255),primary_key = True )
+   config_value = Column(String(255))
+   config_type = Column(String(255))
+
+   # sets value of config_type appropriately, according to config_value type
+   # to int, float, string or boolean
+   def __init__(self, config_key, config_value ):
+      self.config_key = config_key
+      self.config_value = str(config_value)
+      if type(config_value) == int:
+         self.config_type = 'int'
+      elif type(config_value) == float:
+         self.config_type = 'float'
+      elif type(config_value) == str:
+         self.config_type = 'string'
+      elif type(config_value) == bool:
+         self.config_type = 'boolean'
+
+   # returns config_value converted into appropriate type, according t o value of config_type
+   def getValue(self):
+      if self.config_type == 'int':
+         return int(self.config_value)
+      if self.config_type == 'float':
+         return float(self.config_value)
+      if self.config_type == 'string':
+         return self.config_value
+      if self.config_type == 'boolean':
+         if self.config_value.lower() == 'true':
+            return True
+         return False
+      
 def addstaticdata(session):
+   session.add(Config('gametimeoutminutes', 30 ) )
+   session.add(Config('expiresessionminutes', 20 ) )
+   session.add(Config('gameendstring', "] Team%TEAMNUMBER%" ) )
+   session.add(Config('cheatingstring', "] SkirmishAI (with team ID = %TEAMNUMBER%): Cheating enabled" ) )
+
    # maybe roles static data could be created by core/roles.py?
    # anyway, for now... :
    accountadminrole = Role("accountadmin")

@@ -35,16 +35,20 @@ import config
 
 scriptdir = os.path.dirname( os.path.realpath( __file__ ) )
 
+pagecontents = ''  # ok, this is a bit hacky ;-)  If you've got any better ideas...
+
 # carry out some verification checks on the installation
 def runchecks():
-   print "<p>Checking replays directory...</p>"
+   global pagecontents
+
+   pagecontents = pagecontents + "<p>Checking replays directory...</p>"
 
    # check replays directory is writable
    if not os.path.exists(scriptdir + "/replays"):
       try:
          os.makedirs( scriptdir + "/replays" )
       except:
-         print "Cannot create 'replays' directory in website directory.  Please create the 'replays' directory in the website directory, and ensure it is writable"
+         pagecontents = pagecontents + "Cannot create 'replays' directory in website directory.  Please create the 'replays' directory in the website directory, and ensure it is writable"
          return False
    # if we got here, replays directory exists, check writable...
    testfilepath = scriptdir + "/replays/~test"
@@ -52,45 +56,45 @@ def runchecks():
       try:
          os.remove( testfilepath )
       except:
-         print str(sys.exc_value) + "<br />"
+         pagecontents = pagecontents + str(sys.exc_value) + "<br />"
       if os.path.exists( testfilepath ):  
-         print "Cannot delete old testfile from 'replays' directory on website.  Please check that the 'replays' directory in the website directory is writable, and then try again."
+         pagecontents = pagecontents + "Cannot delete old testfile from 'replays' directory on website.  Please check that the 'replays' directory in the website directory is writable, and then try again."
          return False
 
    try:
       filehelper.writeFile( testfilepath, "foo" )
    except:
-      print str(sys.exc_value) + "<br /><br />"
+      pagecontents = pagecontents + str(sys.exc_value) + "<br /><br />"
 
    if not os.path.exists( testfilepath ):  
-      print "Please check that the 'replays' directory in the website directory is writable, and then try again."
+      pagecontents = pagecontents + "Please check that the 'replays' directory in the website directory is writable, and then try again."
       return False
 
    os.remove( testfilepath )
 
-   print "<p> ... replays directory exists and is writable.  PASS.</p>"
+   pagecontents = pagecontents + "<p> ... replays directory exists and is writable.  PASS.</p>"
 
    return True
 
 def go():
-   print "<h3>Diagnostics</h3>"
+   global pagecontents
 
-   print "<p>This page carries out some basic diagnostics to check the health of your AILadder website.</p>"
+   pagecontents = pagecontents + "<h3>Diagnostics</h3>"
+
+   pagecontents = pagecontents + "<p>This page carries out some basic diagnostics to check the health of your AILadder website.</p>"
 
    if runchecks():
-      print "<p>All checks PASSED</p>"
+      pagecontents = pagecontents + "<p>All checks PASSED</p>"
    else:
-      print "<p>Issues were found.  Please check these issues and try again.</p>"
+      pagecontents = pagecontents + "<p>Issues were found.  Please check these issues and try again.</p>"
 
 sqlalchemysetup.setup()
 
 loginhelper.processCookie()
 
-menu.printPageTop()
-
 go()
 
-menu.printPageBottom()
+jinjahelper.message( pagecontents )
 
 sqlalchemysetup.close()
 

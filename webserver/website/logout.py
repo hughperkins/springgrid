@@ -36,11 +36,7 @@ loginhelper.processCookie()
 if loginhelper.gusername != "":
    loginhelper.logoutUser()
 
-menu.printPageTop()
-
-print "<h4>Logged out.</h4>"
-
-menu.printPageBottom()
+jinjahelper.rendertemplate('genericmessage.html', menus = menu.getmenus(), message = 'Logged out.' )
 
 sqlalchemysetup.close()
 

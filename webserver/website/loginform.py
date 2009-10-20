@@ -29,17 +29,5 @@ import cgi
 from utils import *
 from core import *
 
-menu.printPageTop()
-
-print "<h3>AI Ladder - login</h3>"
-print "<form action='login.py' method='post'>"
-print "<table border='1' cellpadding='3'>"
-print "<tr><td>Username:</td><td><input type='text' name='username'></td></tr>"
-print "<tr><td>Password:</td><td><input type='password' name='password'></td></tr>"
-print "<tr><td></td><td><input type='submit' value='Login'></td></tr>"
-print "</table>"
-print "</form>"
-
-menu.printPageBottom()
-
+jinjahelper.rendertemplate('loginform.html', menus = menu.getmenus())
 

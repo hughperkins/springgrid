@@ -33,12 +33,7 @@ sqlalchemysetup.setup()
 
 loginhelper.processCookie()
 
-menu.printPageTop()
-
-print "<h3>AILadder - Match results</h3>"
-print "This page not implemented yet."
+jinjahelper.message( "This page not implemented yet." )
 
 sqlalchemysetup.close()
-
-menu.printPageBottom()
 

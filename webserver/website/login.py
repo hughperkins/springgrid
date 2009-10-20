@@ -34,21 +34,18 @@ sqlalchemysetup.setup()
 username = formhelper.getValue('username')
 password = formhelper.getValue('password')
 if username == None or password == None or username == '' or password == '':
-   menu.printPageTop()
-   print "<h4>Logon error: Please fill in the username and password fields.</h4>"
+   jinjahelper.rendertemplate('genericmessage.html', message = 'Logon error: Please fill in the username and password fields.' )
 else:
    loginhelper.logonUser( username, password )
 
-   headers = "Content-type: text/html\n"
+   #headers = "Content-type: text/html\n"
    # adding the cookie into the headers keeps hte cookie there magically
    # for the rest of the session
-   headers = headers + loginhelper.cookie.output() + "\n"
-   menu.printPageTop( headers )
+   # headers = headers + loginhelper.cookie.output() + "\n"
+   #print loginhelper.cookie.output()
 
-   print loginhelper.loginhtml
+   jinjahelper.rendertemplate('login.html', message = loginhelper.loginhtml, menus = menu.getmenus(), headers = loginhelper.cookie.output() )
 
 sqlalchemysetup.close()
-
-menu.printPageBottom()
 
 

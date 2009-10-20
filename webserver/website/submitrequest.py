@@ -56,11 +56,9 @@ sqlalchemysetup.setup()
 
 loginhelper.processCookie()
 
-menu.printPageTop()
-
 if loginhelper.isLoggedOn():
    #if matchrequestcontroller.submitrequest( matchrequest ):
-    #  print "Submitted"
+    #  jinjahelper.message( "Submitted"
       # could be nice to print out queue here, or make another page for that
 
    map = sqlalchemysetup.session.query(tableclasses.Map).filter(tableclasses.Map.map_name == mapname ).first()
@@ -80,11 +78,9 @@ if loginhelper.isLoggedOn():
 
    sqlalchemysetup.session.commit()
 
-   print "Submitted ok."
+   jinjahelper.message( "Submitted ok." )
 else:
-   print "Please login first."
+   jinjahelper.message( "Please login first." )
 
 sqlalchemysetup.close()
-
-menu.printPageBottom()
 

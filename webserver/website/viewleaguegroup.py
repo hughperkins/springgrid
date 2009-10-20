@@ -31,51 +31,18 @@ sqlalchemysetup.setup()
 
 loginhelper.processCookie()
 
-menu.printPageTop()
-
 leaguegroupname = formhelper.getValue('leaguegroupname')
 
 leaguegroup = leaguehelper.getLeagueGroup( leaguegroupname )
 
-print "<h3>AILadder - View league group " + leaguegroupname + "</h3>" \
-"<p>A league is a specific game configuration used for testing AIs "\
-" against each other</p>"\
-"<p>For example, a league could be a specific map, mod, and certain options,"\
-" like say cheating on, or cheating off</p>"\
-"<p>You can group leagues together in leaguegroups.</p>"\
-"<table border='1' padding='3'>" \
-"<tr class='tablehead'><td>Member league:</td></tr>"
+showform = loginhelper.gusername != ''
 
+potentialleaguenames = listhelper.tuplelisttolist( sqlalchemysetup.session.query(League.league_name) )
 for league in leaguegroup.childleagues:
-   print "<tr>"
-   print "<td>" + league.league.league_name + "</td>"
-   print "</tr>"
+   potentialleaguenames.remove( league.league.league_name )
 
-print "</table>"
-
-if loginhelper.gusername != '':
-
-   print "<p />"
-   print "<hr />"
-   print "<p />"
-
-   potentialleaguenames = listhelper.tuplelisttolist( sqlalchemysetup.session.query(League.league_name) )
-   for league in leaguegroup.childleagues:
-      potentialleaguenames.remove( league.league.league_name )
-
-   print "<h4>Add league to league group:</h4>"
-   print "<form action='addleaguetoleaguegroup.py' method='post'>" \
-   "<table border='1' padding='3'>" \
-   "<tr><td>League name</td><td>"
-   print htmlformshelper.listToDropdown( 'leaguename', potentialleaguenames )
-   print "</td></tr>"
-
-   print "<tr><td></td><td><input type='submit' value='Add' /></td></tr>" \
-   "</table>" \
-   "<input type='hidden' name='leaguegroupname' value='" + leaguegroupname + "' />"\
-   "</form>"
+jinjahelper.rendertemplate('viewleaguegroup.html', leaguegroupname = leaguegroupname, leaguegroup = leaguegroup, showform = showform, potentialleaguenames = potentialleaguenames )
 
 sqlalchemysetup.close()
 
-menu.printPageBottom()
 

@@ -22,9 +22,14 @@
 #
 
 import cgitb; cgitb.enable()
+import datetime
 
+import sys
+import os
 
+from utils import *
 from core import *
+from core.tableclasses import *
 
 version = None
 try:
@@ -32,21 +37,17 @@ try:
 except:
    pass
 
-menu.printPageTop()
+sqlalchemysetup.setup()
 
+loginhelper.processCookie()
 
-print '<h3>AILadder - About</h3>'
+try:
+   import version
+   versionstring = version.version
+except:
+   versionstring = 'Unversioned dev code, not a versioned release.'
 
-print '<table border="1" cellpadding="3">'
-if version != None:
-   print '<tr><td>Version:</td><td>' + str( version.version ) + '</td></tr>'
-else:
-   print '<tr><td>Version:</td><td>Dev code, not versioned.</td></tr>'
-print '<tr><td>License:</td><td>GPL v2</td></tr>'
-print '<tr><td>Authors:</td><td><a href="http://manageddreams.com">Hugh Perkins</a></td></tr>'
-print '<tr><td>Download url:</td><td><a href="http://github.com/hughperkins/ailadder/archives/master">http://github.com/hughperkins/ailadder/archives/master</a></td></tr>'
-print '<tr><td>Source-code:</td><td><a href="http://github.com/hughperkins/ailadder">http://github.com/hughperkins/ailadder</a></td></tr>'
-print '</table>'
+jinjahelper.rendertemplate('about.html', version=versionstring, isloggedin = loginhelper.isLoggedOn(), loginhelper = loginhelper, menus = menu.getmenus() )
 
-menu.printPageBottom()
+sqlalchemysetup.close()
 

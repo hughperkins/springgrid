@@ -1,0 +1,26 @@
+{% extends 'menu.html' %}
+{% import 'formhelper.html' as formhelper %}
+{% block content %}
+
+<h3>AILadder - submit game request</h3>
+<form action='submitrequest.py' method='post'>
+<table border='1' padding='3'>
+<tr><td>AI0 name</td><td>{{formhelper.itemsandvaluestodropdown("ai0nameversion", aiitems, aivalues ) }}</td></tr>
+<tr><td>AI1 name</td><td>{{formhelper.itemsandvaluestodropdown("ai1nameversion", aiitems, aivalues ) }}</td></tr>
+<tr><td>Map</td><td>{{formhelper.listtodropdown( 'mapname', maps ) }}</td></tr>
+<tr><td>Mod</td><td>{{formhelper.listtodropdown( 'modname', mods ) }}</td></tr>
+
+<tr><td>Options:</td>
+<td>
+   {% for option in options %}
+      <input type='checkbox' name='option_{{option}}' >{{option}}</input><br />
+   {% endfor %}
+</td>
+</tr>
+
+<tr><td></td><td><input type='submit' value='Submit Request' /></td></tr>
+</table>
+</form>
+
+{% endblock %}
+

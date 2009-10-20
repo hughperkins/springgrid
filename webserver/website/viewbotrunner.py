@@ -31,81 +31,20 @@ sqlalchemysetup.setup()
 
 loginhelper.processCookie()
 
-menu.printPageTop()
-
 botrunnername = formhelper.getValue("botrunnername")
 
 botrunner = sqlalchemysetup.session.query(BotRunner).filter(BotRunner.botrunner_name == botrunnername ).first()
 
 isbotrunnerowner = ( loginhelper.isLoggedOn() and botrunner.owneraccount != None and botrunner.owneraccount.username == loginhelper.getUsername() )
 
-print "<h3>AILadder - Bot Runner '" + botrunnername + "'</h3>" \
-"<table border='1' padding='3'>"
+showform = ( isbotrunnerowner or roles.isInRole(roles.botrunneradmin) )
 
-if botrunner.owneraccount != None:
-   print "<tr><td>Bot runner owner: </td><td>" + botrunner.owneraccount.userfullname + "</td></tr>"
-else:
-   print "<tr><td>Bot runner owner: </td><td>None assigned</td></tr>"
-if isbotrunnerowner:
-   print "<tr><td>Shared secret: </td><td>" + botrunner.botrunner_sharedsecret + "</td></tr>"
-else:
-   print "<tr><td>Shared secret: </td><td>&lt;only visible to owner&gt;</td></tr>"
-
-print "</table>"
-
-print "<h3>Assigned options</h3>"
-
-print "<table>"
-
-
-if isbotrunnerowner:
-   print "<tr class='tablehead'><td>Option name</td><td></td></tr>"
-else:
-   print "<tr class='tablehead'><td>Option name</td></tr>"
-
+potentialoptions = listhelper.tuplelisttolist( sqlalchemysetup.session.query(AIOption.option_name) )
 for option in botrunner.options:
-   print "<tr><td>" + option.option.option_name + "</td>"
-   if isbotrunnerowner or roles.isInRole(roles.botrunneradmin):
-      print "<td><a href='deleteoptionfrombotrunner.py?botrunnername=" + botrunnername + "&optionname=" + option.option.option_name + "'>Delete option</a></td>"
-   print "</tr>"
+   potentialoptions.remove(option.option.option_name )
 
-print "</table>"
-
-print "<h3>Supported Maps</h3>"
-
-print "<table>"
-print "<tr class='tablehead'><td>Map</td>"
-for map in botrunner.supportedmaps:
-   print "<tr class='success'><td>" + map.map.map_name + "</td>"
-print "</table>"
-
-print "<h3>Supported Mods</h3>"
-
-print "<table>"
-print "<tr class='tablehead'><td>Mod</td>"
-for mod in botrunner.supportedmods:
-   print "<tr class='success'><td>" + mod.mod.mod_name + "</td>"
-print "</table>"
-
-if isbotrunnerowner or roles.isInRole(roles.botrunneradmin):
-   print "<p />"
-   print "<hr />"
-   print "<p />"
-
-   potentialoptions = listhelper.tuplelisttolist( sqlalchemysetup.session.query(AIOption.option_name) )
-   for option in botrunner.options:
-      potentialoptions.remove(option.option.option_name )
-
-   print "<h4>Add new options to engine:</h4>"
-   print "<form action='addoptiontobotrunner.py' method='post'>" \
-   "<table border='1' padding='3'>" \
-   "<tr><td>Option to add:</td><td>" + htmlformshelper.listToDropdown( 'optionname', potentialoptions ) + "</td></tr>" \
-   "<tr><td></td><td><input type='submit' value='Add' /></td></tr>" \
-   "</table>" \
-   "<input type='hidden' name='botrunnername' value='" + botrunnername + "' />"\
-   "</form>"
+jinjahelper.rendertemplate('viewbotrunner.html', isbotrunnerowner = isbotrunnerowner, botrunner = botrunner, showform = showform, potentialoptions = potentialoptions )
 
 sqlalchemysetup.close()
 
-menu.printPageBottom()
 

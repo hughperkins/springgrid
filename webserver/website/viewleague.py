@@ -32,8 +32,6 @@ sqlalchemysetup.setup()
 
 loginhelper.processCookie()
 
-menu.printPageTop()
-
 leaguename = formhelper.getValue('leaguename')
 
 compatibleoptions = listhelper.tuplelisttolist(
@@ -41,45 +39,14 @@ compatibleoptions = listhelper.tuplelisttolist(
       .select_from(join(join(tableclasses.AIOption,tableclasses.LeagueOption),tableclasses.League))
       .filter(tableclasses.League.league_name == leaguename ) )
 
-print "<h3>AILadder - View League '" + leaguename + "'</h3>"
+showform = roles.isInRole(roles.leagueadmin)
 
-print "<p>This page can configure the options that will be used for this league.</p>"
-print "<p>Try to make sure not to add two incompatible options ;-)</p>"
+potentialoptions = listhelper.tuplelisttolist(
+   sqlalchemysetup.session.query(tableclasses.AIOption.option_name ) )
+for assignedoption in compatibleoptions:
+   potentialoptions.remove(assignedoption)
 
-print "<table border='1' padding='3'>" \
-"<tr class='tablehead'><td>Assigned options</td><td></td></tr>"
-
-for option in compatibleoptions:
-   print "<tr>"
-   print "<td>" + option + "</td>"
-   print "<td><a href='deleteoptionfromleague.py?leaguename=" + leaguename + "&aioption=" + option + "'>Remove option</a></td>"
-   print "</tr>"
-
-print "</table>"
-
-if roles.isInRole(roles.leagueadmin):
-
-   print "<p />"
-   print "<hr />"
-   print "<p />"
-
-   print "<h4>Assign new options:</h4>"
-
-   potentialoptions = listhelper.tuplelisttolist(
-      sqlalchemysetup.session.query(tableclasses.AIOption.option_name ) )
-   for assignedoption in compatibleoptions:
-      potentialoptions.remove(assignedoption)
-  
-   print "<form action='addoptiontoleague.py' method='post'>" \
-   "<table border='1' padding='3'>" \
-   "<tr><td>Option to add:</td><td>" + htmlformshelper.listToDropdown( 'aioption', potentialoptions ) + "</td></tr>" \
-   "<tr><td></td><td><input type='submit' value='Add' /></td></tr>" \
-   "</table>" \
-   "<input type='hidden' name='leaguename' value='" + leaguename + "' />" \
-   "</form>"
-
+jinjahelper.rendertemplate('viewleague.html', leaguename = leaguename, compatibleoptions = compatibleoptions, showform = showform, potentialoptions = potentialoptions )
 
 sqlalchemysetup.close()
-
-menu.printPageBottom()
 

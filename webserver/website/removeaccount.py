@@ -36,23 +36,19 @@ sqlalchemysetup.setup()
 
 loginhelper.processCookie()
 
-menu.printPageTop()
-
 if not roles.isInRole(roles.accountadmin):
-   print "You must be logged in as an accountadmin"
+   jinjahelper.message( "You must be logged in as an accountadmin" )
 else:
    username = formhelper.getValue('username')
 
    if username != None and username != '':
       if roles.isInRole2( username, roles.accountadmin ):
-         print "Please drop the accountadmin role from " + username + " and try again"
+         jinjahelper.message( "Please drop the accountadmin role from " + username + " and try again" )
       else:
          sqlalchemysetup.session.query( Account ).filter( Account.username == username ).delete()
-         print "Removed ok"
+         jinjahelper.message( "Removed ok" )
    else:
-      print "Please fill in the fields and try again"
+      jinjahelper.message( "Please fill in the fields and try again" )
 
 sqlalchemysetup.close()
-
-menu.printPageBottom()
 

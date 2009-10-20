@@ -36,10 +36,8 @@ sqlalchemysetup.setup()
 
 loginhelper.processCookie()
 
-menu.printPageTop()
-
 if not roles.isInRole(roles.accountadmin):
-   print "You must be logged in as an accountadmin"
+   jinjahelper.message( "You must be logged in as an accountadmin" )
 else:
    username = formhelper.getValue('username')
    userfullname = formhelper.getValue('userfullname')
@@ -52,11 +50,9 @@ else:
       account = Account( username, userfullname, userpassword )
       sqlalchemysetup.session.add( account )
       sqlalchemysetup.session.commit()
-      print "Added ok"
+      jinjahelper.message( "Added ok" )
    else:
-      print "Please fill in the fields and try again"
+      jinjahelper.message( "Please fill in the fields and try again" )
 
 sqlalchemysetup.close()
-
-menu.printPageBottom()
 

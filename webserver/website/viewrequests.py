@@ -25,61 +25,20 @@ import cgitb; cgitb.enable()
 
 from utils import *
 from core import *
+from core.tableclasses import *
 
 sqlalchemysetup.setup()
 
 loginhelper.processCookie()
 
-menu.printPageTop()
+requests = sqlalchemysetup.session.query(MatchRequest).filter(MatchRequest.matchresult == None )
 
-requests = sqlalchemysetup.session.query(tableclasses.MatchRequest)
-
-print "<h3>AILadder - Match requests</h3>" \
-"<table border='1' padding='3'>" \
-"<tr class='tablehead'>"
-print "<td>matchrequestid</td>"
-print "<td>ai0name</td>"
-print "<td>ai0version</td>"
-print "<td>ai1name</td>"
-print "<td>ai1version</td>"
-print "<td>mapname</td>"
-print "<td>modname</td>"
-print "<td>options</td>"
-print "<td>botrunnername</td>"
-print "<td>botrunnerinstanceid</td>"
-print "<td>datetimeassigned</td>"
-print "</tr>"
-
+datetimeassignedbyrequest = {}
 for request in requests:
-   if request.matchresult != None:
-      continue
    if request.matchrequestinprogress != None:
-      print "<tr class='inprogress'>"
-   else:
-      print "<tr>"
-   print "<td>" + str(request.matchrequest_id) + "</td>"
-   print "<td>" + request.ai0.ai_name + "</td>"
-   print "<td>" + request.ai0.ai_version + "</td>"
-   print "<td>" + request.ai1.ai_name + "</td>"
-   print "<td>" + request.ai1.ai_version + "</td>"
-   print "<td>" + request.map.map_name + "</td>"
-   print "<td>" + request.mod.mod_name + "</td>"
-   print "<td>"
-   for option in request.options:
-      print option.option.option_name + "&nbsp;" 
-   print "&nbsp;</td>"
-   if request.matchrequestinprogress != None:
-      print "<td>" + request.matchrequestinprogress.botrunner.botrunner_name + "</td>"
-      print "<td>" + str( request.matchrequestinprogress.botrunnersession.botrunner_session_id ) + "</td>"
-      print "<td>" + request.matchrequestinprogress.datetimeassigned + "</td>"
-   else:
-      print "<td>&nbsp;</td>"
-      print "<td>&nbsp;</td>"
-   print "</tr>"
+      datetimeassignedbyrequest[request] = str( dates.dateStringToDateTime( request.matchrequestinprogress.datetimeassigned ) )
 
-print "</table>"
+jinjahelper.rendertemplate('viewrequests.html', requests = requests, datetimeassignedbyrequest = datetimeassignedbyrequest )
 
 sqlalchemysetup.close()
-
-menu.printPageBottom()
 

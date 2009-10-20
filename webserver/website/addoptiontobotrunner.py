@@ -36,44 +36,40 @@ sqlalchemysetup.setup()
 
 loginhelper.processCookie()
 
-menu.printPageTop()
-
 def go():
    botrunnername = formhelper.getValue('botrunnername')
    optionname = formhelper.getValue('optionname')
 
    if not loginhelper.isLoggedOn():
-      print "Please logon first."
+      jinjahelper.message( "Please logon first." )
       return
 
    if botrunnername == None or optionname == None or botrunnername == '' or optionname == '':
-      print "Please fill in the fields and try again"
+      jinjahelper.message( "Please fill in the fields and try again" )
       return
 
    botrunnerownername = botrunnerhelper.getOwnerUsername( botrunnername ) 
    if botrunnerownername != loginhelper.getUsername() and not roles.isInRole(roles.botrunneradmin):
-      print "You must be the botrunner owner or in role botrunneradmin"
+      jinjahelper.message( "You must be the botrunner owner or in role botrunneradmin" )
       return
 
    botrunner = sqlalchemysetup.session.query(BotRunner).filter(BotRunner.botrunner_name == botrunnername ).first()
    if botrunner == None:
-      print "Something went wrong.  Please check your values and try again."
+      jinjahelper.message( "Something went wrong.  Please check your values and try again." )
       return
 
    option = sqlalchemysetup.session.query(AIOption).filter(AIOption.option_name == optionname ).first()
    if option == None:
-      print "Something went wrong.  Please check your values and try again."
+      jinjahelper.message( "Something went wrong.  Please check your values and try again." )
       return
 
    botrunner.options.append( BotRunnerAssignedOption(option))
 
    sqlalchemysetup.session.commit()
 
-   print "Added ok"
+   jinjahelper.message( "Added ok" )
 
 go()
 
 sqlalchemysetup.close()
-
-menu.printPageBottom()
 

@@ -32,10 +32,8 @@ sqlalchemysetup.setup()
 
 loginhelper.processCookie()
 
-menu.printPageTop()
-
 if loginhelper.gusername == '':
-   print "You must login first"
+   jinjahelper.message( "You must login first" )
 else:
    botrunnername = formhelper.getValue('botrunnername')
    sharedsecret = formhelper.getValue('sharedsecret')
@@ -47,11 +45,9 @@ else:
       botrunner.owneraccount = account
       sqlalchemysetup.session.add( botrunner )
       sqlalchemysetup.session.commit()
-      print "Added ok"
+      jinjahelper.message( "Added ok" )
    else:
-      print "Please fill in the fields and try again"
+      jinjahelper.message( "Please fill in the fields and try again" )
 
 sqlalchemysetup.close()
-
-menu.printPageBottom()
 

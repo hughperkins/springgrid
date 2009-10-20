@@ -11,3 +11,7 @@ branch doublepackager:
 - added SQLAlchemy and VirtualEnv to new dependencies directory
 - installation of website is now by doing "python websitesetup.py" in webserver directory
 
+configindb:
+- moved configuration values, except for those needed to connect to database, into 
+  new db table 'config'
+

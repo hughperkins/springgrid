@@ -4,8 +4,3 @@ dbname = "DBNAME"
 dbuser = "DBUSER"
 dbpassword = "DBPASS"
 
-gametimeoutminutes = 30
-gameendstring = "] Team%TEAMNUMBER%"
-cheatingstring="] SkirmishAI (with team ID = %TEAMNUMBER%): Cheating enabled"
-expiresessionminutes = 20
-
