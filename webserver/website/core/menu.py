@@ -14,16 +14,6 @@ from tableclasses import *
 import loginhelper
 import jinjahelper
 
-#sqlalchemysetup.setup()
-
-# legacy method for migration
-def printPageTop():
-   jinjahelper.rendertemplate('legacypagetop.html', menus = getmenus() )
-
-# legacy method for migration
-def printPageBottom():
-   jinjahelper.rendertemplate('legacypagebottom.html', menus = getmenus() )
- 
 def getmenus():
    menus = []
    if loginhelper.isLoggedOn():
@@ -62,6 +52,4 @@ def getmenus():
    ]])
 
    return menus
-
-#sqlalchemysetup.close()
 
