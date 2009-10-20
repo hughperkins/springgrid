@@ -31,49 +31,17 @@ sqlalchemysetup.setup()
 
 loginhelper.processCookie()
 
-menu.printPageTop()
-
 username = formhelper.getValue('username')
 
 account = sqlalchemysetup.session.query(Account).filter(Account.username == username ).first()
 
-print "<h3>AILadder - View account " + username + "</h3>" \
-"<table border='1' padding='3'>" \
-"<tr class='tablehead'><td>Role:</td><td></td></tr>"
+showform = roles.isInRole(roles.accountadmin)
 
+potentialroles = listhelper.tuplelisttolist( sqlalchemysetup.session.query(Role.role_name) )
 for role in account.roles:
-   print "<tr>"
-   print "<td>" + role.role.role_name + "</td>"
-   print "<td><a href='removerolefromaccount.py?"\
-      "username=" + username + "&rolename=" + role.role.role_name + "'>"\
-      "Remove from role</a></td>"
-   print "</tr>"
+   potentialroles.remove( role.role.role_name )
 
-print "</table>"
-
-if roles.isInRole(roles.accountadmin):
-
-   print "<p />"
-   print "<hr />"
-   print "<p />"
-
-   potentialroles = listhelper.tuplelisttolist( sqlalchemysetup.session.query(Role.role_name) )
-   for role in account.roles:
-      potentialroles.remove( role.role.role_name )
-
-   print "<h4>Add roles to account:</h4>"
-   print "<form action='addroletoaccount.py' method='post'>" \
-   "<table border='1' padding='3'>" \
-   "<tr><td>Role name</td><td>"
-   print htmlformshelper.listToDropdown( 'rolename', potentialroles )
-   print "</td></tr>"
-
-   print "<tr><td></td><td><input type='submit' value='Add' /></td></tr>" \
-   "</table>" \
-   "<input type='hidden' name='username' value='" + username + "' />"\
-   "</form>"
+jinjahelper.rendertemplate('viewaccount.html', account = account, showform = showform, potentialroles = potentialroles )
 
 sqlalchemysetup.close()
-
-menu.printPageBottom()
 
