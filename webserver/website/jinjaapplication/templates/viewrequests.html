@@ -1,0 +1,53 @@
+{% extends 'menu.html' %}
+
+{% block content %}
+<h3>AILadder - Match requests</h3>
+<table border='1' padding='3'>
+<tr class='tablehead'>
+<td>matchrequestid</td>
+<td>ai0name</td>
+<td>ai0version</td>
+<td>ai1name</td>
+<td>ai1version</td>
+<td>mapname</td>
+<td>modname</td>
+<td>options</td>
+<td>botrunnername</td>
+<td>botrunnerinstanceid</td>
+<td>datetimeassigned</td>
+</tr>
+
+{% for request in requests %}
+   {% if request.matchrequestinprogress != none %}
+      <tr class='inprogress'>
+   {% else %}
+      <tr>
+   {% endif %}
+   <td>{{request.matchrequest_id}}</td>
+   <td>{{request.ai0.ai_name}}</td>
+   <td>{{request.ai0.ai_version}}</td>
+   <td>{{request.ai1.ai_name}}</td>
+   <td>{{request.ai1.ai_version}}</td>
+   <td>{{request.map.map_name}}</td>
+   <td>{{request.mod.mod_name}}</td>
+   <td>
+   {% for option in request.options %}
+      {{option.option.option_name}}&nbsp;
+   {% endfor %}
+   &nbsp;</td>
+   {% if request.matchrequestinprogress != None: %}
+      <td>{{request.matchrequestinprogress.botrunner.botrunner_name}}</td>
+      <td>{{request.matchrequestinprogress.botrunnersession.botrunner_session_id|truncate(5,'...')}}</td>
+      <td>{{datetimeassignedbyrequest[request]}}</td>
+   {% else %}
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+   {% endif %}
+   </tr>
+
+{% endfor %}
+
+</table>
+
+{% endblock %}
+
