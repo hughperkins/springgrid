@@ -25,57 +25,17 @@ import cgitb; cgitb.enable()
 
 from utils import *
 from core import *
+from core.tableclasses import *
 
 sqlalchemysetup.setup()
 
 loginhelper.processCookie()
 
-menu.printPageTop()
+ais = sqlalchemysetup.session.query(AI)
 
-ais = sqlalchemysetup.session.query(tableclasses.AI)
+showform = ( loginhelper.gusername != '' )
 
-print "<h3>AILadder - AI List</h3>"
-
-print "<table border='1' padding='3'>" \
-"<tr class='tablehead'><td>AI Name</td><td>AI Version</td><td>Compatible Options</td><td>Download url</td></tr>"
-
-for ai in ais:
-   print "<tr>"
-   print "<td><a href='viewai.py?ainame=" + ai.ai_name + "&aiversion=" + ai.ai_version + "'>" + ai.ai_name + "</a></td>"
-   print "<td>" + ai.ai_version + "</td>"
-
-   print "<td>"
-   for option in ai.allowedoptions:
-      print option.option.option_name + "&nbsp;"
-   print "&nbsp;</td>"
-
-   if ai.ai_downloadurl != None:
-      print "<td><a href='" + str(ai.ai_downloadurl) + "'>" + ai.ai_downloadurl + "</a></td>"
-   else:
-      print "<td>&nbsp;</td>"
-   print "</tr>"
-
-print "</table>"
-
-if loginhelper.gusername != '':
-
-   print "<p />"
-   print "<hr />"
-   print "<p />"
-
-   print "<h4>Register new AI:</h4>"
-   print "Note that the AI name is case-sensitive.<p />"
-   print "Download url should be for a file in .tgz .tar.gz or .tar.bz2 format.<p />"
-   print "<form action='addai.py' method='post'>" \
-   "<table border='1' padding='3'>" \
-   "<tr><td>AI name</td><td><input name='ainame'</td></tr>" \
-   "<tr><td>AI version</td><td><input name='aiversion'</td></tr>" \
-   "<tr><td>Download url</td><td><input name='downloadurl'</td></tr>" \
-   "<tr><td></td><td><input type='submit' value='Add' /></td></tr>" \
-   "</table>" \
-   "</form>" 
-
-menu.printPageBottom()
+jinjahelper.rendertemplate('viewais.html', ais = ais, showform = showform )
 
 sqlalchemysetup.close()
 

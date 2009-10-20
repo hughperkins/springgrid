@@ -36,24 +36,27 @@ sqlalchemysetup.setup()
 
 loginhelper.processCookie()
 
-if not roles.isInRole(roles.aiadmin):
-   jinjahelper.message( "You must be logged in as an aiadmin" )
-else:
-   ainame = formhelper.getValue("ainame")
-   aiversion = formhelper.getValue("aiversion")
-   downloadurl = formhelper.getValue("downloadurl")
-
-   if aiversion != None and ainame != None and ainame != "" and aiversion != "":
-      if downloadurl == None:
-         downloadurl = ''
-      ai = AI( ainame, aiversion )
-      ai.download_url = downloadurl
-      ai.owneraccount = accounthelper.getAccount( loginhelper.gusername )
-      sqlalchemysetup.session.add(ai)
-      sqlalchemysetup.session.commit()
-      jinjahelper.message( "Added ok" )
+def go():
+   if not roles.isInRole(roles.aiadmin):
+      jinjahelper.message( "You must be logged in as an aiadmin" )
    else:
-      jinjahelper.message( "Please fill in the fields and try again" )
+      ainame = formhelper.getValue("ainame")
+      aiversion = formhelper.getValue("aiversion")
+      downloadurl = formhelper.getValue("downloadurl")
+
+      if aiversion != None and ainame != None and ainame != "" and aiversion != "":
+         if downloadurl == None:
+            downloadurl = ''
+         ai = AI( ainame, aiversion )
+         ai.ai_downloadurl = downloadurl
+         ai.owneraccount = accounthelper.getAccount( loginhelper.gusername )
+         sqlalchemysetup.session.add(ai)
+         sqlalchemysetup.session.commit()
+         jinjahelper.message( "Added ok" )
+      else:
+         jinjahelper.message( "Please fill in the fields and try again" )
+
+go()
 
 sqlalchemysetup.close()
 
