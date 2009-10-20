@@ -38,3 +38,7 @@ cmake_install.cmake
 #sqlite db
 ailadder
 
+package_config.py
+webserver/dependencies/SQLAlchemy-0.5.6/build
+webserver/dependencies/SQLAlchemy-0.5.6/dist
+
