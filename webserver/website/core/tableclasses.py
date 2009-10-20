@@ -328,17 +328,19 @@ class League(Base):
    league_creatorid = Column(Integer,ForeignKey('accounts.account_id'))
    map_id = Column(Integer,ForeignKey('maps.map_id'))
    mod_id = Column(Integer,ForeignKey('mods.mod_id'))
+   nummatchesperaipair = Column(Integer)
 
    creator = relation("Account")
    map = relation("Map")
    mod = relation("Mod")
    options = relation("LeagueOption")
 
-   def __init__( self, league_name, creator, mod, map ):
+   def __init__( self, league_name, creator, mod, map, nummatchesperaipair ):
       self.league_name = league_name
       self.creator = creator
       self.mod = mod
       self.map = map
+      self.nummatchesperaipair = nummatchesperaipair
 
 class LeagueOption(Base):
    __tablename__ = 'leagueoptions'

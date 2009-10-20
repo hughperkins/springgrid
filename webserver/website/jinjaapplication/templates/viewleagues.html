@@ -30,14 +30,14 @@ http://www.opensource.org/licenses/gpl-license.php
 <p>For example, a league could be a specific map, mod, and certain options, like say cheating on, or cheating off</p>
 <p>You can group leagues together in leaguegroups.</p>
 <table border='1' padding='3'>
-<tr class='tablehead'><td>League Name:</td><td>Mod Name</td><td>Map Name</td><td>Assigned options</td></tr>
+<tr class='tablehead'><td>League Name:</td><td>Mod Name</td><td>Map Name</td><td>Number matches per AI pair</td><td>Assigned options</td></tr>
 
 {% for league in leagues %}
    <tr>
    <td><a href='viewleague.py?leaguename={{league.league_name|e}}'>{{league.league_name|e}}</a></td>
    <td>{{league.mod.mod_name|e}}</td>
    <td>{{league.map.map_name|e}}</td>
-
+   <td>{{league.nummatchesperaipair}}</td>
    <td>
    {% for option in league.options %}
       {{option.option.option_name|e}}
@@ -61,6 +61,7 @@ http://www.opensource.org/licenses/gpl-license.php
    <tr><td>League name</td><td><input name='leaguename'</td></tr>
    <tr><td>Mod name</td><td>{{formhelper.listtodropdown( 'modname', mods )}}</td></tr>
    <tr><td>Map name</td><td>{{formhelper.listtodropdown( 'mapname', maps )}}</td></tr>
+   <tr><td>Num matches per AI pair</td><td>{{formhelper.listtodropdown( 'nummatchesperairpair', range(1,21) )}}</td></tr>
 
    <tr><td></td><td><input type='submit' value='Add' /></td></tr>
    </table>
