@@ -4,14 +4,14 @@
 
 {% block content %}
 
-<h3>AILadder - Bot Runner '{{botrunner.botrunner_name}}'</h3>" \
-"<table border='1' padding='3'>"
+<h3>AILadder - Bot Runner '{{botrunner.botrunner_name}}'</h3>
+<table border='1' padding='3'>
 
 {% if botrunner.owneraccount != none %}
-   <tr><td>Bot runner owner: </td><td>{{botrunner.owneraccount.userfullname}}</td></tr>"
+   <tr><td>Bot runner owner: </td><td>{{botrunner.owneraccount.userfullname}}</td></tr>
 {% else %}
    <tr><td>Bot runner owner: </td><td>None assigned</td></tr>
-{% endfor %}
+{% endif %}
 {% if isbotrunnerowner %}
    <tr><td>Shared secret: </td><td>{{botrunner.botrunner_sharedsecret}}</td></tr>
 {% else %}
@@ -33,8 +33,9 @@
 
 {% for option in botrunner.options %}
    <tr><td>{{option.option.option_name}}</td>
-   if isbotrunnerowner or roles.isInRole(roles.botrunneradmin):
+   {% if showform %}
       <td><a href='deleteoptionfrombotrunner.py?botrunnername={{botrunner.botrunner_name}}&optionname={{option.option.option_name}}'>Delete option</a></td>
+   {% endif %}
    </tr>
 {% endfor %}
 
@@ -56,7 +57,7 @@
 {% for mod in botrunner.supportedmods %}
    <tr class='success'><td>{{mod.mod.mod_name}}</td>
 {% endfor %}
-</table>"
+</table>
 
 {% if showform %}
    <p />
@@ -71,6 +72,7 @@
    </table>
    <input type='hidden' name='botrunnername' value='{{botrunner.botrunner_name}}' />
    </form>
+{% endif %}
 
 {% endblock %}
 

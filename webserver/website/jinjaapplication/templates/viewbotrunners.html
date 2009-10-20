@@ -34,7 +34,7 @@ http://www.opensource.org/licenses/gpl-license.php
 <td rowspan="{{botrunner.rowspan}}" valign="top">{{botrunner.owneraccount.userfullname}}&nbsp;</td>
 <td rowspan="{{botrunner.rowspan}}" valign="top">{% if botrunner.owneraccount.username == username %}
 {{botrunner.botrunner_sharedsecret}}{% endif %}&nbsp;</td>
-<td rowspan="{{botrunner.rowspan}}" valign="top">{% for option in botrunner.options %}option{% endfor %}</td>
+<td rowspan="{{botrunner.rowspan}}" valign="top">{% for option in botrunner.options %}{{option.option.option_name}}{% endfor %}</td>
 
 {% for instance in botrunner.sessions %}
 {% if not loop.first %}<tr>{%endif%}
