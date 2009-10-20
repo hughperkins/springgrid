@@ -22,11 +22,13 @@
 import jinja2
 import menu
 
+# renders templatename, passing in named args
 def rendertemplate( templatename, **args ):
    env = jinja2.Environment( loader=jinja2.PackageLoader('jinjaapplication', 'templates'))
    template = env.get_template(templatename)
    print template.render( **args )
 
+# displays message in fully laid out page with menus and stuff present
 def message( message ):
    rendertemplate( 'genericmessage.html', message = message, menus = menu.getmenus() )
 
