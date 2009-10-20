@@ -35,11 +35,9 @@ sqlalchemysetup.setup()
 
 loginhelper.processCookie()
 
-menu.printPageTop()
-
 def go():
    if not loginhelper.isLoggedOn():
-      print "Please log in first."
+      jinjahelper.rendertemplate('genericmessage.html', menus = menu.getmenus(), message = "Please log in first." )
       return
 
    oldpassword = formhelper.getValue('oldpassword')
@@ -47,26 +45,24 @@ def go():
    confirmpassword = formhelper.getValue('confirmpassword')
 
    if password == None or confirmpassword == None or password == '' or confirmpassword == '' or oldpassword == None or oldpassword == '':
-      print "Please fill in the fields and try again"
+      jinjahelper.rendertemplate('genericmessage.html', menus = menu.getmenus(), message = "Please fill in the fields and try again" )
       return
 
    if password != confirmpassword:
-      print "Confirmation password doesn't match new password"
+      jinjahelper.rendertemplate('genericmessage.html', menus = menu.getmenus(), message = "Confirmation password doesn't match new password" )
       return
       
    # check oldpassword
    if not loginhelper.validateUsernamePassword( loginhelper.getUsername(), oldpassword ):
-      print "Please check your old password and try again"
+      jinjahelper.rendertemplate('genericmessage.html', menus = menu.getmenus(), message = "Please check your old password and try again" )
       return
 
    if loginhelper.changePassword( loginhelper.getUsername(), password ):
-      print "Password changed ok"
+      jinjahelper.rendertemplate('genericmessage.html', menus = menu.getmenus(), message = "Password changed ok" )
    else:
-      print "Something went wrong.  Please check your values and try again."
+      jinjahelper.rendertemplate('genericmessage.html', menus = menu.getmenus(), message = "Something went wrong.  Please check your values and try again." )
 
 go()
-
-menu.printPageBottom()
 
 sqlalchemysetup.close()
 
