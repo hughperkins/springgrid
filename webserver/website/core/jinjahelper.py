@@ -1,5 +1,3 @@
-#!/usr/bin/python
-
 # Copyright Hugh Perkins 2009
 # hughperkins@gmail.com http://manageddreams.com
 #
@@ -21,23 +19,11 @@
 # http://www.opensource.org/licenses/gpl-license.php
 #
 
-# handles user logout
+import jinja2
 
-import cgitb; cgitb.enable()
-import cgi
-
-from utils import *
-from core import *
-
-sqlalchemysetup.setup()
-
-loginhelper.processCookie()
-
-if loginhelper.gusername != "":
-   loginhelper.logoutUser()
-
-jinjahelper.rendertemplate('genericmessage.html', menus = menu.getmenus(), message = 'Logged out.' )
-
-sqlalchemysetup.close()
+def rendertemplate( templatename, **args ):
+   env = jinja2.Environment( loader=jinja2.PackageLoader('jinjaapplication', 'templates'))
+   template = env.get_template(templatename)
+   print template.render( **args )
 
 

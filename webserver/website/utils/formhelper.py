@@ -22,6 +22,7 @@
 import cgi
 import os
 import base64
+import sys
 
 # helps with form stuff
 
@@ -40,10 +41,15 @@ def getform():
    if form == None:
       form = cgi.FieldStorage()
    return form
- 
+
+# you can run from commandline too, in format:
+# python somescript.py fieldname=fieldvalue ...
 def getValue( fieldname ):
    form = getform()
    if not form.has_key(fieldname):
+      for arg in sys.argv:
+         if arg.startswith(fieldname):
+            return arg.split('=')[1]
       return None
    return form[fieldname].value
 
