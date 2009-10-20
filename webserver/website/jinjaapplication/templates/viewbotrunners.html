@@ -30,7 +30,7 @@ http://www.opensource.org/licenses/gpl-license.php
 {% for botrunner in botrunners %}
 
 <tr>
-<td rowspan="{{botrunner.rowspan}}" valign="top">{{botrunner.botrunner_name}}</td>
+<td rowspan="{{botrunner.rowspan}}" valign="top"><a href='viewbotrunner.py?botrunnername={{botrunner.botrunner_name}}'>{{botrunner.botrunner_name}}</a></td>
 <td rowspan="{{botrunner.rowspan}}" valign="top">{{botrunner.owneraccount.userfullname}}&nbsp;</td>
 <td rowspan="{{botrunner.rowspan}}" valign="top">{% if botrunner.owneraccount.username == username %}
 {{botrunner.botrunner_sharedsecret}}{% endif %}&nbsp;</td>
