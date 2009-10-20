@@ -29,8 +29,8 @@ http://www.opensource.org/licenses/gpl-license.php
 <tr class='tablehead'><td>Map name</td><td>Map archive checksum (Note: this is NOT the maphash seen in the start script)</td><td>Map download url</td></tr>
 
 {% for map in maps %}
-<tr><td>{{map.map_name}}</td><td>{{map.map_archivechecksum}}</td>
-   <td>{% if not map.map_url is none %}<a href='{{map.map_url}}'>{{map.map_url}}</a>{%endif%}&nbsp;</td>
+<tr><td>{{map.map_name|e}}</td><td>{{map.map_archivechecksum}}</td>
+   <td>{% if not map.map_url is none %}<a href='{{map.map_url|e}}'>{{map.map_url|e}}</a>{%endif%}&nbsp;</td>
 </tr>
 {% endfor %}
 

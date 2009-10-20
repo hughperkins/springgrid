@@ -24,20 +24,20 @@
       <tr>
    {% endif %}
    <td>{{request.matchrequest_id}}</td>
-   <td>{{request.ai0.ai_name}}</td>
-   <td>{{request.ai0.ai_version}}</td>
-   <td>{{request.ai1.ai_name}}</td>
-   <td>{{request.ai1.ai_version}}</td>
-   <td>{{request.map.map_name}}</td>
-   <td>{{request.mod.mod_name}}</td>
+   <td>{{request.ai0.ai_name|e}}</td>
+   <td>{{request.ai0.ai_version|e}}</td>
+   <td>{{request.ai1.ai_name|e}}</td>
+   <td>{{request.ai1.ai_version|e}}</td>
+   <td>{{request.map.map_name|e}}</td>
+   <td>{{request.mod.mod_name|e}}</td>
    <td>
    {% for option in request.options %}
-      {{option.option.option_name}}&nbsp;
+      {{option.option.option_name|e}}&nbsp;
    {% endfor %}
    &nbsp;</td>
    {% if request.matchrequestinprogress != None: %}
-      <td>{{request.matchrequestinprogress.botrunner.botrunner_name}}</td>
-      <td>{{request.matchrequestinprogress.botrunnersession.botrunner_session_id|truncate(5,'...')}}</td>
+      <td>{{request.matchrequestinprogress.botrunner.botrunner_name|e}}</td>
+      <td>{{request.matchrequestinprogress.botrunnersession.botrunner_session_id|truncate(5,'...')|e}}</td>
       <td>{{datetimeassignedbyrequest[request]}}</td>
    {% else %}
       <td>&nbsp;</td>

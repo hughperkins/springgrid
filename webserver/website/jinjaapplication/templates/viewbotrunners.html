@@ -30,17 +30,17 @@ http://www.opensource.org/licenses/gpl-license.php
 {% for botrunner in botrunners %}
 
 <tr>
-<td rowspan="{{botrunner.rowspan}}" valign="top"><a href='viewbotrunner.py?botrunnername={{botrunner.botrunner_name}}'>{{botrunner.botrunner_name}}</a></td>
-<td rowspan="{{botrunner.rowspan}}" valign="top">{{botrunner.owneraccount.userfullname}}&nbsp;</td>
+<td rowspan="{{botrunner.rowspan}}" valign="top"><a href='viewbotrunner.py?botrunnername={{botrunner.botrunner_name|e}}'>{{botrunner.botrunner_name|e}}</a></td>
+<td rowspan="{{botrunner.rowspan}}" valign="top">{{botrunner.owneraccount.userfullname|e}}&nbsp;</td>
 <td rowspan="{{botrunner.rowspan}}" valign="top">{% if botrunner.owneraccount.username == username %}
-{{botrunner.botrunner_sharedsecret}}{% endif %}&nbsp;</td>
-<td rowspan="{{botrunner.rowspan}}" valign="top">{% for option in botrunner.options %}{{option.option.option_name}}{% endfor %}</td>
+{{botrunner.botrunner_sharedsecret|e}}{% endif %}&nbsp;</td>
+<td rowspan="{{botrunner.rowspan}}" valign="top">{% for option in botrunner.options %}{{option.option.option_name|e}}{% endfor %}</td>
 
 {% for instance in botrunner.sessions %}
 {% if not loop.first %}<tr>{%endif%}
-<td>{{instance.botrunner_session_id|truncate(5, '...')}}</td>
+<td>{{instance.botrunner_session_id|truncate(5, '...')|e}}</td>
 <td class="{% if instance.pingtimeok %}success{%else%}fail{%endif%}">{{instance.lastpingtimestring}}</td>
-<td>{{instance.lastpingstatus}}</td>
+<td>{{instance.lastpingstatus|e}}</td>
 </tr>
 {%else%}
 <td>&nbsp;</td>

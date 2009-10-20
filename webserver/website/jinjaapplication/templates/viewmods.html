@@ -8,13 +8,13 @@
 
   {% for mod in mods %}
    <tr>
-   <td>{{mod.mod_name}}</td>
+   <td>{{mod.mod_name|e}}</td>
    <td>{{mod.mod_archivechecksum}}</td>
    <td>
       {% if mod.mod_url != None %}
-         <a href='{{mod.mod_url}}'>{{mod.mod_url}}</a>
+         <a href='{{mod.mod_url|e}}'>{{mod.mod_url|e}}</a>
       {% else %}
-         &nbsp;"
+         &nbsp;
       {% endif %}
    </td>
    </tr>
@@ -38,7 +38,7 @@
    <tr><td>Mod download url</td><td><input name='modurl'</td></tr>
    <tr><td></td><td><input type='submit' value='Add' /></td></tr>
    </table>
-   </form>"
+   </form>
 {% endif %}
 
 {% endblock %}

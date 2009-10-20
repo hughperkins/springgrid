@@ -4,16 +4,16 @@
 
 {% block content %}
 
-<h3>AILadder - Bot Runner '{{botrunner.botrunner_name}}'</h3>
+<h3>AILadder - Bot Runner '{{botrunner.botrunner_name|e}}'</h3>
 <table border='1' padding='3'>
 
 {% if botrunner.owneraccount != none %}
-   <tr><td>Bot runner owner: </td><td>{{botrunner.owneraccount.userfullname}}</td></tr>
+   <tr><td>Bot runner owner: </td><td>{{botrunner.owneraccount.userfullname|e}}</td></tr>
 {% else %}
    <tr><td>Bot runner owner: </td><td>None assigned</td></tr>
 {% endif %}
 {% if isbotrunnerowner %}
-   <tr><td>Shared secret: </td><td>{{botrunner.botrunner_sharedsecret}}</td></tr>
+   <tr><td>Shared secret: </td><td>{{botrunner.botrunner_sharedsecret|e}}</td></tr>
 {% else %}
    <tr><td>Shared secret: </td><td>&lt;only visible to owner&gt;</td></tr>
 {% endif %}
@@ -32,9 +32,9 @@
 {% endif %}
 
 {% for option in botrunner.options %}
-   <tr><td>{{option.option.option_name}}</td>
+   <tr><td>{{option.option.option_name|e}}</td>
    {% if showform %}
-      <td><a href='deleteoptionfrombotrunner.py?botrunnername={{botrunner.botrunner_name}}&optionname={{option.option.option_name}}'>Delete option</a></td>
+      <td><a href='deleteoptionfrombotrunner.py?botrunnername={{botrunner.botrunner_name|e}}&optionname={{option.option.option_name|e}}'>Delete option</a></td>
    {% endif %}
    </tr>
 {% endfor %}
@@ -46,7 +46,7 @@
 <table>
 <tr class='tablehead'><td>Map</td>
 {% for map in botrunner.supportedmaps %}
-   <tr class='success'><td>{{map.map.map_name}}</td>
+   <tr class='success'><td>{{map.map.map_name|e}}</td>
 {% endfor %}
 </table>
 
@@ -55,7 +55,7 @@
 <table>
 <tr class='tablehead'><td>Mod</td>
 {% for mod in botrunner.supportedmods %}
-   <tr class='success'><td>{{mod.mod.mod_name}}</td>
+   <tr class='success'><td>{{mod.mod.mod_name|e}}</td>
 {% endfor %}
 </table>
 
@@ -70,7 +70,7 @@
    <tr><td>Option to add:</td><td>{{formhelper.listtodropdown( 'optionname', potentialoptions )}}</td></tr>
    <tr><td></td><td><input type='submit' value='Add' /></td></tr>
    </table>
-   <input type='hidden' name='botrunnername' value='{{botrunner.botrunner_name}}' />
+   <input type='hidden' name='botrunnername' value='{{botrunner.botrunner_name|e}}' />
    </form>
 {% endif %}
 

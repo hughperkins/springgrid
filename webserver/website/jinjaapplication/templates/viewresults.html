@@ -21,23 +21,23 @@
 {% for request in requests %}
    <tr>
    <td>{{request.matchrequest_id}}</td>
-   <td>{{request.ai0.ai_name}}</td>
-   <td>{{request.ai0.ai_version}}</td>
-   <td>{{request.ai1.ai_name}}</td>
-   <td>{{request.ai1.ai_version}}</td>
-   <td>{{request.map.map_name}}</td>
-   <td>{{request.mod.mod_name}}</td>
+   <td>{{request.ai0.ai_name|e}}</td>
+   <td>{{request.ai0.ai_version|e}}</td>
+   <td>{{request.ai1.ai_name|e}}</td>
+   <td>{{request.ai1.ai_version|e}}</td>
+   <td>{{request.map.map_name|e}}</td>
+   <td>{{request.mod.mod_name|e}}</td>
    <td>
    {% for option in request.options %}
-      {{option.option.option_name}}&nbsp;
+      {{option.option.option_name|e}}&nbsp;
    {% endfor %}
    &nbsp;
    </td>
-   <td>{{request.matchrequestinprogress.botrunner.botrunner_name}}</td>
-   <td>{{request.matchresult.matchresult}}</td>
+   <td>{{request.matchrequestinprogress.botrunner.botrunner_name|e}}</td>
+   <td>{{request.matchresult.matchresult|e}}</td>
    <td>
    {% if request.replayurl != none %}
-      <a href='{{request.replayurl}}'>replay</a>
+      <a href='{{request.replayurl|e}}'>replay</a>
    {% endif %}
    </td>
    </tr>

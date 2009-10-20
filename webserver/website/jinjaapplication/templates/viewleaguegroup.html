@@ -25,7 +25,7 @@ http://www.opensource.org/licenses/gpl-license.php
 {% import 'formhelper.html' as formhelper %}
 {% block content %}
 
-<h3>AILadder - View league group {{leaguegroupname}}</h3>
+<h3>AILadder - View league group {{leaguegroupname|e}}</h3>
 <p>A league is a specific game configuration used for testing AIs against each other</p>
 <p>For example, a league could be a specific map, mod, and certain options, like say cheating on, or cheating off</p>
 <p>You can group leagues together in leaguegroups.</p>
@@ -34,7 +34,7 @@ http://www.opensource.org/licenses/gpl-license.php
 
 {% for league in leaguegroup.childleagues %}
    <tr>
-   <td>{{league.league.league_name}}</td>
+   <td>{{league.league.league_name|e}}</td>
    </tr>
 {% endfor %}
 </table>
@@ -52,7 +52,7 @@ http://www.opensource.org/licenses/gpl-license.php
 
    <tr><td></td><td><input type='submit' value='Add' /></td></tr>
    </table>
-   <input type='hidden' name='leaguegroupname' value='{{leaguegroupname}}' />
+   <input type='hidden' name='leaguegroupname' value='{{leaguegroupname|e}}' />
    </form>
 {% endif %}
 

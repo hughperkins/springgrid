@@ -30,9 +30,9 @@ http://www.opensource.org/licenses/gpl-license.php
 
    {% for account in accounts %}
       <tr>
-      <td><a href='viewaccount.py?username={{account.username}}'>{{account.username}}</td><td>{{account.userfullname}}</a></td>
+      <td><a href='viewaccount.py?username={{account.username|e}}'>{{account.username|e}}</td><td>{{account.userfullname|e}}</a></td>
       {% if not roles.isInRole2( account.username, roles.accountadmin ) %}
-         <td><a href='removeaccount.py?username={{account.username}}'>Delete account</a></td>
+         <td><a href='removeaccount.py?username={{account.username|e}}'>Delete account</a></td>
       {% else %}
          <td>(Drop accountadmin role before deleting account)</td>
       {% endif %}

@@ -25,7 +25,7 @@ http://www.opensource.org/licenses/gpl-license.php
 {% import 'formhelper.html' as formhelper %}
 {% block content %}
 
-<h3>AILadder - View League '{{leaguename}}'</h3>
+<h3>AILadder - View League '{{leaguename|e}}'</h3>
 
 <p>This page can configure the options that will be used for this league.</p>
 <p>Try to make sure not to add two incompatible options ;-)</p>
@@ -35,8 +35,8 @@ http://www.opensource.org/licenses/gpl-license.php
 
 {% for option in compatibleoptions %}
    <tr>
-   <td>{{option}}</td>"
-   <td><a href='deleteoptionfromleague.py?leaguename={{leaguename}}&aioption={{option}}'>Remove option</a></td>
+   <td>{{option}}</td>
+   <td><a href='deleteoptionfromleague.py?leaguename={{leaguename|e}}&aioption={{option|e}}'>Remove option</a></td>
    </tr>
 {% endfor %}
 </table>
@@ -46,15 +46,15 @@ http://www.opensource.org/licenses/gpl-license.php
    <hr />
    <p />
 
-   <h4>Assign new options:</h4>"
+   <h4>Assign new options:</h4>
 
    <form action='addoptiontoleague.py' method='post'>
    <table border='1' padding='3'>
    <tr><td>Option to add:</td><td>{{formhelper.listtodropdown( 'aioption', potentialoptions )}}</td></tr>
    <tr><td></td><td><input type='submit' value='Add' /></td></tr>
    </table>
-   <input type='hidden' name='leaguename' value='{{leaguename}}' />
-   </form>"
+   <input type='hidden' name='leaguename' value='{{leaguename|e}}' />
+   </form>
 
 {% endif %}
 

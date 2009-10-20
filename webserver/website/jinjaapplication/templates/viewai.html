@@ -13,8 +13,8 @@
 
 {% for option in ai.allowedoptions %}
    <tr>
-   <td>{{option.option.option_name}}</td>
-   <td><a href='deleteoptionfromai.py?ainame={{ai.ai_name}}&aiversion={{ai.ai_version}}&aioption={{option.option.option_name}}'>Remove option</a></td>
+   <td>{{option.option.option_name|e}}</td>
+   <td><a href='deleteoptionfromai.py?ainame={{ai.ai_name|e}}&aiversion={{ai.ai_version|e}}&aioption={{option.option.option_name|e}}'>Remove option</a></td>
    </tr>
 {% endfor %}
 </table>
@@ -31,8 +31,8 @@
    <tr><td>Option to add:</td><td>{{formhelper.listtodropdown( 'aioption', potentialoptions )}}</td></tr>
    <tr><td></td><td><input type='submit' value='Add' /></td></tr>
    </table>
-   <input type='hidden' name='ainame' value='{{ai.ai_name}}' />
-   <input type='hidden' name='aiversion' value='{{ai.ai_version}}' />
+   <input type='hidden' name='ainame' value='{{ai.ai_name|e}}' />
+   <input type='hidden' name='aiversion' value='{{ai.ai_version|e}}' />
    </form>
 {% endif %}
 

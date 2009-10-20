@@ -34,7 +34,7 @@ http://www.opensource.org/licenses/gpl-license.php
 
 {% for leaguegroup in leaguegroups %}
    <tr>
-   <td><a href='viewleaguegroup.py?leaguegroupname={{leaguegroup.leaguegroup_name}}'>{{leaguegroup.leaguegroup_name}}</a></td>
+   <td><a href='viewleaguegroup.py?leaguegroupname={{leaguegroup.leaguegroup_name|e}}'>{{leaguegroup.leaguegroup_name|e}}</a></td>
    </tr>
 {% endfor %}
 </table>

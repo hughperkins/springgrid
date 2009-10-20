@@ -9,18 +9,18 @@
 
 {% for ai in ais %}
    <tr>
-   <td><a href='viewai.py?ainame={{ai.ai_name}}&aiversion={{ai.ai_version}}'>{{ai.ai_name}}</a></td>
-   <td>{{ai.ai_version}}</td>
+   <td><a href='viewai.py?ainame={{ai.ai_name|e}}&aiversion={{ai.ai_version|e}}'>{{ai.ai_name|e}}</a></td>
+   <td>{{ai.ai_version|e}}</td>
 
    <td>
    {% for option in ai.allowedoptions %}
-      {{option.option.option_name}}&nbsp;
+      {{option.option.option_name|e}}&nbsp;
    {% endfor %}
    &nbsp;</td>
 
    <td>
    {% if ai.ai_downloadurl != none %}
-      <a href='{{ai.ai_downloadurl}}'>{{ai.ai_downloadurl}}</a>
+      <a href='{{ai.ai_downloadurl|e}}'>{{ai.ai_downloadurl|e}}</a>
    {% else %}
       &nbsp;
    {% endif %}
