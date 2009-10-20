@@ -1,0 +1,49 @@
+{% extends 'menu.html' %}
+
+{% block content %}
+
+<h3>AILadder - Match results</h3>
+<table>
+<tr class='tablehead'>
+<td>matchrequestid</td>
+<td>ai0name</td>
+<td>ai0version</td>
+<td>ai1name</td>
+<td>ai1version</td>
+<td>mapname</td>
+<td>modname</td>
+<td>options</td>
+<td>botrunnername</td>
+<td>result</td>
+<td>replay</td>
+</tr>
+
+{% for request in requests %}
+   <tr>
+   <td>{{request.matchrequest_id}}</td>
+   <td>{{request.ai0.ai_name}}</td>
+   <td>{{request.ai0.ai_version}}</td>
+   <td>{{request.ai1.ai_name}}</td>
+   <td>{{request.ai1.ai_version}}</td>
+   <td>{{request.map.map_name}}</td>
+   <td>{{request.mod.mod_name}}</td>
+   <td>
+   {% for option in request.options %}
+      {{option.option.option_name}}&nbsp;
+   {% endfor %}
+   &nbsp;
+   </td>
+   <td>{{request.matchrequestinprogress.botrunner.botrunner_name}}</td>
+   <td>{{request.matchresult.matchresult}}</td>
+   <td>
+   {% if request.replayurl != none %}
+      <a href='{{request.replayurl}}'>replay</a>
+   {% endif %}
+   </td>
+   </tr>
+{% endfor %}
+
+</table>
+
+{% endblock %}
+

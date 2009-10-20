@@ -26,6 +26,7 @@ import os
 
 from utils import *
 from core import *
+from core.tableclasses import *
 
 import core.replaycontroller as replaycontroller
 
@@ -33,52 +34,12 @@ sqlalchemysetup.setup()
 
 loginhelper.processCookie()
 
-menu.printPageTop()
-
-requests = sqlalchemysetup.session.query(tableclasses.MatchRequest)
-
-print "<h3>AILadder - Match results</h3>" \
-"<table>" \
-"<tr class='tablehead'>"
-print "<td>matchrequestid</td>"
-print "<td>ai0name</td>"
-print "<td>ai0version</td>"
-print "<td>ai1name</td>"
-print "<td>ai1version</td>"
-print "<td>mapname</td>"
-print "<td>modname</td>"
-print "<td>options</td>"
-print "<td>botrunnername</td>"
-print "<td>result</td>"
-print "<td>replay</td>"
-print "</tr>"
-
+requests = sqlalchemysetup.session.query(MatchRequest).filter(MatchRequest.matchresult != None )
 for request in requests:
-   if request.matchresult == None:
-      continue
-   print "<tr>"
-   print "<td>" + str(request.matchrequest_id) + "</td>"
-   print "<td>" + request.ai0.ai_name + "</td>"
-   print "<td>" + request.ai0.ai_version + "</td>"
-   print "<td>" + request.ai1.ai_name + "</td>"
-   print "<td>" + request.ai1.ai_version + "</td>"
-   print "<td>" + request.map.map_name + "</td>"
-   print "<td>" + request.mod.mod_name + "</td>"
-   print "<td>"
-   for option in request.options:
-      print option.option.option_name + "&nbsp;" 
-   print "&nbsp;</td>"
-   print "<td>" + request.matchrequestinprogress.botrunner.botrunner_name + "</td>"
-   print "<td>" + request.matchresult.matchresult + "</td>"
-   print "<td>"
    if os.path.isfile( replaycontroller.getReplayPath(request.matchrequest_id) ):
-      print "<a href='" + replaycontroller.getReplayWebRelativePath(request.matchrequest_id) + "'>replay</a>"
-   print "</td>"
-   print "</tr>"
+      request.replayurl = replaycontroller.getReplayWebRelativePath(request.matchrequest_id) 
 
-print "</table>"
+jinjahelper.rendertemplate( 'viewresults.html', requests = requests )
 
 sqlalchemysetup.close()
-
-menu.printPageBottom()
 
