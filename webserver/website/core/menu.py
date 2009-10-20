@@ -47,6 +47,10 @@ def getmenus():
       ['Run website diagnostics', 'diagnostics.py']
    ]])
 
+   menus.append([ 'Debug', [
+      ['Show AI Match Pair Count', 'showaimatchpaircount.py']
+   ]])
+
    menus.append([ 'About', [
       ['About', 'about.py']
    ]])

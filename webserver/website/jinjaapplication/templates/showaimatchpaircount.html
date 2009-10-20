@@ -1,0 +1,35 @@
+{% extends 'menu.html' %}
+
+{% import 'formhelper.html' as formhelper %}
+{% block content %}
+
+<p>This page is mainly for debugging, at least for now.</p>
+
+Pick a league: <form method="post" action="showaimatchpaircount.py">{{formhelper.listtodropdown('leaguename', leaguenames)}}
+<input type="submit" value="Reload" />
+</form>
+
+<h3>AI Indexes</h3>
+
+So they are displayed out of order ;-)
+<table cellpadding="3" border="1">
+<tr><td>ai name</td><td>ai version</td><td>index</td></tr>
+{% for ai in aiindexes.keys() %}
+<tr><td>{{ai.ai_name}}</td><td>{{ai.ai_version}}</td><td>{{aiindexes[ai]}}</td></tr>
+{% endfor %}
+</table>
+
+<h3>AI pair match count</h3>
+
+<table cellpadding="3" border="1">
+{% for outerai in ais %}
+   <tr>
+   {% for innerai in ais %}
+      <td>{{aipairmatchcount[aiindexes[outerai]][aiindexes[innerai]]}}</td>
+   {% endfor %}
+   </tr>
+{% endfor %}
+</table>
+
+{% endblock content %}
+

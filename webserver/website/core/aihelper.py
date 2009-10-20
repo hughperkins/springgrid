@@ -38,6 +38,9 @@ def getsupportedais( botrunnername ):
 
    return supportedais
 
+def getAIs():
+   return sqlalchemysetup.session.query(AI).all()
+
 def getAI( ainame, aiversion ):
    return sqlalchemysetup.session.query(AI).filter(AI.ai_name == ainame ).filter(AI.ai_version == aiversion ).first()
 
