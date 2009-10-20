@@ -31,42 +31,11 @@ sqlalchemysetup.setup()
 
 loginhelper.processCookie()
 
-menu.printPageTop()
-
 leaguegroups = sqlalchemysetup.session.query(LeagueGroup)
 
-print "<h3>AILadder - View league groups</h3>" \
-"<p>A league is a specific game configuration used for testing AIs "\
-" against each other</p>"\
-"<p>For example, a league could be a specific map, mod, and certain options,"\
-" like say cheating on, or cheating off</p>"\
-"<p>You can group leagues together in leaguegroups.</p>"\
-"<table border='1' padding='3'>" \
-"<tr class='tablehead'><td>League group name:</td></tr>"
+showform = loginhelper.gusername != ''
 
-for leaguegroup in leaguegroups:
-   print "<tr>"
-   print "<td><a href='viewleaguegroup.py?leaguegroupname=" + leaguegroup.leaguegroup_name + "'>" + leaguegroup.leaguegroup_name + "</a></td>"
-   print "</tr>"
-
-print "</table>"
-
-if loginhelper.gusername != '':
-
-   print "<p />"
-   print "<hr />"
-   print "<p />"
-
-   print "<h4>Create new league group:</h4>"
-   print "<form action='addleaguegroup.py' method='post'>" \
-   "<table border='1' padding='3'>" \
-   "<tr><td>League group name</td><td><input name='leaguegroupname'</td></tr>"
-
-   print "<tr><td></td><td><input type='submit' value='Add' /></td></tr>" \
-   "</table>" \
-   "</form>"
+jinjahelper.rendertemplate('viewleaguegroups.html', leaguegroups = leaguegroups, showform = showform )
 
 sqlalchemysetup.close()
-
-menu.printPageBottom()
 
