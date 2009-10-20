@@ -20,10 +20,13 @@
 #
 
 import jinja2
+import menu
 
 def rendertemplate( templatename, **args ):
    env = jinja2.Environment( loader=jinja2.PackageLoader('jinjaapplication', 'templates'))
    template = env.get_template(templatename)
    print template.render( **args )
 
+def message( message ):
+   rendertemplate( 'genericmessage.html', message = message, menus = menu.getmenus() )
 
