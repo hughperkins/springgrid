@@ -104,31 +104,37 @@ def changePassword( username, password ):
    sqlalchemysetup.session.commit()
    return True
 
+# can use commandline arguments to login, or just use querystring
+# if there is a cookie, uses that
 def processCookie():
-  global cookie, cookiereference, gusername, loginhtml
+   global cookie, cookiereference, gusername, loginhtml
 
-  gusername = ''
-  cookie = Cookie.SimpleCookie( os.environ.get("HTTP_COOKIE"))
-  c = cookie.output( "Cookie: " )
-  if(not c):
-     return
+   gusername = ''
+   cookie = Cookie.SimpleCookie( os.environ.get("HTTP_COOKIE"))
+   c = cookie.output( "Cookie: " )
+   if(not c):
+      # check query string, and if username and password are ok, set gusername from that
+      if formhelper.getValue('username') != '' and formhelper.getValue('password') != '':
+         if validateUsernamePassword( formhelper.getValue('username'), formhelper.getValue('password') ):
+            gusername = formhelper.getValue('username')
+      return    
 
-  if not cookie.has_key( "cookiereference" ):
+   if not cookie.has_key( "cookiereference" ):
       return
 
-  cookiereference = str( cookie["cookiereference"].value )
+   cookiereference = str( cookie["cookiereference"].value )
 
-  cookierow = sqlalchemysetup.session.query(tableclasses.Cookie).filter(tableclasses.Cookie.cookiereference == cookiereference ).first()
-  if cookierow == None:
-     return
+   cookierow = sqlalchemysetup.session.query(tableclasses.Cookie).filter(tableclasses.Cookie.cookiereference == cookiereference ).first()
+   if cookierow == None:
+      return
 
-  # Note: could consider migrating from username string to account object
-  gusername = cookierow.account.username
+   # Note: could consider migrating from username string to account object
+   gusername = cookierow.account.username
 
-  if gusername == '':
-     return
+   if gusername == '':
+      return
 
-  loginhtml = "<p>Logged in as: " + gusername + "</p>"
+   loginhtml = "<p>Logged in as: " + gusername + "</p>"
 
 def logoutUser():
    global cookie, cookiereference, gusername, loginhtml
