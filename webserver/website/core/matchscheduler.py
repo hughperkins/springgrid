@@ -39,7 +39,7 @@ def schedulematchesforleague( leaguename ):
    league = leaguehelper.getLeague(leaguename)
    ais = aihelper.getAIs()
    [ aitoindex, indextoai ] = getaiindexes(ais)
-   aipairmatchcount = getaipairmatchcount(league, ais, aitoindex)
+   aipairmatchcount = getaipairmatchcount(sqlalchemysetup.session.query( MatchRequest ), league, ais, aitoindex)
    for outerai in ais:
       for innerai in ais:
          if aipairmatchcount[aitoindex[outerai]][aitoindex[innerai]] < league.nummatchesperaipair:
@@ -63,7 +63,10 @@ def getaiindexes(ais):
 
 # return 2d list ([][]), indexed by indexes returned by getaiindexes
 # showing the numer of matches in the queue between each pair of ais
-def getaipairmatchcount(league, ais, aitoindex ):
+# have to pass in requests one wants to consider
+# that means one can pass in all requests, or just finished, or just not finished
+# etc...
+def getaipairmatchcount(requests, league, ais, aitoindex ):
    # go through each matchrequest in the queue, and increment matchcountarray member
    # we go through all requests that match the league: both the ones that have results, and the ones 
    # that don't
@@ -74,7 +77,7 @@ def getaipairmatchcount(league, ais, aitoindex ):
       matchcountarray.append(thisline)
       for innerai in ais:
          thisline.append(0)
-   for matchrequest in sqlalchemysetup.session.query( MatchRequest ):
+   for matchrequest in requests:
       if matchrequest.map != league.map:
          continue
       if matchrequest.mod != league.mod:

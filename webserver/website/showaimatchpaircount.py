@@ -44,10 +44,12 @@ else:
 
 ais = aihelper.getAIs()
 [aitoindex,indextoai] = matchscheduler.getaiindexes(ais)
-aipairmatchcount = matchscheduler.getaipairmatchcount( league, ais, aitoindex )
+aipairmatchcount = matchscheduler.getaipairmatchcount( sqlalchemysetup.session.query( MatchRequest ),league, ais, aitoindex )
+leaguenames = listhelper.tuplelisttolist( sqlalchemysetup.session.query( League.league_name ) )
+aipairfinishedcount = matchscheduler.getaipairmatchcount( sqlalchemysetup.session.query( MatchRequest ).filter( MatchRequest.matchresult != None),league, ais, aitoindex )
 leaguenames = listhelper.tuplelisttolist( sqlalchemysetup.session.query( League.league_name ) )
 
-jinjahelper.rendertemplate( 'showaimatchpaircount.html', aipairmatchcount = aipairmatchcount, aitoindex = aitoindex, indextoai = indextoai, ais = ais, leaguenames = leaguenames, league = league )
+jinjahelper.rendertemplate( 'showaimatchpaircount.html', aipairmatchcount = aipairmatchcount, aipairfinishedcount = aipairfinishedcount, aitoindex = aitoindex, indextoai = indextoai, ais = ais, leaguenames = leaguenames, league = league )
 
 sqlalchemysetup.close()
 
