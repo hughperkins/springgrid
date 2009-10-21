@@ -11,11 +11,10 @@ Pick a league: <form method="post" action="showaimatchpaircount.py">{{formhelper
 
 <h3>AI Indexes</h3>
 
-So they are displayed out of order ;-)
 <table cellpadding="3" border="1">
-<tr><td>ai name</td><td>ai version</td><td>index</td></tr>
-{% for ai in aiindexes.keys() %}
-<tr><td>{{ai.ai_name}}</td><td>{{ai.ai_version}}</td><td>{{aiindexes[ai]}}</td></tr>
+<tr><td>index</td><td>ai name</td><td>ai version</td></tr>
+{% for index in indextoai.keys() %}
+<tr><td>{{index}}</td><td>{{indextoai[index].ai_name}}</td><td>{{indextoai[index].ai_version}}</td></tr>
 {% endfor %}
 </table>
 
@@ -25,7 +24,7 @@ So they are displayed out of order ;-)
 {% for outerai in ais %}
    <tr>
    {% for innerai in ais %}
-      <td>{{aipairmatchcount[aiindexes[outerai]][aiindexes[innerai]]}}</td>
+      <td>{{aipairmatchcount[aitoindex[outerai]][aitoindex[innerai]]}}</td>
    {% endfor %}
    </tr>
 {% endfor %}

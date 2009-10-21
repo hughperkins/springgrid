@@ -45,6 +45,8 @@ def schedulematchesforleague( leaguename ):
          if aipairmatchcount[aitoindex[outerai]][aitoindex[innerai]] < league.nummatchesperaipair:
             for i in xrange( league.nummatchesperaipair - aipairmatchcount[aitoindex[outerai]][aitoindex[innerai]] ):
                scheduleleaguematch( league, outerai, innerai )
+            aipairmatchcount[aitoindex[outerai]][aitoindex[innerai]] = league.nummatchesperaipair
+            aipairmatchcount[aitoindex[innerai]][aitoindex[outerai]] = league.nummatchesperaipair
 
 def scheduleleaguematch( league, ai0, ai1 ):
    matchrequestcontroller.addmatchrequest( ai0 = ai0, ai1 = ai1, map = league.map, mod = league.mod )
