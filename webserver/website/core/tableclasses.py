@@ -232,6 +232,9 @@ class BotRunnerSession(Base):
    def __init__(self, botrunner_session_id ):
       self.botrunner_session_id = botrunner_session_id
 
+      self.pingtimeok = False # used by viewbotrunners.py
+      self.lastpingtimestring = '' # used by viewbotrunners.py
+
 class BotRunner(Base):
    __tablename__ = 'botrunners'
 
@@ -250,6 +253,7 @@ class BotRunner(Base):
    def __init__( self, botrunner_name, botrunner_sharedsecret ):
       self.botrunner_name = botrunner_name
       self.botrunner_sharedsecret = botrunner_sharedsecret
+      self.rowspan = 0 # used by viewbotrunners.py
 
 class AIOption(Base):
    __tablename__ = 'aioptions'
