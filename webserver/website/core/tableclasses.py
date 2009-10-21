@@ -285,6 +285,7 @@ class MatchRequest(Base):
    mod_id =Column(Integer, ForeignKey('mods.mod_id'))
    ai0_id = Column(Integer, ForeignKey('ais.ai_id'))
    ai1_id = Column(Integer, ForeignKey('ais.ai_id'))
+   league_id = Column( Integer, ForeignKey('leagues.league_id'))
 
    map = relation("Map" )
    mod = relation("Mod" )
@@ -294,12 +295,14 @@ class MatchRequest(Base):
    matchrequestinprogress = relation("MatchRequestInProgress", uselist=False)
    matchresult = relation("MatchResult", uselist=False)
    options = relation("MatchRequestOption")
+   league = relation("League", uselist=False)
 
-   def __init__( self, ai0, ai1, map, mod ):
+   def __init__( self, ai0, ai1, map, mod, league = None ):
       self.ai0 = ai0
       self.ai1 = ai1
       self.map = map
       self.mod = mod
+      self.league = league
 
 class MatchRequestInProgress(Base):
    __tablename__ = 'matchrequests_inprogress'
