@@ -32,7 +32,8 @@ def getmenus():
    ]])
    menus.append([ 'Runner', [
       ['View request queue', 'viewrequests.py'],
-      ['Add request to queue', 'submitrequestform.py']
+      ['Add request to queue', 'submitrequestform.py'],
+      ['View request counts per league', 'showaimatchpaircount.py']
    ]])
 
    menus.append([ 'Configuration', [
@@ -45,10 +46,6 @@ def getmenus():
       ['View available ais', 'viewais.py'],
       ['View accounts', 'viewaccounts.py'],
       ['Run website diagnostics', 'diagnostics.py']
-   ]])
-
-   menus.append([ 'Debug', [
-      ['Show AI Match Pair Count', 'showaimatchpaircount.py']
    ]])
 
    menus.append([ 'About', [

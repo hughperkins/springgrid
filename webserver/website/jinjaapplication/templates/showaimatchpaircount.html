@@ -9,6 +9,7 @@ Pick a league: <form method="post" action="showaimatchpaircount.py">{{formhelper
 <input type="submit" value="Reload" />
 </form>
 
+{#
 <h3>AI Indexes</h3>
 
 <table cellpadding="3" border="1">
@@ -17,12 +18,17 @@ Pick a league: <form method="post" action="showaimatchpaircount.py">{{formhelper
 <tr><td>{{index}}</td><td>{{indextoai[index].ai_name}}</td><td>{{indextoai[index].ai_version}}</td></tr>
 {% endfor %}
 </table>
+#}
 
 <h3>AI pair match count</h3>
 
 <table cellpadding="3" border="1">
+<tr><td>&nbsp;</td>
+   {% for innerai in ais %}
+      <td>{{innerai.ai_name}} {{innerai.ai_version}}</td>
+   {% endfor %}
 {% for outerai in ais %}
-   <tr>
+   <tr><td>{{outerai.ai_name}} {{outerai.ai_version}}</td>
    {% for innerai in ais %}
       <td>{{aipairmatchcount[aitoindex[outerai]][aitoindex[innerai]]}}</td>
    {% endfor %}
