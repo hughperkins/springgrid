@@ -49,7 +49,7 @@ def schedulematchesforleague( leaguename ):
             aipairmatchcount[aitoindex[innerai]][aitoindex[outerai]] = league.nummatchesperaipair
 
 def scheduleleaguematch( league, ai0, ai1 ):
-   matchrequestcontroller.addmatchrequest( ai0 = ai0, ai1 = ai1, map = league.map, mod = league.mod )
+   matchrequestcontroller.addmatchrequest( ai0 = ai0, ai1 = ai1, map = league.map, mod = league.mod, league = league )
 
 # returns [ dict from ai to zero-based aiindex, dict from index to ai ]
 def getaiindexes(ais):
