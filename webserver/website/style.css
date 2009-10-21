@@ -68,6 +68,10 @@ tr.tablehead td {
    background-color: aaf;
    font-weight: bold;
 }
+td.tablehead {
+   background-color: aaf;
+   font-weight: bold;
+}
 tr {
    padding: 3px;
    border: solid 1px;

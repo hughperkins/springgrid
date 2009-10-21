@@ -47,7 +47,7 @@ ais = aihelper.getAIs()
 aipairmatchcount = matchscheduler.getaipairmatchcount( league, ais, aitoindex )
 leaguenames = listhelper.tuplelisttolist( sqlalchemysetup.session.query( League.league_name ) )
 
-jinjahelper.rendertemplate( 'showaimatchpaircount.html', aipairmatchcount = aipairmatchcount, aitoindex = aitoindex, indextoai = indextoai, ais = ais, leaguenames = leaguenames )
+jinjahelper.rendertemplate( 'showaimatchpaircount.html', aipairmatchcount = aipairmatchcount, aitoindex = aitoindex, indextoai = indextoai, ais = ais, leaguenames = leaguenames, league = league )
 
 sqlalchemysetup.close()
 

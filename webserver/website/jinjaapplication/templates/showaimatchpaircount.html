@@ -20,15 +20,27 @@ Pick a league: <form method="post" action="showaimatchpaircount.py">{{formhelper
 </table>
 #}
 
+<h3>Attributes of league '{{league.league_name}}'</h3>
+
+<table cellpadding="3" border="1">
+<tr><td class='tablehead'>Map</td><td>{{league.map.map_name}}</td></tr>
+<tr><td class='tablehead'>Mod</td><td>{{league.mod.mod_name}}</td></tr>
+<tr><td class='tablehead'>Options</td><td>
+{% for option in league.options %}
+{{option.option.option_name}} 
+{% endfor %}
+&nbsp;</td></tr>
+</table>
+
 <h3>AI pair match count</h3>
 
 <table cellpadding="3" border="1">
-<tr><td>&nbsp;</td>
+<tr><td class='tablehead'>&nbsp;</td>
    {% for innerai in ais %}
-      <td>{{innerai.ai_name}} {{innerai.ai_version}}</td>
+      <td class='tablehead'>{{innerai.ai_name}} {{innerai.ai_version}}</td>
    {% endfor %}
 {% for outerai in ais %}
-   <tr><td>{{outerai.ai_name}} {{outerai.ai_version}}</td>
+   <tr><td class='tablehead'>{{outerai.ai_name}} {{outerai.ai_version}}</td>
    {% for innerai in ais %}
       <td>{{aipairmatchcount[aitoindex[outerai]][aitoindex[innerai]]}}</td>
    {% endfor %}
