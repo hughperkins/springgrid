@@ -37,23 +37,31 @@ loginhelper.processCookie()
 
 botrunners = sqlalchemysetup.session.query(BotRunner)
 
+# if you know of a reliable way of just adding the following two data to  the business ojbects,
+# go ahead:
+botrunnerdata = {}
+sessiondata = {}
 for botrunner in botrunners:
    rowspan = 1
    if len(botrunner.sessions) > 1:
       rowspan = len(botrunner.sessions)
-   botrunner.rowspan = rowspan
+   botrunnerdata[botrunner] = {}
+   botrunnerdata[botrunner]['rowspan'] = rowspan
    for session in botrunner.sessions:
-      session.pingtimeok = False
+      sessiondata[session] = {}
+      sessiondata[session]['pingtimeok'] = False
       lastpingtimeddate = None
       lastpingtime =  session.lastpingtime
       if lastpingtime != None:
          lastpingtimedate = dates.dateStringToDateTime( lastpingtime )
          secondssincelastping = dates.timedifftototalseconds( datetime.datetime.now() - lastpingtimedate )
-         session.lastpingtimestring = str(lastpingtimedate)
+         sessiondata[session]['lastpingtimestring'] = str(lastpingtimedate)
          if secondssincelastping < confighelper.getValue('expiresessionminutes') * 60:
-            session.pingtimeok = True      
+            session.pingtimeok = True
+            sessiondata[session]['pingtimeok'] = True
 
-jinjahelper.rendertemplate('viewbotrunners.html', botrunners = botrunners, isloggedin = loginhelper.isLoggedOn(), username = loginhelper.gusername, menus = menu.getmenus() )
+
+jinjahelper.rendertemplate('viewbotrunners.html', botrunners = botrunners, isloggedin = loginhelper.isLoggedOn(), username = loginhelper.gusername, menus = menu.getmenus(), botrunnerdata = botrunnerdata, sessiondata = sessiondata )
 
 sqlalchemysetup.close()
 

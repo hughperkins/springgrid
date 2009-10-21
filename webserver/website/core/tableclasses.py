@@ -242,6 +242,7 @@ class BotRunner(Base):
    botrunner_name = Column(String(255))
    botrunner_sharedsecret = Column(String(255))
    botrunner_owneraccountid = Column(Integer, ForeignKey('accounts.account_id') )
+   rowspan = 0 # used by viewbotrunners.py
 
    owneraccount = relation("Account")
    options = relation("BotRunnerAssignedOption")
@@ -250,10 +251,11 @@ class BotRunner(Base):
    supportedais = relation("BotRunnerSupportedAI", uselist = True )
    sessions = relation("BotRunnerSession",uselist = True)
 
+   rowspan = 0
+
    def __init__( self, botrunner_name, botrunner_sharedsecret ):
       self.botrunner_name = botrunner_name
       self.botrunner_sharedsecret = botrunner_sharedsecret
-      self.rowspan = 0 # used by viewbotrunners.py
 
 class AIOption(Base):
    __tablename__ = 'aioptions'
