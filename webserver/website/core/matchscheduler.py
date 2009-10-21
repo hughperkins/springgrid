@@ -30,21 +30,24 @@
 
 from tableclasses import *
 import sqlalchemysetup
+import leaguehelper
+import aihelper
+import matchrequestcontroller
 
 # does for one league
 def schedulematchesforleague( leaguename ):
    league = leaguehelper.getLeague(leaguename)
    ais = aihelper.getAIs()
    [ aitoindex, indextoai ] = getaiindexes(ais)
-   aipairmatchcount = getaipairmatchcount(league, ais, aiindexes)
+   aipairmatchcount = getaipairmatchcount(league, ais, aitoindex)
    for outerai in ais:
       for innerai in ais:
-         if aipairmatchcount[aiindexes[outerai]][aiindexes[innerai]] < league.nummatchesperaipair:
-            for i in xrange( league.nummatchesperaipair - aipairmatchcount[aiindexes[outerai]][aiindexes[innerai]] ):
+         if aipairmatchcount[aitoindex[outerai]][aitoindex[innerai]] < league.nummatchesperaipair:
+            for i in xrange( league.nummatchesperaipair - aipairmatchcount[aitoindex[outerai]][aitoindex[innerai]] ):
                scheduleleaguematch( league, outerai, innerai )
 
 def scheduleleaguematch( league, ai0, ai1 ):
-   pass
+   matchrequestcontroller.addmatchrequest( ai0 = ai0, ai1 = ai1, map = league.map, mod = league.mod )
 
 # returns [ dict from ai to zero-based aiindex, dict from index to ai ]
 def getaiindexes(ais):
