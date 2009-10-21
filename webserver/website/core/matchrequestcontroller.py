@@ -113,3 +113,9 @@ def storeresult( botrunnername, matchrequest_id, result ):
    matchrequest.matchresult  = MatchResult( result )
    sqlalchemysetup.session.commit()
 
+# returns the new match request, so can add options and so on
+# doesn't commit
+def addmatchrequest( ai0, ai1, mod, map ):
+   newmatchrequest = MatchRequest( ai0 = ai0, ai1 = ai1, mod = mod, map = map )
+   sqlalchemysetup.session.add(newmatchrequest)
+

@@ -40,47 +40,65 @@ import config
 
 from utils import *
 from core import *
-
-# get request from form
-#matchrequest = matchrequestcontroller.MatchRequest()
-ai0nameversion = formhelper.getValue("ai0nameversion")
-ai0name = ai0nameversion.split("|")[0]
-ai0version = ai0nameversion.split("|")[1]
-ai1nameversion = formhelper.getValue("ai1nameversion")
-ai1name = ai1nameversion.split("|")[0]
-ai1version = ai1nameversion.split("|")[1]
-mapname = formhelper.getValue("mapname")
-modname = formhelper.getValue("modname")
+from core.tableclasses import *
 
 sqlalchemysetup.setup()
 
 loginhelper.processCookie()
 
-if loginhelper.isLoggedOn():
+def checkformvarsnotnonenotempty( vars ):
+   failed = []
+   for var in vars:
+      if formhelper.getValue(var) == None or formhelper.getValue(var) == '':
+         failed.append(var)
+   return [ len(failed) == 0, failed ]
+
+def go():
+   if not loginhelper.isLoggedOn():
+      jinjahelper.message( "Please login first." )
+      return
+
+   [result, missingfields ] = checkformvarsnotnonenotempty(['ai0nameversion', 'ai1nameversion', 'mapname', 'modname'])
+   if not result:
+      jinjahelper.message("Please fill in all the fields.  Missing " + ",".join(missingfields) )
+      return
+
+   ai0nameversion = formhelper.getValue("ai0nameversion")
+   ai0name = ai0nameversion.split("|")[0]
+   ai0version = ai0nameversion.split("|")[1]
+   ai1nameversion = formhelper.getValue("ai1nameversion")
+   ai1name = ai1nameversion.split("|")[0]
+   ai1version = ai1nameversion.split("|")[1]
+   mapname = formhelper.getValue("mapname")
+   modname = formhelper.getValue("modname")
+
    #if matchrequestcontroller.submitrequest( matchrequest ):
     #  jinjahelper.message( "Submitted"
       # could be nice to print out queue here, or make another page for that
 
-   map = sqlalchemysetup.session.query(tableclasses.Map).filter(tableclasses.Map.map_name == mapname ).first()
-   mod = sqlalchemysetup.session.query(tableclasses.Mod).filter(tableclasses.Mod.mod_name == modname ).first()
-   ai0 = sqlalchemysetup.session.query(tableclasses.AI).filter(tableclasses.AI.ai_name == ai0name ).filter(tableclasses.AI.ai_version == ai0version ).first()
-   ai1 = sqlalchemysetup.session.query(tableclasses.AI).filter(tableclasses.AI.ai_name == ai1name ).filter(tableclasses.AI.ai_version == ai1version ).first()
+   map = sqlalchemysetup.session.query(Map).filter(Map.map_name == mapname ).first()
+   mod = sqlalchemysetup.session.query(Mod).filter(Mod.mod_name == modname ).first()
+   ai0 = sqlalchemysetup.session.query(AI).filter(AI.ai_name == ai0name ).filter(AI.ai_version == ai0version ).first()
+   ai1 = sqlalchemysetup.session.query(AI).filter(AI.ai_name == ai1name ).filter(AI.ai_version == ai1version ).first()
 
-   matchrequest = tableclasses.MatchRequest( ai0, ai1, map, mod )
+   matchrequest = MatchRequest( ai0 = ai0, ai1 = ai1, map = map, mod = mod )
    sqlalchemysetup.session.add( matchrequest )
 
    # add options:
-   availableoptions = sqlalchemysetup.session.query(tableclasses.AIOption)
+   availableoptions = sqlalchemysetup.session.query(AIOption)
    # get selected options from form submission:
    for option in availableoptions:
       if formhelper.getValue( "option_" + option.option_name ) != None:
-         matchrequest.options.append( tableclasses.MatchRequestOption( option ) )
+         matchrequest.options.append( MatchRequestOption( option ) )
 
    sqlalchemysetup.session.commit()
 
    jinjahelper.message( "Submitted ok." )
-else:
-   jinjahelper.message( "Please login first." )
+
+try:
+   go()
+except:
+   jinjahelper.message( "An unexpected error occurred: " + str(sys.exc_info() ) )
 
 sqlalchemysetup.close()
 

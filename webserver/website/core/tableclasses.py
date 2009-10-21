@@ -289,7 +289,7 @@ class MatchRequest(Base):
    matchresult = relation("MatchResult", uselist=False)
    options = relation("MatchRequestOption")
 
-   def __init__( self, ai0, ai1, map, mod ):
+   def __init__( self, ai0 = ai0, ai1 = ai1, map = map, mod = mod ):
       self.ai0 = ai0
       self.ai1 = ai1
       self.map = map

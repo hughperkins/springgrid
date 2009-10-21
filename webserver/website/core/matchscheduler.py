@@ -34,19 +34,31 @@ import sqlalchemysetup
 # does for one league
 def schedulematchesforleague( leaguename ):
    league = leaguehelper.getLeague(leaguename)
-   aipairmatchcount = getaipairmatchcount(league)
+   ais = aihelper.getAIs()
+   [ aitoindex, indextoai ] = getaiindexes(ais)
+   aipairmatchcount = getaipairmatchcount(league, ais, aiindexes)
+   for outerai in ais:
+      for innerai in ais:
+         if aipairmatchcount[aiindexes[outerai]][aiindexes[innerai]] < league.nummatchesperaipair:
+            for i in xrange( league.nummatchesperaipair - aipairmatchcount[aiindexes[outerai]][aiindexes[innerai]] ):
+               scheduleleaguematch( league, outerai, innerai )
 
-# dict from ai to zero-based aiindex
+def scheduleleaguematch( league, ai0, ai1 ):
+   pass
+
+# returns [ dict from ai to zero-based aiindex, dict from index to ai ]
 def getaiindexes(ais):
    # assume this query is cached in memory, so fine to redo
-   aiindexes = {}  # dict from ai to aiindex
+   aitoindex = {}  # dict from ai to aiindex
+   indextoai = {} # dict from index to ai
    for ai in ais:
-      aiindexes[ ai ] = len(aiindexes)
-   return aiindexes
+      aitoindex[ ai ] = len(aitoindex)
+      indextoai[ len(indextoai) ] = ai
+   return [ aitoindex, indextoai ]
 
 # return 2d list ([][]), indexed by indexes returned by getaiindexes
 # showing the numer of matches in the queue between each pair of ais
-def getaipairmatchcount(league, ais, aiindexes):
+def getaipairmatchcount(league, ais, aitoindex ):
    # go through each matchrequest in the queue, and increment matchcountarray member
    # we go through all requests that match the league: both the ones that have results, and the ones 
    # that don't
@@ -62,8 +74,8 @@ def getaipairmatchcount(league, ais, aiindexes):
          continue
       if matchrequest.mod != league.mod:
          continue
-      ai0index = aiindexes[matchrequest.ai0]
-      ai1index = aiindexes[matchrequest.ai1]
+      ai0index = aitoindex[matchrequest.ai0]
+      ai1index = aitoindex[matchrequest.ai1]
       # add both ways around
       matchcountarray[ai0index][ai1index] = matchcountarray[ai0index][ai1index] + 1
       if ai0index != ai1index:
