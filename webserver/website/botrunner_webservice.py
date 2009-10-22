@@ -145,7 +145,6 @@ class AILadderService:
       try:
          if not botrunnerhelper.validatesharedsecret(botrunnername, sharedsecret):
             return (False, "Not authenticated")
-         matchscheduler.schedulematches()
 
          requestitem = matchrequestcontroller.getcompatibleitemfromqueue(botrunnername, sessionid)
          if requestitem == None:
