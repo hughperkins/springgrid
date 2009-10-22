@@ -66,10 +66,10 @@ def parseopts():
 
    sessionid = options.sessionid
 
-def requestgamefromwebserver():
+def requestgamefromwebserver(host):
    global sessionid
    try:
-      [result, serverrequest ] = getxmlrpcproxy().getrequest(config.botrunnername, config.sharedsecret, sessionid )
+      [result, serverrequest ] = getxmlrpcproxy(host).getrequest(config.botrunnername, config.sharedsecret, sessionid )
       if not result:
          print "Something went wrong: " + serverrequest
          return None
@@ -82,12 +82,21 @@ def requestgamefromwebserver():
       return None
 
 # return xmlrpcproxy to communicate with web server
-def getxmlrpcproxy():
-   return xmlrpclib.ServerProxy( uri = config.websiteurl + "/botrunner_webservice.py" )
+def getxmlrpcproxy(host):
+   return xmlrpclib.ServerProxy( uri = host + "/botrunner_webservice.py" )
 
+# returns true if there is at least one host pinging ok
 def doping( status ):
    global sessionid
-   return getxmlrpcproxy().ping( config.botrunnername, config.sharedsecret, sessionid, status )
+   atleastonehostsucceeded = False
+   for host in config.websiteurls:
+      try:
+         print "pinging " + host + " ..."
+         getxmlrpcproxy(host).ping( config.botrunnername, config.sharedsecret, sessionid, status )
+         atleastonehostsucceeded = True
+      except:
+         print "Failed to ping " + host
+   return atleastonehostsucceeded
 
 def rungame( serverrequest ):
    global config, writabledatadirectory
@@ -124,13 +133,13 @@ def rungame( serverrequest ):
    popen = subprocess.Popen( [ config.springPath, writabledatadirectory + "/script.txt"])
    finished = False
    starttimeseconds = time.time()
-   doping("playing game " + serverrequest['ai0_name'] + " vs " + serverrequest['ai1_name'] + " on " + serverrequest['map_name'] + " " + serverrequest['mod_name'] )
+   doping( "playing game " + serverrequest['ai0_name'] + " vs " + serverrequest['ai1_name'] + " on " + serverrequest['map_name'] + " " + serverrequest['mod_name'] )
    lastpingtimeseconds = time.time()
    gameresult = {}
    while not finished:
       print "waiting for game to terminate..."
       if time.time() - lastpingtimeseconds > config.pingintervalminutes * 60:
-         doping ("playing game " + serverrequest['ai0_name'] + " vs " + serverrequest['ai1_name'] + " on " + serverrequest['map_name'] + " " + serverrequest['mod_name'] )
+         doping (host,"playing game " + serverrequest['ai0_name'] + " vs " + serverrequest['ai1_name'] + " on " + serverrequest['map_name'] + " " + serverrequest['mod_name'] )
       if os.path.exists( writabledatadirectory + "/infolog.txt" ):
          infologcontents = filehelper.readFile( writabledatadirectory + "/infolog.txt" )
          # print infologcontents
@@ -179,7 +188,7 @@ def rungame( serverrequest ):
 
    return gameresult
 
-def uploadresulttoserver( serverrequest, gameresult ):
+def uploadresulttoserver( host, serverrequest, gameresult ):
    global writabledatadirectory
 
    # upload gameresult and serverrequest to server...
@@ -219,7 +228,7 @@ def uploadresulttoserver( serverrequest, gameresult ):
       requestuploadedok = False    
       while not requestuploadedok:
          try:
-            (result,errormessage ) = getxmlrpcproxy().submitresult( config.botrunnername, config.sharedsecret, serverrequest['matchrequest_id'], gameresult['resultstring'], replaybinarywrapper )
+            (result,errormessage ) = getxmlrpcproxy(host).submitresult( config.botrunnername, config.sharedsecret, serverrequest['matchrequest_id'], gameresult['resultstring'], replaybinarywrapper )
             print "upload result: " + str( result) + " " + errormessage
             requestuploadedok = True
          except:
@@ -314,10 +323,10 @@ def  setupConfig():
    import config
    return True
 
-def registermaps(registeredmaps):
+def registermaps(host,registeredmaps):
    print registeredmaps
 
-   multicall = xmlrpclib.MultiCall(getxmlrpcproxy())
+   multicall = xmlrpclib.MultiCall(getxmlrpcproxy(host))
    for i in xrange( unitsync.GetMapCount() ):
       mapname = unitsync.GetMapName(i)
       if registeredmaps.count( mapname ) == 0:
@@ -337,10 +346,10 @@ def registermaps(registeredmaps):
    if total > 0:
       print str(successcount) + " successes out of " + str(total)
 
-def registermods(registeredmods):
+def registermods(host,registeredmods):
    print registeredmods
 
-   multicall = xmlrpclib.MultiCall(getxmlrpcproxy())
+   multicall = xmlrpclib.MultiCall(getxmlrpcproxy(host))
    for i in xrange( unitsync.GetPrimaryModCount() ):
       modname = unitsync.GetPrimaryModName(i)
       if registeredmods.count( modname ) == 0:
@@ -359,10 +368,10 @@ def registermods(registeredmods):
    if total > 0:
       print str(successcount) + " successes out of " + str(total)
 
-def registerais(registeredais):
+def registerais(host,registeredais):
    print registeredais
 
-   multicall = xmlrpclib.MultiCall(getxmlrpcproxy())
+   multicall = xmlrpclib.MultiCall(getxmlrpcproxy(host))
    for i in xrange( unitsync.GetSkirmishAICount() ):
       shortname = ''
       version = ''
@@ -388,8 +397,8 @@ def registerais(registeredais):
 
 # we do a single multicall to retrieve all registerdd mods, maps and ais
 # first, which should speed up launch after initial launch
-def registercapabilities():
-   multicall = xmlrpclib.MultiCall(getxmlrpcproxy())
+def registercapabilities(host):
+   multicall = xmlrpclib.MultiCall(getxmlrpcproxy(host))
    multicall.getsupportedmaps( config.botrunnername, config.sharedsecret )
    multicall.getsupportedmods( config.botrunnername, config.sharedsecret )
    multicall.getsupportedais( config.botrunnername, config.sharedsecret )
@@ -397,9 +406,9 @@ def registercapabilities():
    registeredmaps = resultsets[0]
    registeredmods = resultsets[1]
    registeredais = resultsets[2]
-   registermaps(registeredmaps)
-   registermods(registeredmods)
-   registerais(registeredais)
+   registermaps(host,registeredmaps)
+   registermods(host,registeredmods)
+   registerais(host,registeredais)
 
 def go():
    global config, unitsync, writabledatadirectory, demosdirectorylistingbeforegame
@@ -431,30 +440,39 @@ def go():
 
    writabledatadirectory = unitsync.GetWritableDataDirectory()
 
-   try:
-      if sessionid == None:
-         sessionid = stringhelper.getRandomAlphaNumericString(60)
-      print "Sessionid: " + sessionid
-      
-      doping("Connection Test!")
-      print "Connection test to server " + config.websiteurl + " was successfull."
-   except:
-      print "Connection test to server " + config.websiteurl + " failed!"
-      print "Please make sure it is a valid AI Ladder URL, and you can connect to it."
+   if sessionid == None:
+      sessionid = stringhelper.getRandomAlphaNumericString(60)
+   print "Sessionid: " + sessionid
+   
+   if not doping( "Connection Test!"):
+      print "Failed to ping all configured websites.  Please check your configuration and internet connection and try again."
       return
 
-   if not options.noregistercapabilities:
-      registercapabilities()
+   for host in config.websiteurls:
+      if not options.noregistercapabilities:
+         try:
+            print "registering capabilities with " + host + " ..."
+            registercapabilities(host)
+         except:
+            print "Couldn't register capabilities to host " + host + " " + str( sys.exc_info() )
 
    while True:
       print "Checking for new request..."
-      serverrequest = requestgamefromwebserver()
-      if serverrequest != None:
-         # we have a request to process
-         demosdirectorylistingbeforegame = snapshotdemosdirectory()
-         result = rungame( serverrequest )
-         uploadresulttoserver( serverrequest, result )
-      else:
+      # go through each host getting a request
+      # Process each request, then go back to start of loop,
+      # otherwise wait a bit
+      gotrequest = False
+      for host in config.websiteurls:
+         print "checking " + host + " ..."
+         serverrequest = requestgamefromwebserver(host)
+         if serverrequest != None:
+            # we have a request to process
+            demosdirectorylistingbeforegame = snapshotdemosdirectory()
+            result = rungame( serverrequest )
+            uploadresulttoserver( host, serverrequest, result )
+            gotrequest = True
+      
+      if not gotrequest:
          # else, sleep...
          print "Nothing to do.  Sleeping..."
          doping("sleeping")

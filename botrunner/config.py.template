@@ -7,7 +7,7 @@ sharedsecret="SHAREDSECRET"
 # websiteurl =  "http://localhost/ailadder"
 # websiteurl =  "http://manageddreams.com/ailadder"
 # websiteurl =  "http://manageddreams.com/ailadderstaging"
-websiteurl = "WEBSITEURL"
+websiteurls  = [ "WEBSITEURL" ]
 
 sleepthislongwhennothingtodoseconds = 60
 
@@ -20,8 +20,6 @@ unitsyncPath="UNITSYNCPATH"
 #######################################################################3
 # stuff under this line probably doesn't need modifying, in general
 
-websiterequestpage = websiteurl + "/botrunner_getrequest.py"
-websitepostpage = websiteurl + "/botrunner_submitresult.py"
 scripttemplatefilename = "scripttemplate.txt"
 pingintervalminutes = 5
 
