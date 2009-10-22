@@ -285,7 +285,6 @@ class MatchRequest(Base):
    mod_id =Column(Integer, ForeignKey('mods.mod_id'))
    ai0_id = Column(Integer, ForeignKey('ais.ai_id'))
    ai1_id = Column(Integer, ForeignKey('ais.ai_id'))
-   league_id = Column( Integer, ForeignKey('leagues.league_id'))
 
    map = relation("Map" )
    mod = relation("Mod" )
@@ -295,14 +294,12 @@ class MatchRequest(Base):
    matchrequestinprogress = relation("MatchRequestInProgress", uselist=False)
    matchresult = relation("MatchResult", uselist=False)
    options = relation("MatchRequestOption")
-   league = relation("League", uselist=False)
 
    def __init__( self, ai0, ai1, map, mod, league = None ):
       self.ai0 = ai0
       self.ai1 = ai1
       self.map = map
       self.mod = mod
-      self.league = league
 
 class MatchRequestInProgress(Base):
    __tablename__ = 'matchrequests_inprogress'
@@ -328,78 +325,6 @@ class MatchResult(Base):
 
    def __init__(self, matchresult ):
       self.matchresult = matchresult
-
-class League(Base):
-   __tablename__ = 'leagues'
-
-   league_id = Column(Integer,primary_key = True )
-   league_name = Column(String(255))
-   league_creatorid = Column(Integer,ForeignKey('accounts.account_id'))
-   map_id = Column(Integer,ForeignKey('maps.map_id'))
-   mod_id = Column(Integer,ForeignKey('mods.mod_id'))
-   nummatchesperaipair = Column(Integer)
-
-   creator = relation("Account")
-   map = relation("Map")
-   mod = relation("Mod")
-   options = relation("LeagueOption")
-
-   def __init__( self, league_name, creator, mod, map, nummatchesperaipair ):
-      self.league_name = league_name
-      self.creator = creator
-      self.mod = mod
-      self.map = map
-      self.nummatchesperaipair = nummatchesperaipair
-
-class LeagueOption(Base):
-   __tablename__ = 'leagueoptions'
-
-   league_id = Column(Integer,ForeignKey('leagues.league_id'),primary_key=True)
-   option_id = Column(Integer,ForeignKey('aioptions.option_id'),primary_key=True)
-
-   option = relation("AIOption")
-
-   def __init__(self, option ):
-      self.option = option
-
-class LeagueGroup(Base):
-   __tablename__ = 'leaguegroups'
-
-   leaguegroup_id = Column(Integer,primary_key = True)
-   leaguegroup_name = Column(String(255))
-   leaguegroup_creatorid = Column(Integer,ForeignKey("accounts.account_id"))
-   
-   creator = relation("Account")
-   childleagues = relation("LeagueGroupLeagueMember")
-   #childleaguegroups = relation("LeagueGroupLeagueGroupMember")
-
-   def __init__( self, leaguegroup_name ):
-      self.leaguegroup_name = leaguegroup_name
-
-# members who are leaguegruops
-class LeagueGroupLeagueMember(Base):
-   __tablename__ = 'leaguegroup_leaguemembers'
-
-   leaguegroup_id = Column(Integer,ForeignKey('leaguegroups.leaguegroup_id'),primary_key = True)
-   league_id = Column(Integer,ForeignKey('leagues.league_id'),primary_key = True)
-
-   league = relation("League")
-
-   def __init__(self, league ):
-      self.league = league
-
-# members who are leagues (leaf nodes)
-def LeagueGroupLeagueGroupMember(Base):
-   __tablename__ = 'leaguegroup_leaguegroupmembers'
-
-   leaguegroup_id = Column(Integer,ForeignKey('leaguegroups.leaguegroup_id'),primary_key = True)
-   childleaguegroup_id = Column(Integer,ForeignKey('leaguegroups.leaguegroup_id'),primary_key=True)
-
-   parentleaguegroup = relation("LeagueGroup", primaryjoin = leaguegroup_id == LeagueGroup.leaguegroup_id, backrefs = 'childleaguegroups')
-   leaguegroup = relation("LeagueGroup", primaryjoin = childleaguegroup_id == LeagueGroup.leaguegroup_id)
-
-   def __init__(self, leaguegroup ):
-      self.leaguegroup = leaguegroup
 
 # simple flat config for now
 class Config(Base):
@@ -450,6 +375,7 @@ def addstaticdata(session):
    mapadminrole = Role("mapadmin")
    leagueadminrole = Role("leagueadmin")
    botrunneradminrole = Role("botrunneradmin")
+   apiclientrole = Role("apiclient")
 
    session.add(accountadminrole)
    session.add(aiadminrole)
@@ -457,6 +383,7 @@ def addstaticdata(session):
    session.add(mapadminrole)
    session.add(leagueadminrole)
    session.add(botrunneradminrole)
+   session.add(apiclientrole)
 
    account = Account("admin","admin", "admin")
    session.add(account)
