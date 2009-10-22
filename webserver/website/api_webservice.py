@@ -47,23 +47,43 @@ class APIService:
    def getmods(self):
       return listhelper.tuplelisttolist( sqlalchemysetup.session.query(Mod.mod_name) )
 
-   # returns a list of [ainame,aiversion] lists
+   # returns a list of {'ai_name': ainame, 'ai_version': aiversion } ] dictionaries
    def getais(self):
       ailist = []
       for ai in sqlalchemysetup.session.query(AI):
-         ailist.append([ai.ai_name, ai.ai_version])
+         ailist.append({'ai_name': ai.ai_name, 'ai_version': ai.ai_version})
       return ailist
 
    # schedule a single match
-   # - 'ais' should contain a list of [ainame,aiversion] lists
+   # - 'ais' should contain a list of {'ai_name': ainame, 'ai_version': aiversion} dicts
    # containing all ais that should play on the map
    # - 'options' should contain a list of option name strings
    #
    # note: later versions of this function should be added with a new version number
    # ie v2, v3 etc... to avoid breaking the api for old clients
-   def schedulematchv1(self,mapname,modname,ais,options):
-      pass
+   # returns [True,''] or [False, errormessage ]
+   def schedulematchv1(self,map_name,mod_name,ais,options):
+      try:
+         map = sqlalchemysetup.session.query(Map).filter(Map.map_name == map_name ).first()
+         mod = sqlalchemysetup.session.query(Mod).filter(Mod.mod_name == mod_name ).first()
+         ai0 = sqlalchemysetup.session.query(AI).filter(AI.ai_name == ais[0]['ai_name'] ).filter(AI.ai_version == ais[0]['ai_version'] ).first()
+         ai1 = sqlalchemysetup.session.query(AI).filter(AI.ai_name == ais[1]['ai_name'] ).filter(AI.ai_version == ais[1]['ai_version'] ).first()
 
+         matchrequest = MatchRequest( ai0 = ai0, ai1 = ai1, map = map, mod = mod )
+         sqlalchemysetup.session.add( matchrequest )
+
+         # add options:
+         availableoptions = sqlalchemysetup.session.query(AIOption)
+         for option in availableoptions:
+            if option.option_name in options:
+               matchrequest.options.append( MatchRequestOption( option ) )
+
+         sqlalchemysetup.session.commit()
+
+         return [True, '' ]
+      except:
+         return (False,"An unexpected exception occurred: " + str( sys.exc_info() ) + "\n" + str( traceback.extract_tb( sys.exc_traceback ) ) )
+      
    # returns list of dictionaries
    # note: later versions of this function, with incompatiable changes, should be added with a new version number
    # ie v2, v3 etc... to avoid breaking the api for old clients
