@@ -64,8 +64,28 @@ class APIService:
    def schedulematchv1(self,mapname,modname,ais,options):
       pass
 
-   def getmatchrequestqueue(self):
-      pass
+   # returns list of dictionaries
+   # note: later versions of this function, with incompatiable changes, should be added with a new version number
+   # ie v2, v3 etc... to avoid breaking the api for old clients
+   # returns [True,list] if successful or [False,errormessage] if something went wrnog
+   def getmatchrequestqueuev1(self):
+      try:
+         requests = sqlalchemysetup.session.query(MatchRequest).filter(MatchRequest.matchresult == None )
+         requeststoreturn = []
+         for request in requests:
+            options = []
+            for option in request.options:
+               options.append(option.option.option_name)
+            requeststoreturn.append( {
+               'matchrequest_id': request.matchrequest_id,
+               'map_name': request.map.map_name,
+               'mod_name': request.mod.mod_name,
+               'ais': [ { 'ai_name': request.ai0.ai_name, 'ai_version': request.ai0.ai_version },
+                  { 'ai_name': request.ai1.ai_name, 'ai_version': request.ai1.ai_version } ],
+               'options': options } )
+         return [True, requeststoreturn ]
+      except:
+         return (False,"An unexpected exception occurred: " + str( sys.exc_info() ) + "\n" + str( traceback.extract_tb( sys.exc_traceback ) ) )
 
    def getmatchresults(self):
       pass
