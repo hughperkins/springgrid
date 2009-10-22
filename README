@@ -1,9 +1,10 @@
 Please see this thread http://springrts.com/phpbb/viewtopic.php?f=15&t=20358 for details.
 
+springgrid's goals and philosophy are:
+- make a site that makes it easy to run games on a grid of botrunner servers
+
 botrunner contains the botrunner, that runs spring games on any pc
 somewhere
 
 webserver/website contains the code for the website
-webserver/website/db contains the sql to create tables on the webserver db, 
-targeting mysql
 
