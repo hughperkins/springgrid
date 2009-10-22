@@ -40,15 +40,15 @@ import config
 # botrunner simply calls getxmlrpcproxy().<methodname>( params, ... )
 class APIService:
    # returns a list of mapnames
-   def getmaps():
+   def getmaps(self):
       return listhelper.tuplelisttolist( sqlalchemysetup.session.query(Map.map_name) )
 
    # returns a list of modnames
-   def getmods():
+   def getmods(self):
       return listhelper.tuplelisttolist( sqlalchemysetup.session.query(Mod.mod_name) )
 
    # returns a list of [ainame,aiversion] lists
-   def getais():
+   def getais(self):
       ailist = []
       for ai in sqlalchemysetup.session.query(AI):
          ailist.append([ai.ai_name, ai.ai_version])
@@ -61,13 +61,13 @@ class APIService:
    #
    # note: later versions of this function should be added with a new version number
    # ie v2, v3 etc... to avoid breaking the api for old clients
-   def schedulematchv1(mapname,modname,ais,options):
+   def schedulematchv1(self,mapname,modname,ais,options):
       pass
 
-   def getmatchrequestqueue():
+   def getmatchrequestqueue(self):
       pass
 
-   def getmatchresults():
+   def getmatchresults(self):
       pass
 
 handler = SimpleXMLRPCServer.CGIXMLRPCRequestHandler()
