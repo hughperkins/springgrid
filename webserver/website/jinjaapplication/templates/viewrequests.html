@@ -5,7 +5,6 @@
 <table border='1' padding='3'>
 <tr class='tablehead'>
 <td>matchrequestid</td>
-<td>scheduled for which league</td>
 <td>ai0name</td>
 <td>ai0version</td>
 <td>ai1name</td>
@@ -25,7 +24,6 @@
       <tr>
    {% endif %}
    <td>{{request.matchrequest_id}}</td>
-   <td>{{request.league.league_name|e}}&nbsp;</td>
    <td>{{request.ai0.ai_name|e}}</td>
    <td>{{request.ai0.ai_version|e}}</td>
    <td>{{request.ai1.ai_name|e}}</td>
