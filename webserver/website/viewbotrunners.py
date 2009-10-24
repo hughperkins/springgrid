@@ -36,6 +36,7 @@ sqlalchemysetup.setup()
 loginhelper.processCookie()
 
 botrunnerhelper.purgeExpiredSessions()
+sqlalchemysetup.session.commit()
 
 botrunners = sqlalchemysetup.session.query(BotRunner)
 
