@@ -86,6 +86,9 @@ tr.success {
 td.success {
    background-color: lightgreen;
 }
+td.warning {
+   background-color: orange;
+}
 td.fail {
    background-color: red;
 }

@@ -51,7 +51,7 @@ for botrunner in botrunners:
    botrunnerdata[botrunner]['rowspan'] = rowspan
    for session in botrunner.sessions:
       sessiondata[session] = {}
-      sessiondata[session]['pingtimeok'] = False
+      sessiondata[session]['pingtimestatus'] = 'down'
       lastpingtimeddate = None
       lastpingtime =  session.lastpingtime
       if lastpingtime != None:
@@ -59,9 +59,9 @@ for botrunner in botrunners:
          secondssincelastping = dates.timedifftototalseconds( datetime.datetime.now() - lastpingtimedate )
          sessiondata[session]['lastpingtimestring'] = str(lastpingtimedate)
          if secondssincelastping < confighelper.getValue('expiresessionminutes') * 60:
-            session.pingtimeok = True
-            sessiondata[session]['pingtimeok'] = True
-
+            sessiondata[session]['pingtimestatus'] = 'maybeok'
+         if secondssincelastping < confighelper.getValue('guimarksessionasmaybedownafterthismanyminutes') * 60:
+            sessiondata[session]['pingtimestatus'] = 'ok'
 
 jinjahelper.rendertemplate('viewbotrunners.html', botrunners = botrunners, isloggedin = loginhelper.isLoggedOn(), username = loginhelper.gusername, menus = menu.getmenus(), botrunnerdata = botrunnerdata, sessiondata = sessiondata )
 

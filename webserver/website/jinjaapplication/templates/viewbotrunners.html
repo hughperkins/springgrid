@@ -39,7 +39,7 @@ http://www.opensource.org/licenses/gpl-license.php
 {% for instance in botrunner.sessions %}
 {% if not loop.first %}<tr>{%endif%}
 <td>{{instance.botrunner_session_id|truncate(5, '...')|e}}</td>
-<td class="{% if sessiondata[instance].pingtimeok %}success{%else%}fail{%endif%}">{{sessiondata[instance].lastpingtimestring}}</td>
+<td class="{% if sessiondata[instance].pingtimestatus == 'ok' %}success{% elif sessiondata[instance].pingtimestatus == 'maybeok' %}warning{% else %}fail{%endif%}">{{sessiondata[instance].lastpingtimestring}}</td>
 <td>{{instance.lastpingstatus|e}}</td>
 </tr>
 {%else%}
