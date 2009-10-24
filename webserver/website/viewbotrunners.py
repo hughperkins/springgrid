@@ -35,6 +35,8 @@ sqlalchemysetup.setup()
 
 loginhelper.processCookie()
 
+botrunnerhelper.purgeExpiredSessions()
+
 botrunners = sqlalchemysetup.session.query(BotRunner)
 
 # if you know of a reliable way of just adding the following two data to  the business ojbects,

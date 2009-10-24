@@ -35,24 +35,8 @@ import confighelper
 # go through matchrequests_inprogress table, and remove any rows
 # where the session is older than a certain time
 def archiveoldrequests():
-   matchrequests = sqlalchemysetup.session.query(MatchRequest).filter(MatchRequest.matchresult == None).filter(MatchRequest.matchrequestinprogress != None )
-   for matchrequest in matchrequests:
-      lastpingtime = dates.dateStringToDateTime( matchrequest.matchrequestinprogress.botrunnersession.lastpingtime )
-      secondssincelastping = dates.timedifftototalseconds( datetime.datetime.now() - lastpingtime )
-      if secondssincelastping > confighelper.getValue('expiresessionminutes') * 60:
-         sqlalchemysetup.session.delete( matchrequest.matchrequestinprogress.botrunnersession )
-         sqlalchemysetup.session.delete( matchrequest.matchrequestinprogress )
-   sqlalchemysetup.session.commit()
+   botrunnerhelper.purgeExpiredSessions()
       
-   #dbconnection.cursor.execute("select matchrequest_id, datetimeassigned from matchrequests_inprogress")
-   #row = dbconnection.cursor.fetchone()
-   #while row != None:
-   #   matchrequestid = row[0]
-   #   datetimestring = row[1]
-   #   # datetime = dates.dateStringToDateTime( datetimestring )
-      
-  #    row = dbconnection.cursor.fetchone()
-
 # this should walk the queue till it finds something that the engine
 # can handle
 # for now, it just returns the first item in the queue

@@ -20,10 +20,12 @@
 #
 
 import cgi
+import datetime
 
 from utils import *
 import sqlalchemysetup
 import tableclasses
+import confighelper
 from tableclasses import *
 
 botrunnername = ""
@@ -46,6 +48,28 @@ def getBotRunnerSession(botrunnername, botrunner_session_id ):
       if session.botrunner_session_id == botrunner_session_id:
          return session
    return None
+
+def expireBotRunnerSession( botrunner, session ):
+   # first, remove any matchrequests in progress attached to this session
+   requestsinprogress = sqlalchemysetup.session.query(MatchRequest).filter(MatchRequest.matchresult == None).filter(MatchRequest.matchrequestinprogress != None)
+   for request in requestsinprogress:
+      if request.matchrequestinprogress.botrunner == botrunner and request.matchrequestinprogress.botrunnersession == session:
+         sqlalchemysetup.session.delete( request.matchrequestinprogress )
+   sqlalchemysetup.session.delete( session )
+
+   # then, delete session
+   sqlalchemysetup.session.delete( session )
+
+def purgeExpiredSessions():
+   botrunners = sqlalchemysetup.session.query(BotRunner)
+   for botrunner in botrunners:
+      for session in botrunner.sessions:
+         lastpingtime =  session.lastpingtime
+         if lastpingtime != None:
+            lastpingtimedate = dates.dateStringToDateTime( lastpingtime )
+            secondssincelastping = dates.timedifftototalseconds( datetime.datetime.now() - lastpingtimedate )
+            if secondssincelastping > confighelper.getValue('expiresessionminutes') * 60:
+               expireBotRunnerSession( botrunner, session )
 
 def validatesharedsecret(lbotrunnername, sharedsecret):
    global botrunnername
