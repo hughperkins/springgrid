@@ -69,12 +69,22 @@ def populatedefault(key_name):
 
 # get an appropriately typed config value, indexed by key_name
 def getValue( key_name ):
+   global defaults
+
+   if not defaults.has_key(key_name):
+      raise Exception('confighelper.setvalue, no such key_name: ' + key_name )
+
    configrow = sqlalchemysetup.session.query(Config).filter(Config.config_key == key_name ).first()
    if configrow == None:
       return populatedefault(key_name)
    return configrow.getValue()
 
 def setValue(key_name, key_value):
+   global defaults
+
+   if not defaults.has_key(key_name):
+      raise Exception('confighelper.setvalue, no such key_name: ' + key_name )
+
    configrow = sqlalchemysetup.session.query(Config).filter(Config.config_key == key_name ).first()
    if configrow == None:
       config = Config(key_name, key_value)
