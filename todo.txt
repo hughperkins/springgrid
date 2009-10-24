@@ -3,6 +3,12 @@ what is being worked on at the moment:
   scheduling
 
 todo:
+- purge old botrunner sessions somewhere, maybe in viewbotrunners?
+- add 'delete request' to request queue
+- add ability to create new options
+- add 'botrunner_isoperational' flag for botrunners
+  - ... or ... allow leagues to specify which botrunner result are acceptable
+  - ... or to blacklist which are not
 - add botrunner howto to website
 - add subscription to each league for each ai
 - add scheduler, to queue up matchrequests for each league
