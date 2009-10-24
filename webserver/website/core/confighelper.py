@@ -35,6 +35,13 @@ def getKeys():
       keys.append(config.config_key)
    return keys
 
+def getconfigdict():
+   applydefaults()
+   dict = {}
+   for config in sqlalchemysetup.session.query(Config):
+      dict[config.config_key] = config.getValue()
+   return dict
+
 def applydefaults():
    global defaults
    for key_name in defaults.keys():

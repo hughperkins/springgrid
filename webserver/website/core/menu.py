@@ -40,6 +40,7 @@ def getmenus():
       ['View available mods', 'viewmods.py'],
       ['View available ais', 'viewais.py'],
       ['View accounts', 'viewaccounts.py'],
+      ['View global config', 'viewconfig.py' ],
       ['Run website diagnostics', 'diagnostics.py']
    ]])
 
