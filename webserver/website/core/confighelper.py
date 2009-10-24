@@ -26,6 +26,10 @@ import sqlalchemysetup
 from tableclasses import *
 
 defaults = {
+   'gametimeoutminutes': 30,
+   'expiresessionminutes': 20,
+   'gameendstring': "] Team%TEAMNUMBER%",
+   'cheatingstring': "] SkirmishAI (with team ID = %TEAMNUMBER%): Cheating enabled",
    'guimarksessionasmaybedownafterthismanyminutes': 6
 } 
 

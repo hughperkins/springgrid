@@ -365,10 +365,7 @@ class Config(Base):
          return False
       
 def addstaticdata(session):
-   session.add(Config('gametimeoutminutes', 30 ) )
-   session.add(Config('expiresessionminutes', 20 ) )
-   session.add(Config('gameendstring', "] Team%TEAMNUMBER%" ) )
-   session.add(Config('cheatingstring', "] SkirmishAI (with team ID = %TEAMNUMBER%): Cheating enabled" ) )
+   confighelper.applydefaults()
 
    # maybe roles static data could be created by core/roles.py?
    # anyway, for now... :
