@@ -145,7 +145,7 @@ class AILadderService:
                filehandle.write( contentsraw )
                filehandle.close()
 
-         return (True,'received replay file raw length: ' + str( len( replaycontentsraw ) ) )
+         return (True,'' )
       except:
          return (False,"An unexpected exception occurred: " + str( sys.exc_info() ) + "\n" + str( traceback.extract_tb( sys.exc_traceback ) ) )
 
