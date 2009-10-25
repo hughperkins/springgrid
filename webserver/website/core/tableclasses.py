@@ -25,7 +25,7 @@ import sqlalchemy
 import sqlalchemy.ext.declarative
 import sqlalchemy.orm
 
-from sqlalchemy import Column, String, Integer, ForeignKey, and_
+from sqlalchemy import Column, String, Integer, ForeignKey, and_, schema
 from sqlalchemy.orm import backref, relation
 
 from utils import *
@@ -37,7 +37,7 @@ class Map(Base):
    __tablename__ = 'maps'
 
    map_id = Column(Integer,primary_key=True)
-   map_name = Column(String(255))
+   map_name = Column(String(255), unique = True)
    map_archivechecksum = Column(String(255))
    map_url = Column(String(255))
 
@@ -49,7 +49,7 @@ class Mod(Base):
    __tablename__ = 'mods'
 
    mod_id =Column(Integer,primary_key=True)
-   mod_name = Column(String(255))
+   mod_name = Column(String(255), unique = True)
    mod_archivechecksum = Column(String(255))
    mod_url = Column(String(255))
 
@@ -64,7 +64,7 @@ class Role(Base):
       self.role_name = role_name
 
    role_id = Column(Integer,primary_key=True)
-   role_name = Column(String(255))
+   role_name = Column(String(255), unique = True)
 
 class RoleMember(Base):
    __tablename__ = 'role_members'
@@ -81,7 +81,7 @@ class Account(Base):
    __tablename__ = 'accounts'
 
    account_id = Column(Integer,primary_key=True)
-   username = Column(String(255))
+   username = Column(String(255), unique = True)
    userfullname = Column(String(255))
    useremailaddress = Column(String(255))
    passwordsalt = Column(String(255))
@@ -115,6 +115,8 @@ class AI(Base):
    ai_version = Column(String(255))
    ai_downloadurl = Column(String(255))
    ai_owneraccount_id = Column(Integer,ForeignKey('accounts.account_id'))
+
+   __table_args__ = (schema.UniqueConstraint('ai_name','ai_version'), {} )
 
    allowedmaps = relation("AIAllowedMap")
    allowedmods = relation("AIAllowedMod")
@@ -239,7 +241,7 @@ class BotRunner(Base):
    __tablename__ = 'botrunners'
 
    botrunner_id = Column(Integer,primary_key=True)
-   botrunner_name = Column(String(255))
+   botrunner_name = Column(String(255), unique = True)
    botrunner_sharedsecret = Column(String(255))
    botrunner_owneraccountid = Column(Integer, ForeignKey('accounts.account_id') )
    rowspan = 0 # used by viewbotrunners.py
@@ -261,7 +263,7 @@ class AIOption(Base):
    __tablename__ = 'aioptions'
 
    option_id = Column(Integer,primary_key=True)
-   option_name = Column(String(255))
+   option_name = Column(String(255), unique = True)
 
    def __init__(self, option_name):
       self.option_name = option_name
@@ -365,6 +367,7 @@ class Config(Base):
          return False
       
 def addstaticdata(session):
+   import confighelper
    confighelper.applydefaults()
 
    # maybe roles static data could be created by core/roles.py?
