@@ -204,6 +204,26 @@ def rungame( serverrequest ):
 
    return gameresult
 
+# when spring crashes, the replay is called 'unnamed', so we'll grab that file instead
+def getreplayfullpath( writabledatadirectory, relativereplaypathfrominfolog ):
+   replayfullpath = writabledatadirectory, relativereplaypathfrominfolog
+   if os.path.isfile(replayfullpath):
+      return replayfullpath
+
+   demo_folderpath = os.path.dirname( replayfullpath )
+   demo_filename = os.path.basename( replayfullpath )
+
+   demo_splitunder = demo_filename.split('_')
+   demo_newname = '_'.join(demo_splitunder[:3] + ('unnamed',) + demo_splitunder[4:])
+   demo_newpath = os.path.join(demo_folderpath, demo_newname)
+
+   if not os.path.isfile( demo_newpath ):
+      print "No replay found"
+      return None
+
+   print 'Spring bug: replay is actually named:', demo_newname
+   return demo_newpath
+
 def uploadresulttoserver( host, serverrequest, gameresult ):
    global writabledatadirectory
 
@@ -211,7 +231,7 @@ def uploadresulttoserver( host, serverrequest, gameresult ):
    # ...
 
    # first we should take care of the replay
-   replaypath = gameresult['replaypath']
+   replaypath = getreplaypath( writabledatadirectory, gameresult['replaypath'] )
 
    uploaddatadict = {} # dict of 'replay': replaydata, etc ...
 
