@@ -39,7 +39,7 @@ replaypathbyrequest = {}
 for request in requests:
    replaypath = replaycontroller.getReplayPath(request.matchrequest_id)
    if os.path.isfile( replaypath ):
-      replaypathbyrequest[request] = replaypath
+      replaypathbyrequest[request] = replaycontroller.getReplayWebRelativePath( request.matchrequest_id)
 
 jinjahelper.rendertemplate( 'viewresults.html', requests = requests, replaypathbyrequest = replaypathbyrequest )
 
