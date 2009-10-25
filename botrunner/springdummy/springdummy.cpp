@@ -64,6 +64,10 @@ void createfakereplay() {
    ostringstream replayfilename;
    replayfilename << "demos" << FS << rand();
    ofstream replayfile( replayfilename.str().c_str() );
+   // add in path to file in infolog:
+   ostringstream messagestream;
+   messagestream << "[      0] Recording demo " << replayfilename.str() << endl;
+   writeToInfolog( messagestream.str() );
    // let's write about 500k of stuff...
    // though after zipping it it will be much smaller
    // use rand to prevent zipping being too powerful
@@ -81,31 +85,45 @@ void writeStuffToInfologbis() {
 }
 
 void writeStuffToInfolog() {
-   for( int i = 0; i < 3; i++ ) {
-      writeStuffToInfologbis();
-      sleep_seconds(1);
-   }
+   //for( int i = 0; i < 3; i++ ) {
    writeStuffToInfologbis();
+   sleep_seconds(1);
+   //}
+   //writeStuffToInfologbis();
 }
 
 int main( int argc, char** argv ) {
    srand((unsigned)time(0)); // seed the pseudo-random numbers with system time
-   int randomnumber = rand() % 4; // use % 5 if you want to simulate hangs too
+   int randomnumber = rand() % 6; // use % 5 if you want to simulate hangs too
    int a = 0;
    int b = 0;
    ostringstream messagestream;
-   createfakereplay();
    cout << "randomnumber: " << randomnumber << endl;
    switch( randomnumber ) {
       case 3:   // crash
          cout << "crashing" << endl;
          writeStuffToInfolog();
+         createfakereplay();
+         writeStuffToInfolog();
+         writeStuffToInfolog();
          a = 0;
          b = 5 / a;
          break;
 
-      case 4:   // hang 
+      case 4:   // crash
+         cout << "crashing, no replay" << endl;
+         writeStuffToInfolog();
+         writeStuffToInfolog();
+         writeStuffToInfolog();
+         a = 0;
+         b = 5 / a;
+         break;
+
+      case 5:   // hang 
          cout << "hanging" << endl;
+         writeStuffToInfolog();
+         createfakereplay();
+         writeStuffToInfolog();
          writeStuffToInfolog();
          hang();
          break;
@@ -113,6 +131,10 @@ int main( int argc, char** argv ) {
       case 2:   // ai0 dies
          cout << "ai0 dieing..." << endl;
          writeStuffToInfolog();
+         createfakereplay();
+         writeStuffToInfolog();
+         writeStuffToInfolog();
+
          messagestream << endgamemessageprefix << 0 << endgamemessagepostfix;
          writeToInfolog( messagestream.str() );
          hang();
@@ -121,6 +143,10 @@ int main( int argc, char** argv ) {
       case 1:   // ai1 dies
          cout << "ai1 dieing..." << endl;
          writeStuffToInfolog();
+         createfakereplay();
+         writeStuffToInfolog();
+         writeStuffToInfolog();
+
          messagestream << endgamemessageprefix << 1 << endgamemessagepostfix;
          writeToInfolog( messagestream.str() );
          hang();
@@ -129,6 +155,10 @@ int main( int argc, char** argv ) {
       case 0:   // both ais die
          cout << "both dieing..." << endl;
          writeStuffToInfolog();
+         createfakereplay();
+         writeStuffToInfolog();
+         writeStuffToInfolog();
+
          messagestream << endgamemessageprefix << 0 << endgamemessagepostfix;
          writeToInfolog( messagestream.str() );
          messagestream << endgamemessageprefix << 1 << endgamemessagepostfix;
