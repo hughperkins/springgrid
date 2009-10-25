@@ -1,7 +1,7 @@
 [GAME]
 {
 	HostIP=localhost;
-	HostPort=8452;
+	HostPort=0;
 	IsHost=1;
 	MyPlayerName=UnnamedPlayer;
 
