@@ -231,7 +231,7 @@ def uploadresulttoserver( host, serverrequest, gameresult ):
    # ...
 
    # first we should take care of the replay
-   replaypath = getreplaypath( writabledatadirectory, gameresult['replaypath'] )
+   replaypath = getreplayfullpath( writabledatadirectory, gameresult['replaypath'] )
 
    uploaddatadict = {} # dict of 'replay': replaydata, etc ...
 
