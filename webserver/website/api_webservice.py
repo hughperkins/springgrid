@@ -131,6 +131,8 @@ class APIService:
             }
             if os.path.isfile( replaycontroller.getReplayPath(request.matchrequest_id) ):
                newresulttoreturn['replayrelativeurl'] = replaycontroller.getReplayWebRelativePath(request.matchrequest_id) 
+            if os.path.isfile( replaycontroller.getInfologPath(request.matchrequest_id) ):
+               newresulttoreturn['infologrelativeurl'] = replaycontroller.getInfologWebRelativePath(request.matchrequest_id) 
             resultstoreturn.append( newresulttoreturn )
          return [True, resultstoreturn ]
       except:
