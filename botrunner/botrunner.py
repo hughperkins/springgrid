@@ -98,7 +98,7 @@ def doping( status ):
          print "Failed to ping " + host
    return atleastonehostsucceeded
 
-def rungame( host, serverrequest ):
+def rungame( serverrequest ):
    global config, writabledatadirectory
    scripttemplatecontents = filehelper.readFile( scriptdir + "/" + config.scripttemplatefilename )
 
@@ -133,13 +133,13 @@ def rungame( host, serverrequest ):
    popen = subprocess.Popen( [ config.springPath, writabledatadirectory + "/script.txt"])
    finished = False
    starttimeseconds = time.time()
-   doping( host, "playing game " + serverrequest['ai0_name'] + " vs " + serverrequest['ai1_name'] + " on " + serverrequest['map_name'] + " " + serverrequest['mod_name'] )
+   doping( "playing game " + serverrequest['ai0_name'] + " vs " + serverrequest['ai1_name'] + " on " + serverrequest['map_name'] + " " + serverrequest['mod_name'] )
    lastpingtimeseconds = time.time()
    gameresult = {}
    while not finished:
       print "waiting for game to terminate..."
       if time.time() - lastpingtimeseconds > config.pingintervalminutes * 60:
-         doping (host,"playing game " + serverrequest['ai0_name'] + " vs " + serverrequest['ai1_name'] + " on " + serverrequest['map_name'] + " " + serverrequest['mod_name'] )
+         doping ( "playing game " + serverrequest['ai0_name'] + " vs " + serverrequest['ai1_name'] + " on " + serverrequest['map_name'] + " " + serverrequest['mod_name'] )
       if os.path.exists( writabledatadirectory + "/infolog.txt" ):
          infologcontents = filehelper.readFile( writabledatadirectory + "/infolog.txt" )
          # print infologcontents
@@ -217,6 +217,7 @@ def uploadresulttoserver( host, serverrequest, gameresult ):
       tarhandle.close()
 
    # ok, let's do the upload... if we don't have a replay, we won't send the replay
+   replaybinarywrapper = xmlrpclib.Binary('')
    if thisreplayfilename != '':
       replayfilehandle = open( writabledatadirectory + "/thisreplay.tar.bz2", 'rb' )
       replaycontents = replayfilehandle.read()
@@ -225,18 +226,15 @@ def uploadresulttoserver( host, serverrequest, gameresult ):
       print "binary length: " + str(len(replaycontents))
       replaybinarywrapper = xmlrpclib.Binary(replaycontents)
 
-      requestuploadedok = False    
-      while not requestuploadedok:
-         try:
-            (result,errormessage ) = getxmlrpcproxy(host).submitresult( config.botrunnername, config.sharedsecret, serverrequest['matchrequest_id'], gameresult['resultstring'], replaybinarywrapper )
-            print "upload result: " + str( result) + " " + errormessage
-            requestuploadedok = True
-         except:
-            print "Something went wrong uploading to the server: " + str( sys.exc_value ) + ".\nRetrying ... "
-            time.sleep(5)
-   else:
-      print "we haven't programmed in the case of no replay found yet..."
-      pass
+   requestuploadedok = False    
+   while not requestuploadedok:
+      try:
+         (result,errormessage ) = getxmlrpcproxy(host).submitresult( config.botrunnername, config.sharedsecret, serverrequest['matchrequest_id'], gameresult['resultstring'], replaybinarywrapper )
+         print "upload result: " + str( result) + " " + errormessage
+         requestuploadedok = True
+      except:
+         print "Something went wrong uploading to the server: " + str( sys.exc_value ) + ".\nRetrying ... "
+         time.sleep(5)
 
 demosdirectorylistingbeforegame = None
 
@@ -468,7 +466,7 @@ def go():
          if serverrequest != None:
             # we have a request to process
             demosdirectorylistingbeforegame = snapshotdemosdirectory()
-            result = rungame( hsot, serverrequest )
+            result = rungame( serverrequest )
             uploadresulttoserver( host, serverrequest, result )
             gotrequest = True
       
