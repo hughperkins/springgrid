@@ -14,6 +14,7 @@
 <td>modname</td>
 <td>options</td>
 <td>botrunnername</td>
+<td>assignment date/time</td>
 <td>result</td>
 <td>infolog</td>
 <td>replay</td>
@@ -35,6 +36,7 @@
    &nbsp;
    </td>
    <td>{{request.matchrequestinprogress.botrunner.botrunner_name|e}}</td>
+   <td>{{request.matchrequestinprogress.datetimeassigned}}</td>
    <td>{{request.matchresult.matchresult|e}}</td>
    <td>
    {% if infologpathbyrequest[request] is defined %}
