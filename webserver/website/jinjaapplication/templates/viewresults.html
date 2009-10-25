@@ -15,6 +15,7 @@
 <td>options</td>
 <td>botrunnername</td>
 <td>result</td>
+<td>infolog</td>
 <td>replay</td>
 </tr>
 
@@ -35,6 +36,13 @@
    </td>
    <td>{{request.matchrequestinprogress.botrunner.botrunner_name|e}}</td>
    <td>{{request.matchresult.matchresult|e}}</td>
+   <td>
+   {% if infologpathbyrequest[request] is defined %}
+      <a href='{{infologpathbyrequest[request]|e}}'>infolog</a>
+   {% else %}
+   No infolog available
+   {% endif %}
+   </td>
    <td>
    {% if replaypathbyrequest[request] is defined %}
       <a href='{{replaypathbyrequest[request]|e}}'>replay</a>

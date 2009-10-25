@@ -213,10 +213,9 @@ def uploadresulttoserver( host, serverrequest, gameresult ):
    # first we should take care of the replay
    replaypath = gameresult['replaypath']
 
-   if replaypath == '' or replaypath == None or not os.path.exists( writabledatadirectory + replaypath ):
-      # then we didn't create a replay for some reason..
-      replaybinarywrapper = xmlrpclib.Binary('')
-   else:
+   uploaddatadict = {} # dict of 'replay': replaydata, etc ...
+
+   if replaypath != '' and replaypath != None and os.path.exists( writabledatadirectory + replaypath ):
       # first tar.bz2 it
       tarhandle = tarfile.open(writabledatadirectory + "/thisreplay.tar.bz2", "w:bz2" )
       os.chdir( writabledatadirectory + os.path.dirname(replaypath) )  # cd in, so that we don't embed the paths
@@ -228,13 +227,31 @@ def uploadresulttoserver( host, serverrequest, gameresult ):
       replaycontents = replayfilehandle.read()
       replayfilehandle.close()
 
-      print "binary length: " + str(len(replaycontents))
+      print "replay binary length: " + str(len(replaycontents))
       replaybinarywrapper = xmlrpclib.Binary(replaycontents)
+      uploaddatadict['replay'] = replaybinarywrapper
+
+   # should move this stuff to a function, but just hacking it in for now to get it working
+   if os.path.exists( writabledatadirectory + 'infolog.txt' ):
+      # first tar.bz2 it
+      tarhandle = tarfile.open(writabledatadirectory + "/thisinfolog.tar.bz2", "w:bz2" )
+      os.chdir( writabledatadirectory )  # cd in, so that we don't embed the paths
+                   # in the tar file...
+      tarhandle.add( os.path.basename('infolog.txt') )
+      tarhandle.close()
+
+      replayfilehandle = open( writabledatadirectory + "/thisinfolog.tar.bz2", 'rb' )
+      replaycontents = replayfilehandle.read()
+      replayfilehandle.close()
+
+      print "infolog binary length: " + str(len(replaycontents))
+      replaybinarywrapper = xmlrpclib.Binary(replaycontents)
+      uploaddatadict['infolog'] = replaybinarywrapper
 
    requestuploadedok = False    
    while not requestuploadedok:
       try:
-         (result,errormessage ) = getxmlrpcproxy(host).submitresult( config.botrunnername, config.sharedsecret, serverrequest['matchrequest_id'], gameresult['resultstring'], replaybinarywrapper )
+         (result,errormessage ) = getxmlrpcproxy(host).submitresult( config.botrunnername, config.sharedsecret, serverrequest['matchrequest_id'], gameresult['resultstring'], uploaddatadict )
          print "upload result: " + str( result) + " " + errormessage
          requestuploadedok = True
       except:

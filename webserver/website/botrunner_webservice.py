@@ -112,7 +112,7 @@ class AILadderService:
 
    #  resultstring is: 'ai0won', 'draw', 'crashed', 'hung', ...
    # returns (True,message) or (False,message)
-   def submitresult( self, botrunnername, sharedsecret, matchrequestid, resultstring, replaycontentsdata ):
+   def submitresult( self, botrunnername, sharedsecret, matchrequestid, resultstring, uploaddatadict ):
       try:
          if not botrunnerhelper.validatesharedsecret(botrunnername, sharedsecret):
             return (False, "Not authenticated")
@@ -128,14 +128,22 @@ class AILadderService:
          # or we could get the botrunner to retry several times, to be decided.
          matchrequestcontroller.storeresult( botrunnername, matchrequestid, resultstring )
 
-         # now to handle uploading the replay...
-         replaycontentsraw = replaycontentsdata.data
-         if replaycontentsraw != None and replaycontentsraw != '':
-            replayfilehandle = open( replaycontroller.getReplayPath(matchrequestid), "wb" )
-            replayfilehandle.write( replaycontentsraw )
-            replayfilehandle.close()
-         # really, we should validate that this match was assigned to this server first...
-         # also, ideally, if there is no upload, we should store that info in the database somewheree
+         if uploaddatadict.has_key('replay'):
+            # now to handle uploading the replay...
+            replaycontentsraw = uploaddatadict['replay'].data
+            if replaycontentsraw != None and replaycontentsraw != '':
+               replayfilehandle = open( replaycontroller.getReplayPath(matchrequestid), "wb" )
+               replayfilehandle.write( replaycontentsraw )
+               replayfilehandle.close()
+            # really, we should validate that this match was assigned to this server first...
+            # also, ideally, if there is no upload, we should store that info in the database somewheree
+
+         if uploaddatadict.has_key('infolog'):
+            contentsraw = uploaddatadict['infolog'].data
+            if contentsraw != None and contentsraw != '':
+               filehandle = open( replaycontroller.getInfologPath(matchrequestid), "wb" )
+               filehandle.write( contentsraw )
+               filehandle.close()
 
          return (True,'received replay file raw length: ' + str( len( replaycontentsraw ) ) )
       except:

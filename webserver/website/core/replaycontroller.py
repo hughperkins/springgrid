@@ -26,6 +26,15 @@ import os
 
 scriptdir = os.path.dirname( os.path.realpath( __file__ ) )
 
+# hacked in for now, we can refactor to different module name or something later
+def getInfologPath( matchrequestid ):
+   if not os.path.isdir(scriptdir + "/../replays"):
+      os.mkdir( scriptdir + "/../replays" )
+   return scriptdir + "/../replays/infolog_" + str( matchrequestid ) + ".tar.bz2"
+
+def getInfologWebRelativePath( matchrequestid ):
+   return "replays/infolog_" + str( matchrequestid ) + ".tar.bz2"
+
 def getReplayPath( matchrequestid ):
    if not os.path.isdir(scriptdir + "/../replays"):
       os.mkdir( scriptdir + "/../replays" )

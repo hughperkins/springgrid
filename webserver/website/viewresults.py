@@ -36,12 +36,15 @@ loginhelper.processCookie()
 
 requests = sqlalchemysetup.session.query(MatchRequest).filter(MatchRequest.matchresult != None )
 replaypathbyrequest = {}
+infologpathbyrequest =  {}
 for request in requests:
    replaypath = replaycontroller.getReplayPath(request.matchrequest_id)
    if os.path.isfile( replaypath ):
       replaypathbyrequest[request] = replaycontroller.getReplayWebRelativePath( request.matchrequest_id)
+   if os.path.isfile( replaycontroller.getInfologPath( request.matchrequest_id) ):
+      infologpathbyrequest[request] = replaycontroller.getInfologWebRelativePath( request.matchrequest_id)
 
-jinjahelper.rendertemplate( 'viewresults.html', requests = requests, replaypathbyrequest = replaypathbyrequest )
+jinjahelper.rendertemplate( 'viewresults.html', requests = requests, replaypathbyrequest = replaypathbyrequest, infologpathbyrequest = infologpathbyrequest )
 
 sqlalchemysetup.close()
 
