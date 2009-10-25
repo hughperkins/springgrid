@@ -367,7 +367,8 @@ class Config(Base):
          return False
       
 def addstaticdata(session):
-   import confighelper
+   import confighelper # have to import it here, otherwise Config table can't be easily
+                       # imported inside confighelper, because circular import loop
    confighelper.applydefaults()
 
    # maybe roles static data could be created by core/roles.py?
