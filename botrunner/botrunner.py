@@ -213,7 +213,7 @@ def uploadresulttoserver( host, serverrequest, gameresult ):
    # first we should take care of the replay
    replaypath = gameresult['replaypath']
 
-   if replaypath == '' or replaypath == None:
+   if replaypath == '' or replaypath == None or not os.path.exists( writabledatadirectory + replaypath ):
       # then we didn't create a replay for some reason..
       replaybinarywrapper = xmlrpclib.Binary('')
    else:
