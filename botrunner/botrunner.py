@@ -150,6 +150,7 @@ def rungame( serverrequest ):
       print "waiting for game to terminate..."
       if time.time() - lastpingtimeseconds > config.pingintervalminutes * 60:
          doping ( "playing game " + serverrequest['ai0_name'] + " vs " + serverrequest['ai1_name'] + " on " + serverrequest['map_name'] + " " + serverrequest['mod_name'] )
+         lastpingtimeseconds = time.time()
       if os.path.exists( writabledatadirectory + "/infolog.txt" ):
          infologcontents = filehelper.readFile( writabledatadirectory + "/infolog.txt" )
          # print infologcontents
