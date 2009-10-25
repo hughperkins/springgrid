@@ -238,10 +238,10 @@ def uploadresulttoserver( host, serverrequest, gameresult ):
 
    uploaddatadict = {} # dict of 'replay': replaydata, etc ...
 
-   if replaypath != '' and replaypath != None and os.path.exists( writabledatadirectory + replaypath ):
+   if replaypath != '' and replaypath != None and os.path.exists( replaypath ):
       # first tar.bz2 it
       tarhandle = tarfile.open(writabledatadirectory + "/thisreplay.tar.bz2", "w:bz2" )
-      os.chdir( writabledatadirectory + os.path.dirname(replaypath) )  # cd in, so that we don't embed the paths
+      os.chdir( os.path.dirname(replaypath) )  # cd in, so that we don't embed the paths
                    # in the tar file...
       tarhandle.add( os.path.basename(replaypath) )
       tarhandle.close()
