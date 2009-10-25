@@ -146,8 +146,11 @@ def rungame( serverrequest ):
    doping( "playing game " + serverrequest['ai0_name'] + " vs " + serverrequest['ai1_name'] + " on " + serverrequest['map_name'] + " " + serverrequest['mod_name'] )
    lastpingtimeseconds = time.time()
    gameresult = {}
+   waitingcount = 0
    while not finished:
-      print "waiting for game to terminate..."
+      if waitingcount % 30 == 0:
+         print "botrunner: waiting for game to terminate..."
+      waitingcount = waitingcount + 1
       if time.time() - lastpingtimeseconds > config.pingintervalminutes * 60:
          doping ( "playing game " + serverrequest['ai0_name'] + " vs " + serverrequest['ai1_name'] + " on " + serverrequest['map_name'] + " " + serverrequest['mod_name'] )
          lastpingtimeseconds = time.time()
