@@ -98,7 +98,7 @@ def doping( status ):
          print "Failed to ping " + host
    return atleastonehostsucceeded
 
-def rungame( serverrequest ):
+def rungame( host, serverrequest ):
    global config, writabledatadirectory
    scripttemplatecontents = filehelper.readFile( scriptdir + "/" + config.scripttemplatefilename )
 
@@ -133,7 +133,7 @@ def rungame( serverrequest ):
    popen = subprocess.Popen( [ config.springPath, writabledatadirectory + "/script.txt"])
    finished = False
    starttimeseconds = time.time()
-   doping( "playing game " + serverrequest['ai0_name'] + " vs " + serverrequest['ai1_name'] + " on " + serverrequest['map_name'] + " " + serverrequest['mod_name'] )
+   doping( host, "playing game " + serverrequest['ai0_name'] + " vs " + serverrequest['ai1_name'] + " on " + serverrequest['map_name'] + " " + serverrequest['mod_name'] )
    lastpingtimeseconds = time.time()
    gameresult = {}
    while not finished:
@@ -468,7 +468,7 @@ def go():
          if serverrequest != None:
             # we have a request to process
             demosdirectorylistingbeforegame = snapshotdemosdirectory()
-            result = rungame( serverrequest )
+            result = rungame( hsot, serverrequest )
             uploadresulttoserver( host, serverrequest, result )
             gotrequest = True
       
