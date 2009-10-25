@@ -36,8 +36,10 @@
    <td>{{request.matchrequestinprogress.botrunner.botrunner_name|e}}</td>
    <td>{{request.matchresult.matchresult|e}}</td>
    <td>
-   {% if request.replayurl != none %}
-      <a href='{{request.replayurl|e}}'>replay</a>
+   {% if replaypathbyrequest[request] is defined %}
+      <a href='{{replaypathbyrequest[request]|e}}'>replay</a>
+   {% else %}
+   No replay available
    {% endif %}
    </td>
    </tr>

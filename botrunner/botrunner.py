@@ -76,6 +76,7 @@ def requestgamefromwebserver(host):
 
       if len(serverrequest) == 0:
          return None
+      print "got request, matchrequestid = " + str(serverrequest[0]['matchrequest_id'])
       return serverrequest[0]  # can't handle passing None in python 2.4
    except:
       print "Something went wrong: " + str( sys.exc_info() )
@@ -97,6 +98,15 @@ def doping( status ):
       except:
          print "Failed to ping " + host
    return atleastonehostsucceeded
+
+def getreplaypath( infologcontents ):
+   splitlines = infologcontents.split("\n")
+   for line in splitlines:
+      if line.find("] Recording demo ") != -1:
+         demopath = line.split("] Recording demo ")[1]
+         print "demo path: [" + demopath + "]"
+         return demopath
+   return None
 
 def rungame( serverrequest ):
    global config, writabledatadirectory
@@ -151,6 +161,7 @@ def rungame( serverrequest ):
             gameresult['winningai'] = 1
             gameresult['resultstring'] = "ai1won"
             popen.kill()
+            gameresult['replaypath'] = getreplaypath( infologcontents )
             return gameresult
          if infologcontents.find( ai0endstring ) == -1 and infologcontents.find(ai1endstring ) != - 1:
             # ai1 died
@@ -158,6 +169,7 @@ def rungame( serverrequest ):
             gameresult['winningai'] = 0
             gameresult['resultstring'] = "ai0won"
             popen.kill()
+            gameresult['replaypath'] = getreplaypath( infologcontents )
             return gameresult
          if infologcontents.find( ai0endstring ) != -1 and infologcontents.find(ai1endstring ) != - 1:
             # both died...
@@ -165,6 +177,7 @@ def rungame( serverrequest ):
             gameresult['winningai'] = -1
             gameresult['resultstring'] = "draw"
             popen.kill()
+            gameresult['replaypath'] = getreplaypath( infologcontents )
             return gameresult
 
       # check timeout (== draw)
@@ -174,6 +187,7 @@ def rungame( serverrequest ):
          gameresult['winningai'] = -1
          gameresult['resultstring'] = "gametimeout"
          popen.kill()
+         gameresult['replaypath'] = getreplaypath( infologcontents )
          return gameresult
 
       if popen.poll() != None:
@@ -182,6 +196,7 @@ def rungame( serverrequest ):
          print "Crashed" 
          gameresult['winningai'] = -1
          gameresult['resultstring'] = "crashed"
+         gameresult['replaypath'] = getreplaypath( infologcontents )
          return gameresult
 
       time.sleep (1)
@@ -195,30 +210,19 @@ def uploadresulttoserver( host, serverrequest, gameresult ):
    # ...
 
    # first we should take care of the replay
-   # what was its filename? :-O
-   # right, going to take a snapshot of the replay directory before starting
-   # and then we'll take anything new as the correct replay
-   global demosdirectorylistingbeforegame
-   demosdirectorynow = snapshotdemosdirectory()
-   thisreplayfilename = ''
-   for filename in demosdirectorynow:
-      if not filename in demosdirectorylistingbeforegame:
-         print thisreplayfilename
-         thisreplayfilename = filename
-   if thisreplayfilename == '':
+   replaypath = gameresult['replaypath']
+
+   if replaypath == '' or replaypath == None:
       # then we didn't create a replay for some reason..
-      pass
+      replaybinarywrapper = xmlrpclib.Binary('')
    else:
       # first tar.bz2 it
       tarhandle = tarfile.open(writabledatadirectory + "/thisreplay.tar.bz2", "w:bz2" )
-      os.chdir( writabledatadirectory + "/demos" )  # cd in, so that we don't embed the paths
+      os.chdir( writabledatadirectory + os.path.dirname(replaypath) )  # cd in, so that we don't embed the paths
                    # in the tar file...
-      tarhandle.add( thisreplayfilename )
+      tarhandle.add( os.path.basename(replaypath) )
       tarhandle.close()
 
-   # ok, let's do the upload... if we don't have a replay, we won't send the replay
-   replaybinarywrapper = xmlrpclib.Binary('')
-   if thisreplayfilename != '':
       replayfilehandle = open( writabledatadirectory + "/thisreplay.tar.bz2", 'rb' )
       replaycontents = replayfilehandle.read()
       replayfilehandle.close()
@@ -235,19 +239,6 @@ def uploadresulttoserver( host, serverrequest, gameresult ):
       except:
          print "Something went wrong uploading to the server: " + str( sys.exc_value ) + ".\nRetrying ... "
          time.sleep(5)
-
-demosdirectorylistingbeforegame = None
-
-# we'll find the names of all files in the demos directory (the 
-# replays), and then any new one will be assumed to be the one from the
-# game we just played
-def snapshotdemosdirectory():
-   global writabledatadirectory
-
-   listing = []
-   for filename in os.listdir( writabledatadirectory + "/demos" ):
-      listing.append(filename)
-   return listing
 
 def getSpringPath():
    potentialpaths = []
@@ -409,7 +400,7 @@ def registercapabilities(host):
    registerais(host,registeredais)
 
 def go():
-   global config, unitsync, writabledatadirectory, demosdirectorylistingbeforegame
+   global config, unitsync, writabledatadirectory
    global sessionid, options
 
    parseopts()
@@ -465,7 +456,6 @@ def go():
          serverrequest = requestgamefromwebserver(host)
          if serverrequest != None:
             # we have a request to process
-            demosdirectorylistingbeforegame = snapshotdemosdirectory()
             result = rungame( serverrequest )
             uploadresulttoserver( host, serverrequest, result )
             gotrequest = True

@@ -130,9 +130,10 @@ class AILadderService:
 
          # now to handle uploading the replay...
          replaycontentsraw = replaycontentsdata.data
-         replayfilehandle = open( replaycontroller.getReplayPath(matchrequestid), "wb" )
-         replayfilehandle.write( replaycontentsraw )
-         replayfilehandle.close()
+         if replaycontentsraw != None and replaycontentsraw != '':
+            replayfilehandle = open( replaycontroller.getReplayPath(matchrequestid), "wb" )
+            replayfilehandle.write( replaycontentsraw )
+            replayfilehandle.close()
          # really, we should validate that this match was assigned to this server first...
          # also, ideally, if there is no upload, we should store that info in the database somewheree
 

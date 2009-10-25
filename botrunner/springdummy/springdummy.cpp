@@ -94,7 +94,7 @@ void writeStuffToInfolog() {
 
 int main( int argc, char** argv ) {
    srand((unsigned)time(0)); // seed the pseudo-random numbers with system time
-   int randomnumber = rand() % 6; // use % 5 if you want to simulate hangs too
+   int randomnumber = rand() % 5; // use % 6 if you want to simulate hangs too
    int a = 0;
    int b = 0;
    ostringstream messagestream;
