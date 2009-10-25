@@ -31,6 +31,9 @@ sqlalchemysetup.setup()
 
 loginhelper.processCookie()
 
+botrunnerhelper.purgeExpiredSessions()
+sqlalchemysetup.session.commit()
+
 requests = sqlalchemysetup.session.query(MatchRequest).filter(MatchRequest.matchresult == None )
 
 datetimeassignedbyrequest = {}
