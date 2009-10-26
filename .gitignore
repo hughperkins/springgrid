@@ -24,6 +24,7 @@ spring-dummy
 testunitsync.py
 testreceivefile.py
 testwebservice.py
+testapiwebservice.py
 
 *.tar.bz2
 *.tar

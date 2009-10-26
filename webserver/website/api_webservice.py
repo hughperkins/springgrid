@@ -47,6 +47,16 @@ class APIService:
    def getmods(self):
       return listhelper.tuplelisttolist( sqlalchemysetup.session.query(Mod.mod_name) )
 
+   # returns [True, exists(map_name)] or [False, errormessage]
+   def mapexists(self, map_name ):
+      map = maphelper.getMap( map_name )
+      return [True, map != None ]
+
+   # returns [True, exists(mod_name)] or [False, errormessage]
+   def modexists(self, mod_name ):
+      mod = modhelper.getMod( mod_name )
+      return [True, mod != None ]
+
    # returns a list of {'ai_name': ainame, 'ai_version': aiversion } ] dictionaries
    def getais(self):
       ailist = []
