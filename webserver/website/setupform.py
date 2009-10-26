@@ -24,10 +24,10 @@
 print "Content-type: text/html\n\n"
 print "<html>"
 print "<head>"
-print "<title>AILadder - setup</title>"
+print "<title>SpringGrid - setup</title>"
 print "</head>"
 print "<body>"
-print "<h3>AILadder - setup</h3>"
+print "<h3>SpringGrid - setup</h3>"
 print "<p>Setup is now from the commandline</p>"
 print "<p>Please open a shell to your webserver machine, change into the website package directory ('webserver' directory if you are using git), and run:</p>"\
    "<pre>python websitesetup.py</pre>"

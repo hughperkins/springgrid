@@ -38,7 +38,7 @@ import config
 
 # entry point for method calls from botrunner to the server
 # botrunner simply calls getxmlrpcproxy().<methodname>( params, ... )
-class AILadderService:
+class SpringGridService:
    # return (True,'') if goes ok, otherwise (False,message)
    def ping(self, botrunnername, sharedsecret, sessionid, status):
       if not botrunnerhelper.validatesharedsecret(botrunnername, sharedsecret):
@@ -178,7 +178,7 @@ class AILadderService:
          return (False,"An unexpected exception occurred: " + str( sys.exc_info() ) + "\n" + str( traceback.extract_tb( sys.exc_traceback ) ) )
 
 handler = SimpleXMLRPCServer.CGIXMLRPCRequestHandler()
-handler.register_instance( AILadderService() )
+handler.register_instance( SpringGridService() )
 handler.register_introspection_functions()
 handler.register_multicall_functions()
 

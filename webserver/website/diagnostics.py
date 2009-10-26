@@ -81,7 +81,7 @@ def go():
 
    pagecontents = pagecontents + "<h3>Diagnostics</h3>"
 
-   pagecontents = pagecontents + "<p>This page carries out some basic diagnostics to check the health of your AILadder website.</p>"
+   pagecontents = pagecontents + "<p>This page carries out some basic diagnostics to check the health of your SpringGrid website.</p>"
 
    if runchecks():
       pagecontents = pagecontents + "<p>All checks PASSED</p>"
