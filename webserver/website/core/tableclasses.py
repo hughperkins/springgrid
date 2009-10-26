@@ -64,7 +64,7 @@ class Role(Base):
       self.role_name = role_name
 
    role_id = Column(Integer,primary_key=True)
-   role_name = Column(String(255), unique = True)
+   role_name = Column(String(255), unique = True, nullable = False)
 
 class RoleMember(Base):
    __tablename__ = 'role_members'
@@ -81,11 +81,11 @@ class Account(Base):
    __tablename__ = 'accounts'
 
    account_id = Column(Integer,primary_key=True)
-   username = Column(String(255), unique = True)
+   username = Column(String(255), unique = True, nullable = False)
    userfullname = Column(String(255))
    useremailaddress = Column(String(255))
-   passwordsalt = Column(String(255))
-   passwordhash = Column(String(255))
+   passwordsalt = Column(String(255), nullable = False)
+   passwordhash = Column(String(255), nullable = False)
 
    roles = relation("RoleMember")
 
@@ -111,8 +111,8 @@ class AI(Base):
    __tablename__ = 'ais'
 
    ai_id = Column(Integer,primary_key=True)
-   ai_name = Column(String(255))
-   ai_version = Column(String(255))
+   ai_name = Column(String(255), nullable = False)
+   ai_version = Column(String(255), nullable = False)
    ai_downloadurl = Column(String(255))
    ai_owneraccount_id = Column(Integer,ForeignKey('accounts.account_id'))
 
@@ -168,7 +168,7 @@ class Cookie(Base):
    cookiereference = Column(String(255),primary_key=True)
    #username = Column(String(255))
    # we can change to use account_id in the future
-   account_id = Column(Integer,ForeignKey('accounts.account_id'))
+   account_id = Column(Integer,ForeignKey('accounts.account_id'), nullable = False)
 
    account = relation("Account")
 
@@ -228,8 +228,8 @@ class BotRunnerSession(Base):
 
    botrunner_id = Column(Integer,ForeignKey('botrunners.botrunner_id'), primary_key = True )
    botrunner_session_id = Column(String(255), primary_key = True)
-   lastpingstatus = Column(String(255))
-   lastpingtime = Column(String(255))
+   lastpingstatus = Column(String(255), nullable = False)
+   lastpingtime = Column(String(255), nullable = False)
 
    def __init__(self, botrunner_session_id ):
       self.botrunner_session_id = botrunner_session_id
@@ -241,8 +241,8 @@ class BotRunner(Base):
    __tablename__ = 'botrunners'
 
    botrunner_id = Column(Integer,primary_key=True)
-   botrunner_name = Column(String(255), unique = True)
-   botrunner_sharedsecret = Column(String(255))
+   botrunner_name = Column(String(255), unique = True, nullable = False)
+   botrunner_sharedsecret = Column(String(255), nullable = False)
    botrunner_owneraccountid = Column(Integer, ForeignKey('accounts.account_id') )
    rowspan = 0 # used by viewbotrunners.py
 
@@ -263,7 +263,7 @@ class AIOption(Base):
    __tablename__ = 'aioptions'
 
    option_id = Column(Integer,primary_key=True)
-   option_name = Column(String(255), unique = True)
+   option_name = Column(String(255), unique = True, nullable = False)
 
    def __init__(self, option_name):
       self.option_name = option_name
@@ -283,10 +283,10 @@ class MatchRequest(Base):
    __tablename__ = 'matchrequestqueue'
 
    matchrequest_id=Column(Integer,primary_key=True)
-   map_id =Column(Integer, ForeignKey('maps.map_id'))
-   mod_id =Column(Integer, ForeignKey('mods.mod_id'))
-   ai0_id = Column(Integer, ForeignKey('ais.ai_id'))
-   ai1_id = Column(Integer, ForeignKey('ais.ai_id'))
+   map_id =Column(Integer, ForeignKey('maps.map_id'), nullable = False)
+   mod_id =Column(Integer, ForeignKey('mods.mod_id'), nullable = False)
+   ai0_id = Column(Integer, ForeignKey('ais.ai_id'), nullable = False)
+   ai1_id = Column(Integer, ForeignKey('ais.ai_id'), nullable = False)
 
    map = relation("Map" )
    mod = relation("Mod" )
@@ -307,9 +307,9 @@ class MatchRequestInProgress(Base):
    __tablename__ = 'matchrequests_inprogress'
 
    matchrequest_id = Column(Integer,ForeignKey('matchrequestqueue.matchrequest_id'),primary_key=True )
-   botrunner_id = Column(Integer,ForeignKey('botrunners.botrunner_id'),ForeignKey('botrunner_sessions.botrunner_id'))
-   botrunner_session_id = Column(String(255),ForeignKey('botrunner_sessions.botrunner_session_id'))
-   datetimeassigned = Column(String(255))
+   botrunner_id = Column(Integer,ForeignKey('botrunners.botrunner_id'),ForeignKey('botrunner_sessions.botrunner_id'), nullable = False)
+   botrunner_session_id = Column(String(255),ForeignKey('botrunner_sessions.botrunner_session_id'), nullable = False)
+   datetimeassigned = Column(String(255), nullable = False)
 
    botrunner= relation("BotRunner")
    botrunnersession = relation("BotRunnerSession", primaryjoin=and_( botrunner_id == BotRunnerSession.botrunner_id, botrunner_session_id == BotRunnerSession.botrunner_session_id ) )
@@ -323,7 +323,7 @@ class MatchResult(Base):
    __tablename__ = 'matchresults'
 
    matchrequest_id = Column(Integer,ForeignKey('matchrequestqueue.matchrequest_id'),primary_key=True )
-   matchresult = Column(String(255))
+   matchresult = Column(String(255), nullable = False)
 
    def __init__(self, matchresult ):
       self.matchresult = matchresult
@@ -333,8 +333,8 @@ class Config(Base):
    __tablename__ = 'config'
 
    config_key = Column(String(255),primary_key = True )
-   config_value = Column(String(255))
-   config_type = Column(String(255))
+   config_value = Column(String(255), nullable = False)
+   config_type = Column(String(255), nullable = False)
 
    # sets value of config_type appropriately, according to config_value type
    # to int, float, string or boolean
