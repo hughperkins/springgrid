@@ -69,6 +69,9 @@ class APIService:
          ai0 = sqlalchemysetup.session.query(AI).filter(AI.ai_name == ais[0]['ai_name'] ).filter(AI.ai_version == ais[0]['ai_version'] ).first()
          ai1 = sqlalchemysetup.session.query(AI).filter(AI.ai_name == ais[1]['ai_name'] ).filter(AI.ai_version == ais[1]['ai_version'] ).first()
 
+         if map == None or mod == None or ai0 == None or ai1 == None:
+            return [False,'one of your parameters did not correspond to an existing map, mod or ai.  Please check and try again.']
+
          matchrequest = MatchRequest( ai0 = ai0, ai1 = ai1, map = map, mod = mod )
          sqlalchemysetup.session.add( matchrequest )
 
