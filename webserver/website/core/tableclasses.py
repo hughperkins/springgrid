@@ -123,8 +123,8 @@ class AI(Base):
    __tablename__ = 'ais'
 
    ai_id = Column(Integer,primary_key=True)
-   ai_name = Column(String(255), nullable = False)
-   ai_version = Column(String(255), nullable = False)
+   ai_name = Column(String(64), nullable = False)
+   ai_version = Column(String(64), nullable = False)
    ai_downloadurl = Column(String(255))
    ai_needscompiling = Column(Boolean )
    ai_owneraccount_id = Column(Integer,ForeignKey('accounts.account_id'))
