@@ -25,6 +25,7 @@ testunitsync.py
 testreceivefile.py
 testwebservice.py
 testapiwebservice.py
+testbotrunnerservice.py
 
 *.tar.bz2
 *.tar
