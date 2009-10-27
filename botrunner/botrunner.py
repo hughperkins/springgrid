@@ -209,7 +209,17 @@ def rungame( serverrequest ):
       os.remove( writabledatadirectory + "/infolog.txt" )
 
    os.chdir( writabledatadirectory )
-   popen = subprocess.Popen( [ config.springPath, writabledatadirectory + "/script.txt"])
+   if config.javaexepath != None:
+      existingenv = {}
+      for varname in os.environ.keys():
+         if os.getenv(varname) != None:
+            existingenv[varname ] = os.getenv(varname)
+      existingenv[ "JAVA_HOME" ] = os.path.dirname( config.javaexepath )
+      print existingenv
+      popen = subprocess.Popen( [ config.springPath, writabledatadirectory + "/script.txt"], 
+         env = existingenv )
+   else:
+      popen = subprocess.Popen( [ config.springPath, writabledatadirectory + "/script.txt"])
    finished = False
    starttimeseconds = time.time()
    doping( "playing game " + serverrequest['ai0_name'] + " vs " + serverrequest['ai1_name'] + " on " + serverrequest['map_name'] + " " + serverrequest['mod_name'] )
@@ -402,6 +412,13 @@ def  setupConfig():
          return False
       print "UnitSync found: " + unitsyncPath
       print ""
+      usejava = userinput.getbooleanfromuser( "Do you have Java installed?  This will increase the number of AIs this botrunner can run." )
+      if usejava:
+         print ""
+         javapath = userinput.getPath( "java executable (eg /usr/bin/java or c:\\program files\\sun jdk\\bin\\java)", [ '/usr/bin/java', '/usr/local/bin/java'] )
+      else:
+         javapath = None
+      print ""
       downloadingok = userinput.getbooleanfromuser( "Are you ok with downloading new AIs?  You can answer no, but your botrunner will be far more useful if you answer yes.  You should be aware that the code you download is not necessarily trusted or safe.  By answering yes, you confirm that you are running the botrunner on a machine that does not contain sensitive data, and whose compromise will not cause any issues to you or others.  You agree that you will not hold the SpringGrid website host, or admin, or author responsible for any damages that may occur whatsover." )
       print ""
       print "You have input:"
@@ -410,6 +427,9 @@ def  setupConfig():
       print "   botrunner shared secret: " + botrunnersharedsecret
       print "   spring executable path: " + springPath
       print "   UnitSync path: " + unitsyncPath
+      print "   Enable Java AIs: " + str(usejava)
+      if usejava:
+         print "   Path to Java executable: " + javapath
       print "   Downloading ok: " + str( downloadingok )
       print ""
       if userinput.getConfirmation( "Is this correct?" ):
@@ -425,6 +445,10 @@ def  setupConfig():
    newconfig = newconfig.replace( "UNITSYNCPATH", unitsyncPath )
    newconfig = newconfig.replace( "ALLOWDOWNLOADING", str(downloadingok) )
    newconfig = newconfig.replace( "CANCOMPILE", 'False' )
+   if usejava:
+      newconfig = newconfig.replace( "JAVAEXEPATH", javapath )
+   else:
+      newconfig = newconfig.replace( "JAVAEXEPATH", "None" )
    filehelper.writeFile( scriptdir + "/config.py", newconfig )
 
    # and import it...

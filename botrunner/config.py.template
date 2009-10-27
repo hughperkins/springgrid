@@ -11,14 +11,17 @@ websiteurls  = [ "WEBSITEURL" ]
 
 sleepthislongwhennothingtodoseconds = 60
 
-allowdownloading = [ ALLOWDOWNLOADING ]
-cancompile = [ CANCOMPILE ]
+allowdownloading = ALLOWDOWNLOADING
+cancompile = CANCOMPILE
 
 # full path to "spring(.exe)" or "spring-headlessstubs(.exe)"
 springPath="SPRINGPATH"
 
 # full path to unitsync.dll or (lib)unitsync.so
 unitsyncPath="UNITSYNCPATH"
+
+# full path to java.exe or java
+javaexepath = "JAVAEXEPATH"
 
 #######################################################################3
 # stuff under this line probably doesn't need modifying, in general
