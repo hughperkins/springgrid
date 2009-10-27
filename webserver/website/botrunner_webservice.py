@@ -169,6 +169,15 @@ class SpringGridService:
   
          botrunner = botrunnerhelper.getBotRunner( botrunnername )
 
+         aisbeingdownloaded = [] # list of ais being downloaded by this botrunner
+         # we'll make sure that each botrunner can only download one of each ai name/version pair
+         # at any one time, for example, for aegis' cluster this makes sense, since all botrunner
+         # sessions share the same ai directory
+         for session in botrunner.sessions:
+            if session.downloadingai != None:
+               if session.botrunner_session_id != sessionid:  # no point in including download for this specific session, clearly this session aborted it, or it failed, or .. .soemthing
+                  aisbeingdownloaded.append( session.downloadingai )
+
          requests = sqlalchemysetup.session.query(MatchRequest).\
             filter(MatchRequest.matchresult == None ).\
             filter(MatchRequest.matchrequestinprogress == None ).\
@@ -194,15 +203,22 @@ class SpringGridService:
                   ai1ok = True 
             if mapok and modok:
                if not ai0ok and not request.ai0.ai_needscompiling:  # this should be added to some flags somewhere, but for now....
-                  aitodownload = request.ai0
+                  if not request.ai0 in aisbeingdownloaded:
+                     aitodownload = request.ai0
                if not ai1ok and not request.ai1.ai_needscompiling:
-                  aitodownload = request.ai1
+                  if not request.ai1 in aisbeingdownloaded:
+                     aitodownload = request.ai1
          if aitodownload == None:
             return [True,[]]  #cannot return None in python xmlrpclib 2.4
-         return [True,[{'ai_name': aitodownload.ai_name, 
+
+         session = botrunnerhelper.getBotRunnerSession( botrunnername, sessionid )
+         session.downloadingai = aitodownload
+         dicttoreturn = {'ai_name': aitodownload.ai_name, 
                         'ai_version': aitodownload.ai_version,
                         'ai_downloadurl': aitodownload.ai_downloadurl,
-                        'ai_needscompiling': aitodownload.ai_needscompiling } ] ]
+                        'ai_needscompiling': aitodownload.ai_needscompiling }
+         sqlalchemysetup.session.commit()
+         return [True,[ dicttoreturn ] ]
       except:
          return (False,"An unexpected exception occurred: " + str( sys.exc_info() ) + "\n" + str( traceback.extract_tb( sys.exc_traceback ) ) )
 
