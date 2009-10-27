@@ -35,6 +35,7 @@ import tarfile
 import base64
 import xmlrpclib
 from optparse import OptionParser
+import traceback
 
 from unitsync import unitsync as unitsyncpkg
 
@@ -107,6 +108,74 @@ def getreplaypath( infologcontents ):
          print "demo path: [" + demopath + "]"
          return demopath
    return None
+
+def trydownloadingai(host):
+   global sessionid, config, writabledatadirectory
+   try:
+      [success, downloadrequestlist ] = getxmlrpcproxy(host).getdownloadrequest(config.botrunnername, config.sharedsecret, sessionid )
+      if not success:
+         print downloadrequestlist
+         return
+  
+      if len(downloadrequestlist) == 0:
+         print "Nothing to download from " + host
+         return
+
+      downloadrequest = downloadrequestlist[0]
+
+      print "Got download request: " + str( downloadrequest )
+      ai_name = downloadrequest['ai_name']
+      ai_version = downloadrequest['ai_version']
+
+      # ok, so we'll download it  to .... writabledatadirectory?
+      # then use tar to extract it to .... the writabledatadirectory/AI ?
+      # start by retrieving it:
+      serverrequesthandle = urllib.urlopen( downloadrequest['ai_downloadurl'], None )
+      data = serverrequestarray = serverrequesthandle.read()
+      file = open(writabledatadirectory + "aidownload.tar.bz2", "wb")
+      file.write(data)
+      file.close()
+
+      extractdir = writabledatadirectory + "/extractdir"
+      # should think about purgging the old directory...
+
+      if not os.path.exists(extractdir):
+         os.makedirs(extractdir)
+
+      tar = tarfile.open(writabledatadirectory + "aidownload.tar.bz2")
+      tar.extractall(extractdir)
+      tar.close()
+
+      sourcepath = None
+      for root, dirs, files in os.walk( extractdir ):
+         if root.find( ai_name + "/" + ai_version ) != -1:
+            sourcepath = root.split( ai_name + "/" + ai_version )[0] + ai_name + "/" + ai_version
+         if root.find( ai_name + "\\" + ai_version ) != -1:
+            sourcepath = root.split( ai_name + "\\" + ai_version )[0] + ai_name + "\\" + ai_version
+
+      if sourcepath == None:
+         print "Failed to find ai in download"
+         return
+
+      print "ai sourcepath: " + sourcepath
+      targetpath = writabledatadirectory + "/AI/Skirmish/" + ai_name + "/" + ai_version
+      if not os.path.exists(targetpath):
+         os.makedirs(targetpath)
+
+      # copy the files across...
+      filehelper.rsyncav( sourcepath, targetpath )
+         
+      # so it is installed....
+      # rerun unitsync I guess?
+
+      initUnitSync()
+      registeraisallhosts()
+      
+      # tell base we're finished...
+      getxmlrpcproxy(host).finisheddownloadingai( config.botrunnername, config.sharedsecret, sessionid, ai_name, ai_version )
+
+   except:
+      print "something went wrong: " + str(sys.exc_info()) + "\n" + str( traceback.extract_tb( sys.exc_traceback ) )
 
 def rungame( serverrequest ):
    global config, writabledatadirectory
@@ -449,6 +518,19 @@ def registercapabilities(host):
    registermods(host,registeredmods)
    registerais(host,registeredais)
 
+# registers ais to all hosts
+# used after downloading a new AI
+def registeraisallhosts():
+   for host in config.websiteurls:
+      registeredais = getxmlrpcproxy(host).getsupportedais( config.botrunnername, config.sharedsecret )
+      registerais(host, registeredais )
+
+def initUnitSync():
+   global config, unitsync, writabledatadirectory
+   unitsync = unitsyncpkg.Unitsync(config.unitsyncPath)
+   unitsync.Init(True,1)
+   writabledatadirectory = unitsync.GetWritableDataDirectory()
+
 def go():
    global config, unitsync, writabledatadirectory
    global sessionid, options
@@ -473,11 +555,7 @@ def go():
       if not ok:
          return
 
-   unitsync = unitsyncpkg.Unitsync(config.unitsyncPath)
-
-   unitsync.Init(True,1)
-
-   writabledatadirectory = unitsync.GetWritableDataDirectory()
+   initUnitSync()
 
    if sessionid == None:
       sessionid = stringhelper.getRandomAlphaNumericString(60)
@@ -509,6 +587,13 @@ def go():
             result = rungame( serverrequest )
             uploadresulttoserver( host, serverrequest, result )
             gotrequest = True
+
+      if not gotrequest and config.allowdownloading:  # see if we can download a new ai
+         print "checking for download request ... "
+         for host in config.websiteurls:
+            if trydownloadingai(host) != None:
+               gotrequest = True
+               break
       
       if not gotrequest:
          # else, sleep...

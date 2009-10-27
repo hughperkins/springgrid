@@ -29,6 +29,7 @@ import os
 import datetime
 import base64
 import traceback
+import random
 
 from utils import *
 from core import *
@@ -182,7 +183,8 @@ class SpringGridService:
             filter(MatchRequest.matchresult == None ).\
             filter(MatchRequest.matchrequestinprogress == None ).\
             all()
-         aitodownload = None
+         aistodownload = [] # just add all to list, and select randomly, so dont centrate on
+                            # any failed ones
          for request in requests:
             mapok = False
             modok = False
@@ -203,14 +205,16 @@ class SpringGridService:
                   ai1ok = True 
             if mapok and modok:
                if not ai0ok and not request.ai0.ai_needscompiling:  # this should be added to some flags somewhere, but for now....
-                  if not request.ai0 in aisbeingdownloaded:
-                     aitodownload = request.ai0
-               if not ai1ok and not request.ai1.ai_needscompiling:
+                  if not request.ai0 in aisbeingdownloaded and not request.ai0 in aistodownload:
+                     aistodownload.append( request.ai0 )
+               if not ai1ok and not request.ai1.ai_needscompiling and not request.ai1 in aistodownload:
                   if not request.ai1 in aisbeingdownloaded:
-                     aitodownload = request.ai1
-         if aitodownload == None:
+                     aistodownload.append( request.ai1 )
+         if len(aistodownload) == 0:
             return [True,[]]  #cannot return None in python xmlrpclib 2.4
 
+         # select one at random...
+         aitodownload = aistodownload[ random.randint(0, len(aistodownload) - 1 ) ]
          session = botrunnerhelper.getBotRunnerSession( botrunnername, sessionid )
          session.downloadingai = aitodownload
          dicttoreturn = {'ai_name': aitodownload.ai_name, 
@@ -222,11 +226,32 @@ class SpringGridService:
       except:
          return (False,"An unexpected exception occurred: " + str( sys.exc_info() ) + "\n" + str( traceback.extract_tb( sys.exc_traceback ) ) )
 
+   # signal that downloading is finished
+   # this should not be called until the ai has been registered, otherwise another session
+   # might start downloading it...
+   def finisheddownloadingai( self, botrunnername, sharedsecret, sessionid, ai_name, ai_version ):
+      try:
+         if not botrunnerhelper.validatesharedsecret(botrunnername, sharedsecret):
+            return (False, "Not authenticated")
+
+         # get rid of any downloading ai marker for this session
+         session = botrunnerhelper.getBotRunnerSession( botrunnername, sessionid )
+         session.downloadingai = None
+         sqlalchemysetup.session.commit()
+         return [True, '']
+      except:
+         return (False,"An unexpected exception occurred: " + str( sys.exc_info() ) + "\n" + str( traceback.extract_tb( sys.exc_traceback ) ) )
+
    # returns (True, request) (True, None) or (False, errormessage)
    def getrequest( self, botrunnername, sharedsecret, sessionid ):
       try:
          if not botrunnerhelper.validatesharedsecret(botrunnername, sharedsecret):
             return (False, "Not authenticated")
+
+         # get rid of any downloading ai marker for this session
+         session = botrunnerhelper.getBotRunnerSession( botrunnername, sessionid )
+         session.downloadingai = None
+         sqlalchemysetup.session.flush()
 
          requestitem = matchrequestcontroller.getcompatibleitemfromqueue(botrunnername, sessionid)
          if requestitem == None:
