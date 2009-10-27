@@ -57,7 +57,7 @@ class Mod(Base):
       self.mod_name = mod_name
       self.mod_archivechecksum = mod_archivechecksum
 
-account_roles = Table('account_roles', Base.metadata,
+account_roles = Table('role_members', Base.metadata,
    Column('role_id', Integer,ForeignKey('roles.role_id'),nullable=False),
    Column('account_id', Integer,ForeignKey('accounts.account_id'),nullable=False),
    UniqueConstraint('role_id','account_id')
@@ -173,16 +173,11 @@ botrunner_supportedmods = Table( 'botrunner_supportedmods', Base.metadata,
    UniqueConstraint('botrunner_id', 'mod_id' )
 )
 
-class BotRunnerSupportedAI(Base):
-   __tablename__ = 'botrunner_supportedais'
-
-   botrunner_id = Column(Integer,ForeignKey('botrunners.botrunner_id'), primary_key = True)
-   ai_id = Column(Integer,ForeignKey('ais.ai_id'), primary_key = True )
-
-   ai = relation("AI")
-
-   def __init__ (self, ai ):
-      self.ai = ai
+botrunner_supportedais = Table( 'botrunner_supportedais', Base.metadata,
+   Column('botrunner_id', Integer,ForeignKey('botrunners.botrunner_id'), nullable = False),
+   Column('ai_id', Integer,ForeignKey('ais.ai_id'), nullable = False ),
+   UniqueConstraint('botrunner_id', 'ai_id' )
+)
 
 class BotRunnerAssignedOption(Base):
    __tablename__ = 'botrunner_assignedoptions'
@@ -222,7 +217,7 @@ class BotRunner(Base):
    options = relation("BotRunnerAssignedOption")
    supportedmaps = relation("Map", secondary = botrunner_supportedmaps )
    supportedmods = relation("Mod", secondary = botrunner_supportedmods )
-   supportedais = relation("BotRunnerSupportedAI", uselist = True )
+   supportedais = relation("AI", secondary = botrunner_supportedais )
    sessions = relation("BotRunnerSession",uselist = True)
 
    rowspan = 0
