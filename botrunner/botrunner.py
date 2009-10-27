@@ -313,7 +313,7 @@ def  setupConfig():
    gotdata = False
    while not gotdata:
       print ""
-      weburl = userinput.getValueFromUser("Which webserver to you want to subscribe to?  Examples:\n   - manageddreams.com/ailadder\n   - manageddreams.com/ailadderstaging\n   - localhost/ailadder")
+      weburl = userinput.getValueFromUser("Which webserver to you want to subscribe to?  Examples:\n   - manageddreams.com/springgrid\n   - manageddreams.com/springgridstaging\n   - localhost/springgrid")
       print ""
       if weburl.lower().find("http://") == -1:
          weburl = "http://" + weburl
@@ -333,12 +333,15 @@ def  setupConfig():
          return False
       print "UnitSync found: " + unitsyncPath
       print ""
+      downloadingok = userinput.getbooleanfromuser( "Are you ok with downloading new AIs?  You can answer no, but your botrunner will be far more useful if you answer yes.  You should be aware that the code you download is not necessarily trusted or safe.  By answering yes, you confirm that you are running the botrunner on a machine that does not contain sensitive data, and whose compromise will not cause any issues to you or others.  You agree that you will not hold the SpringGrid website host, or admin, or author responsible for any damages that may occur whatsover." )
+      print ""
       print "You have input:"
       print "   target web server: " + weburl
       print "   botrunner name: " + botrunnername
       print "   botrunner shared secret: " + botrunnersharedsecret
       print "   spring executable path: " + springPath
       print "   UnitSync path: " + unitsyncPath
+      print "   Downloading ok: " + str( downloadingok )
       print ""
       if userinput.getConfirmation( "Is this correct?" ):
          gotdata = True
@@ -351,6 +354,8 @@ def  setupConfig():
    newconfig = newconfig.replace( "SHAREDSECRET", botrunnersharedsecret )
    newconfig = newconfig.replace( "SPRINGPATH", springPath )
    newconfig = newconfig.replace( "UNITSYNCPATH", unitsyncPath )
+   newconfig = newconfig.replace( "ALLOWDOWNLOADING", str(downloadingok) )
+   newconfig = newconfig.replace( "CANCOMPILE", 'False' )
    filehelper.writeFile( scriptdir + "/config.py", newconfig )
 
    # and import it...

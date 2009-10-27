@@ -36,7 +36,7 @@ import confighelper
 # where the session is older than a certain time
 def archiveoldrequests():
    botrunnerhelper.purgeExpiredSessions()
-      
+
 # this should walk the queue till it finds something that the engine
 # can handle
 # for now, it just returns the first item in the queue

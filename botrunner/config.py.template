@@ -11,6 +11,9 @@ websiteurls  = [ "WEBSITEURL" ]
 
 sleepthislongwhennothingtodoseconds = 60
 
+allowdownloading = [ ALLOWDOWNLOADING ]
+cancompile = [ CANCOMPILE ]
+
 # full path to "spring(.exe)" or "spring-headlessstubs(.exe)"
 springPath="SPRINGPATH"
 
