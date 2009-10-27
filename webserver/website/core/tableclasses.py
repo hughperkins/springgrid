@@ -25,7 +25,7 @@ import sqlalchemy
 import sqlalchemy.ext.declarative
 import sqlalchemy.orm
 
-from sqlalchemy import Column, String, Integer, ForeignKey, and_, schema, Table, UniqueConstraint
+from sqlalchemy import Column, String, Integer, Boolean, ForeignKey, and_, schema, Table, UniqueConstraint
 from sqlalchemy.orm import backref, relation
 
 from utils import *
@@ -126,6 +126,7 @@ class AI(Base):
    ai_name = Column(String(255), nullable = False)
    ai_version = Column(String(255), nullable = False)
    ai_downloadurl = Column(String(255))
+   ai_needscompiling = Column(Boolean )
    ai_owneraccount_id = Column(Integer,ForeignKey('accounts.account_id'))
 
    __table_args__ = (schema.UniqueConstraint('ai_name','ai_version'), {} )
@@ -139,6 +140,7 @@ class AI(Base):
    def __init__( self, ai_name, ai_version ):
       self.ai_name = ai_name
       self.ai_version = ai_version
+      self.needscompiling = True
 
 class Cookie(Base):
    __tablename__ = 'cookies'
