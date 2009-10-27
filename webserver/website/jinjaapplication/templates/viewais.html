@@ -5,7 +5,7 @@
 <h3>SpringGrid - AI List</h3>
 
 <table border='1' padding='3'>
-<tr class='tablehead'><td>AI Name</td><td>AI Version</td><td>Compatible Options</td><td>Download url</td></tr>
+<tr class='tablehead'><td>AI Name</td><td>AI Version</td><td>Compatible Options</td><td>Download url</td><td>Needs compiling?</td></tr>
 
 {% for ai in ais %}
    <tr>
@@ -18,13 +18,15 @@
    {% endfor %}
    &nbsp;</td>
 
-   <td>
    {% if ai.ai_downloadurl != none %}
+      <td>
       <a href='{{ai.ai_downloadurl|e}}'>{{ai.ai_downloadurl|e}}</a>
+      </td>
+      <td>{{ai.ai_needscompiling}}</td>
    {% else %}
-      &nbsp;
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
    {% endif %}
-   </td>
    </tr>
 
 {% endfor %}
@@ -45,6 +47,7 @@
    <tr><td>AI name</td><td><input name='ainame'</td></tr>
    <tr><td>AI version</td><td><input name='aiversion'</td></tr>
    <tr><td>Download url</td><td><input name='downloadurl'</td></tr>
+   <tr><td>Needs compiling?</td><td><select name="needscompiling"><option value="yes">Yes</option><option value="no">No</option></select></tr>
    <tr><td></td><td><input type='submit' value='Add' /></td></tr>
    </table>
    </form> 

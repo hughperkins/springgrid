@@ -43,12 +43,16 @@ def go():
       ainame = formhelper.getValue("ainame")
       aiversion = formhelper.getValue("aiversion")
       downloadurl = formhelper.getValue("downloadurl")
+      needscompiling = True
+      if formhelper.getValue("needscompiling") == "no":
+         needscompiling = False
 
       if aiversion != None and ainame != None and ainame != "" and aiversion != "":
          if downloadurl == None:
             downloadurl = ''
          ai = AI( ainame, aiversion )
          ai.ai_downloadurl = downloadurl
+         ai.ai_needscompiling = needscompiling
          ai.owneraccount = accounthelper.getAccount( loginhelper.gusername )
          sqlalchemysetup.session.add(ai)
          sqlalchemysetup.session.commit()

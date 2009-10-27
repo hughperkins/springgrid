@@ -36,7 +36,7 @@ import confighelper
 # where the session is older than a certain time
 def archiveoldrequests():
    botrunnerhelper.purgeExpiredSessions()
-      
+
 # this should walk the queue till it finds something that the engine
 # can handle
 # for now, it just returns the first item in the queue
@@ -62,14 +62,21 @@ def getcompatibleitemfromqueue( botrunnername, sessionid ):
    matchrequests = sqlalchemysetup.session.query(MatchRequest).filter(MatchRequest.matchrequestinprogress == None ).filter(MatchRequest.matchresult == None ).all()
    for matchrequest in matchrequests:
       mapok = False
+      modok = False
+      ai0ok = False
+      ai1ok = False
       for map in botrunner.supportedmaps:
          if map.map_name == matchrequest.map.map_name:
             mapok = True
-      modok = False
       for mod in botrunner.supportedmods:
          if mod.mod_name == matchrequest.mod.mod_name:
             modok = True
-      if mapok and modok:
+      for ai in botrunner.supportedais:
+         if ai.ai_name == matchrequest.ai0.ai_name and ai.ai_version == matchrequest.ai0.ai_version:
+            ai0ok = True 
+         if ai.ai_name == matchrequest.ai1.ai_name and ai.ai_version == matchrequest.ai1.ai_version:
+            ai1ok = True 
+      if mapok and modok and ai0ok and ai1ok:
          # mark request in progress:
          matchrequest.matchrequestinprogress = MatchRequestInProgress( botrunner, botrunnersession, dates.dateTimeToDateString( datetime.datetime.now() ) )
 

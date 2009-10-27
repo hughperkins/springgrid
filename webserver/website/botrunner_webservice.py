@@ -29,6 +29,7 @@ import os
 import datetime
 import base64
 import traceback
+import random
 
 from utils import *
 from core import *
@@ -149,11 +150,108 @@ class SpringGridService:
       except:
          return (False,"An unexpected exception occurred: " + str( sys.exc_info() ) + "\n" + str( traceback.extract_tb( sys.exc_traceback ) ) )
 
+   # request info on an ai that can be downloaded that matches a match currently available in the queue
+   # the idea is that the botrunner will:
+   # - cycle through all hosts looking for a match
+   # - if it finds one -> great
+   # - otherwise it checks with each host if there is an ai that it would be useful to download
+   # - note that where there are multiple sessions for a botrunner, only one session will be 
+   #   assigned a specific ai to download, ie they can download different ones in paralle
+   #   but not the same one.  That's for configurations like aegis' where all AIs are in the same
+   #   physical directory across all instances
+   # Note that after downloading, the botrunner is expected to reregister capabilities before
+   # doing anything else, eg before making new requests for download
+   # Also, we'll just assume that any botrunner that calls this is ok with downloadnig stuff
+   # otherwise it wouldnt have called htis ;-)
+   def getdownloadrequest( self, botrunnername, sharedsecret, sessionid ):
+      try:
+         if not botrunnerhelper.validatesharedsecret(botrunnername, sharedsecret):
+            return (False, "Not authenticated")
+  
+         botrunner = botrunnerhelper.getBotRunner( botrunnername )
+
+         aisbeingdownloaded = [] # list of ais being downloaded by this botrunner
+         # we'll make sure that each botrunner can only download one of each ai name/version pair
+         # at any one time, for example, for aegis' cluster this makes sense, since all botrunner
+         # sessions share the same ai directory
+         for session in botrunner.sessions:
+            if session.downloadingai != None:
+               if session.botrunner_session_id != sessionid:  # no point in including download for this specific session, clearly this session aborted it, or it failed, or .. .soemthing
+                  aisbeingdownloaded.append( session.downloadingai )
+
+         requests = sqlalchemysetup.session.query(MatchRequest).\
+            filter(MatchRequest.matchresult == None ).\
+            filter(MatchRequest.matchrequestinprogress == None ).\
+            all()
+         aistodownload = [] # just add all to list, and select randomly, so dont centrate on
+                            # any failed ones
+         for request in requests:
+            mapok = False
+            modok = False
+            ai0ok = False
+            ai1ok = False
+            # probably can add this stuff to the query abovee, but not sure how compliated that
+            # would look.  fairly readable in this format at least
+            for map in botrunner.supportedmaps:
+               if map.map_name == request.map.map_name:
+                  mapok = True
+            for mod in botrunner.supportedmods:
+               if mod.mod_name == request.mod.mod_name:
+                  modok = True
+            for ai in botrunner.supportedais:
+               if ai.ai_name == request.ai0.ai_name and ai.ai_version == request.ai0.ai_version:
+                  ai0ok = True 
+               if ai.ai_name == request.ai1.ai_name and ai.ai_version == request.ai1.ai_version:
+                  ai1ok = True 
+            if mapok and modok:
+               if not ai0ok and not request.ai0.ai_needscompiling:  # this should be added to some flags somewhere, but for now....
+                  if not request.ai0 in aisbeingdownloaded and not request.ai0 in aistodownload:
+                     aistodownload.append( request.ai0 )
+               if not ai1ok and not request.ai1.ai_needscompiling and not request.ai1 in aistodownload:
+                  if not request.ai1 in aisbeingdownloaded:
+                     aistodownload.append( request.ai1 )
+         if len(aistodownload) == 0:
+            return [True,[]]  #cannot return None in python xmlrpclib 2.4
+
+         # select one at random...
+         aitodownload = aistodownload[ random.randint(0, len(aistodownload) - 1 ) ]
+         session = botrunnerhelper.getBotRunnerSession( botrunnername, sessionid )
+         session.downloadingai = aitodownload
+         dicttoreturn = {'ai_name': aitodownload.ai_name, 
+                        'ai_version': aitodownload.ai_version,
+                        'ai_downloadurl': aitodownload.ai_downloadurl,
+                        'ai_needscompiling': aitodownload.ai_needscompiling }
+         sqlalchemysetup.session.commit()
+         return [True,[ dicttoreturn ] ]
+      except:
+         return (False,"An unexpected exception occurred: " + str( sys.exc_info() ) + "\n" + str( traceback.extract_tb( sys.exc_traceback ) ) )
+
+   # signal that downloading is finished
+   # this should not be called until the ai has been registered, otherwise another session
+   # might start downloading it...
+   def finisheddownloadingai( self, botrunnername, sharedsecret, sessionid, ai_name, ai_version ):
+      try:
+         if not botrunnerhelper.validatesharedsecret(botrunnername, sharedsecret):
+            return (False, "Not authenticated")
+
+         # get rid of any downloading ai marker for this session
+         session = botrunnerhelper.getBotRunnerSession( botrunnername, sessionid )
+         session.downloadingai = None
+         sqlalchemysetup.session.commit()
+         return [True, '']
+      except:
+         return (False,"An unexpected exception occurred: " + str( sys.exc_info() ) + "\n" + str( traceback.extract_tb( sys.exc_traceback ) ) )
+
    # returns (True, request) (True, None) or (False, errormessage)
    def getrequest( self, botrunnername, sharedsecret, sessionid ):
       try:
          if not botrunnerhelper.validatesharedsecret(botrunnername, sharedsecret):
             return (False, "Not authenticated")
+
+         # get rid of any downloading ai marker for this session
+         session = botrunnerhelper.getBotRunnerSession( botrunnername, sessionid )
+         session.downloadingai = None
+         sqlalchemysetup.session.flush()
 
          requestitem = matchrequestcontroller.getcompatibleitemfromqueue(botrunnername, sessionid)
          if requestitem == None:

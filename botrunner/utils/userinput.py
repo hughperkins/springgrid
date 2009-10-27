@@ -50,6 +50,16 @@ def getValueFromUser(questiontouser):
       if uservalue != '':
          return uservalue
 
+def getbooleanfromuser(questiontouser):
+   while True:
+      print questiontouser + " (please answer 'y' or 'n')"
+      inputline = sys.stdin.readline()
+      uservalue = inputline.strip().lower()
+      if uservalue == 'y' or uservalue == 'yes':
+         return True
+      if uservalue == 'n' or uservalue == 'no':
+         return False
+
 def getPath( pathname, potentialpaths ):
    # just include paths that exist
    paths = []

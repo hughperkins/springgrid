@@ -19,6 +19,22 @@
 # http://www.opensource.org/licenses/gpl-license.php
 #
 
+import shutil
+import os
+import sys
+
+# does what rsyncav does, more or less
+# sorucepath and estinationpath should both be directories
+def rsyncav( sourcepath, destinationpath ):
+   if sourcepath.endswith("/") or sourcepath.endswith("\\"):
+      sourcepath = sourcepath[:len(sourcepath)-1]
+   for root, dirs, files in os.walk( sourcepath ):
+      reldir = root[len(sourcepath):]
+      if not os.path.exists(destinationpath + "/" + reldir):
+         os.makedirs( destinationpath + "/" + reldir )
+      for file in files:
+         shutil.copy( root + "/" + file, destinationpath + "/" + reldir + "/" + file )
+
 # return contents of filepath as string
 def readFile( filepath ):
    filehandle = open( filepath, "r" )
