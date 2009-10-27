@@ -101,6 +101,24 @@ class Account(Base):
    def addRole( self, role ):
       self.roles.append(role)
 
+ai_allowedmaps = Table( 'ai_allowedmaps', Base.metadata,
+   Column('ai_id', Integer,ForeignKey('ais.ai_id'),nullable = False),
+    Column('map_id', Integer,ForeignKey('maps.map_id'),nullable = False),
+   UniqueConstraint( 'ai_id', 'map_id' )
+)
+
+ai_allowedmods = Table( 'ai_allowedmods', Base.metadata,
+   Column('ai_id', Integer,ForeignKey('ais.ai_id'),nullable = False),
+   Column('mod_id', Integer,ForeignKey('mods.mod_id'),nullable = False),
+   UniqueConstraint( 'ai_id', 'mod_id' )
+)
+
+ai_allowedoptions = Table('ai_allowedoptions', Base.metadata,
+   Column('ai_id', Integer, ForeignKey('ais.ai_id'),nullable = False ),
+   Column('option_id',Integer,ForeignKey('aioptions.option_id'),nullable = False),
+   UniqueConstraint('ai_id', 'option_id')
+)
+
 class AI(Base):
    __tablename__ = 'ais'
 
@@ -112,45 +130,15 @@ class AI(Base):
 
    __table_args__ = (schema.UniqueConstraint('ai_name','ai_version'), {} )
 
-   allowedmaps = relation("AIAllowedMap")
-   allowedmods = relation("AIAllowedMod")
-   allowedoptions = relation("AIAllowedOption")
+   allowedmaps = relation("Map", secondary = ai_allowedmaps )
+   allowedmods = relation("Mod", secondary = ai_allowedmods )
+   allowedoptions = relation("AIOption", secondary = ai_allowedoptions)
 
    owneraccount = relation("Account")
 
    def __init__( self, ai_name, ai_version ):
       self.ai_name = ai_name
       self.ai_version = ai_version
-
-class AIAllowedMap(Base):
-   __tablename__ = 'ai_allowedmaps'
-
-   ai_id = Column(Integer,ForeignKey('ais.ai_id'),primary_key=True)
-   map_id = Column(Integer,ForeignKey('maps.map_id'),primary_key=True)
-
-   ai = relation("AI")
-   map = relation("Map")
-
-class AIAllowedMod(Base):
-   __tablename__ = 'ai_allowedmods'
-
-   ai_id = Column(Integer,ForeignKey('ais.ai_id'),primary_key=True)
-   mod_id = Column(Integer,ForeignKey('mods.mod_id'),primary_key=True)
-
-   ai = relation("AI")
-   mod = relation("Mod")
-
-class AIAllowedOption(Base):
-   __tablename__ = 'ai_allowedoptions'
-
-   ai_id = Column(Integer,ForeignKey('ais.ai_id'),primary_key=True)
-   option_id = Column(Integer,ForeignKey('aioptions.option_id'),primary_key=True)
-
-   ai = relation("AI")
-   option = relation("AIOption")
-
-   def __init__ ( self, option ):
-      self.option = option
 
 class Cookie(Base):
    __tablename__ = 'cookies'
