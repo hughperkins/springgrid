@@ -223,16 +223,11 @@ class AIOption(Base):
    def __init__(self, option_name):
       self.option_name = option_name
 
-class MatchRequestOption(Base):
-   __tablename__ = 'matchrequest_options'
-
-   matchrequest_id = Column(Integer,ForeignKey('matchrequestqueue.matchrequest_id'), primary_key=True)
-   option_id = Column(Integer,ForeignKey('aioptions.option_id'),primary_key=True)
-
-   option = relation("AIOption")
-
-   def __init__(self, option ):
-      self.option = option
+matchrequest_options = Table( 'matchrequest_options', Base.metadata,
+   Column('matchrequest_id', Integer,ForeignKey('matchrequestqueue.matchrequest_id'), nullable = False),
+   Column('option_id',Integer,ForeignKey('aioptions.option_id'),nullable = False),
+   UniqueConstraint('matchrequest_id', 'option_id' )
+)
 
 class MatchRequest(Base):
    __tablename__ = 'matchrequestqueue'
@@ -250,7 +245,7 @@ class MatchRequest(Base):
 
    matchrequestinprogress = relation("MatchRequestInProgress", uselist=False)
    matchresult = relation("MatchResult", uselist=False)
-   options = relation("MatchRequestOption")
+   options = relation("AIOption", secondary = matchrequest_options )
 
    def __init__( self, ai0, ai1, map, mod, league = None ):
       self.ai0 = ai0

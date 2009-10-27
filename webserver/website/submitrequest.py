@@ -89,7 +89,7 @@ def go():
    # get selected options from form submission:
    for option in availableoptions:
       if formhelper.getValue( "option_" + option.option_name ) != None:
-         matchrequest.options.append( MatchRequestOption( option ) )
+         matchrequest.options.append( option )
 
    sqlalchemysetup.session.commit()
 

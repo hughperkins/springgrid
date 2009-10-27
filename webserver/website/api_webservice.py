@@ -89,7 +89,7 @@ class APIService:
          availableoptions = sqlalchemysetup.session.query(AIOption)
          for option in availableoptions:
             if option.option_name in options:
-               matchrequest.options.append( MatchRequestOption( option ) )
+               matchrequest.options.append( option )
 
          sqlalchemysetup.session.commit()
 
@@ -108,7 +108,7 @@ class APIService:
          for request in requests:
             options = []
             for option in request.options:
-               options.append(option.option.option_name)
+               options.append(option.option_name)
             requeststoreturn.append( {
                'matchrequest_id': request.matchrequest_id,
                'map_name': request.map.map_name,
@@ -131,7 +131,7 @@ class APIService:
          for request in requests:
             options = []
             for option in request.options:
-               options.append(option.option.option_name)
+               options.append(option.option_name)
             newresulttoreturn = {
                'matchrequest_id': request.matchrequest_id,
                'map_name': request.map.map_name,
