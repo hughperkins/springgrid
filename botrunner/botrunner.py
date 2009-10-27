@@ -209,6 +209,10 @@ def rungame( serverrequest ):
 
 # when spring crashes, the replay is called 'unnamed', so we'll grab that file instead
 def getreplayfullpath( writabledatadirectory, relativereplaypathfrominfolog ):
+   if relativereplaypathfrominfolog == None:
+      print "No replay found"
+      return None
+
    replayfullpath = writabledatadirectory + relativereplaypathfrominfolog
    if os.path.isfile(replayfullpath):
       return replayfullpath
