@@ -25,7 +25,7 @@ import sqlalchemy
 import sqlalchemy.ext.declarative
 import sqlalchemy.orm
 
-from sqlalchemy import Column, String, Integer, ForeignKey, and_, schema
+from sqlalchemy import Column, String, Integer, ForeignKey, and_, schema, Table, UniqueConstraint
 from sqlalchemy.orm import backref, relation
 
 from utils import *
@@ -57,6 +57,12 @@ class Mod(Base):
       self.mod_name = mod_name
       self.mod_archivechecksum = mod_archivechecksum
 
+account_roles = Table('account_roles', Base.metadata,
+   Column('role_id', Integer,ForeignKey('roles.role_id'),nullable=False),
+   Column('account_id', Integer,ForeignKey('accounts.account_id'),nullable=False),
+   UniqueConstraint('role_id','account_id')
+)
+
 class Role(Base):
    __tablename__ = 'roles'
 
@@ -65,17 +71,6 @@ class Role(Base):
 
    role_id = Column(Integer,primary_key=True)
    role_name = Column(String(255), unique = True, nullable = False)
-
-class RoleMember(Base):
-   __tablename__ = 'role_members'
-
-   role_id = Column(Integer,ForeignKey('roles.role_id'),primary_key=True)
-   account_id = Column(Integer,ForeignKey('accounts.account_id'),primary_key=True)
-
-   role = relation("Role")
-
-   def __init__(self, role ):
-      self.role = role
 
 class Account(Base):
    __tablename__ = 'accounts'
@@ -87,7 +82,7 @@ class Account(Base):
    passwordsalt = Column(String(255), nullable = False)
    passwordhash = Column(String(255), nullable = False)
 
-   roles = relation("RoleMember")
+   roles = relation("Role", secondary = account_roles )
 
    def __init__(self, username, userfullname, password ):
       self.username = username
@@ -104,8 +99,7 @@ class Account(Base):
       self.passwordhash = md5.md5( newpassword + self.passwordsalt ).hexdigest()
 
    def addRole( self, role ):
-      rolemember = RoleMember( role )
-      self.roles.append(rolemember)
+      self.roles.append(role)
 
 class AI(Base):
    __tablename__ = 'ais'
