@@ -63,7 +63,7 @@ def go():
       jinjahelper.message( "Something went wrong.  Please check your values and try again." )
       return
 
-   botrunner.options.append( BotRunnerAssignedOption(option))
+   botrunner.options.append( option )
 
    sqlalchemysetup.session.commit()
 

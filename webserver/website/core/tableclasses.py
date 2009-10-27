@@ -154,13 +154,6 @@ class Cookie(Base):
 
    account = relation("Account")
 
-# I think this was in transition when I switched to doing something else ;-)
-#class BotRunnerOption(Base):
-#   __tablename__ = 'botrunner_options'
-#
-#   botrunner_option_id = Column(Integer,primary_key=True)
-#   botrunner_option_name = Column(String(255))
-
 botrunner_supportedmaps = Table( 'botrunner_supportedmaps', Base.metadata,
    Column('botrunner_id', Integer,ForeignKey('botrunners.botrunner_id'),nullable = False),
    Column('map_id', Integer,ForeignKey('maps.map_id'),nullable = False),
@@ -179,16 +172,11 @@ botrunner_supportedais = Table( 'botrunner_supportedais', Base.metadata,
    UniqueConstraint('botrunner_id', 'ai_id' )
 )
 
-class BotRunnerAssignedOption(Base):
-   __tablename__ = 'botrunner_assignedoptions'
-
-   botrunner_id = Column(Integer,ForeignKey('botrunners.botrunner_id'),primary_key=True)
-   botrunner_option_id = Column(Integer,ForeignKey('aioptions.option_id'),primary_key=True)
-
-   option = relation("AIOption")
-
-   def __init__(self, option ):
-      self.option = option
+botrunner_assignedoptions = Table( 'botrunner_assignedoptions', Base.metadata,
+   Column('botrunner_id',Integer,ForeignKey('botrunners.botrunner_id'),nullable = False),
+   Column('botrunner_option_id',Integer,ForeignKey('aioptions.option_id'),nullable = False),
+   UniqueConstraint('botrunner_id','botrunner_option_id')
+)
 
 class BotRunnerSession(Base):
    __tablename__ = 'botrunner_sessions'
@@ -214,7 +202,7 @@ class BotRunner(Base):
    rowspan = 0 # used by viewbotrunners.py
 
    owneraccount = relation("Account")
-   options = relation("BotRunnerAssignedOption")
+   options = relation("AIOption", secondary = botrunner_assignedoptions )
    supportedmaps = relation("Map", secondary = botrunner_supportedmaps )
    supportedmods = relation("Mod", secondary = botrunner_supportedmods )
    supportedais = relation("AI", secondary = botrunner_supportedais )

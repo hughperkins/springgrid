@@ -54,9 +54,14 @@ def go():
       return
 
    botrunner = botrunnerhelper.getBotRunner( botrunnername )
+   optiontoremove = None
    for option in botrunner.options:
-      if option.option.option_name == optionname:
-         sqlalchemysetup.session.delete( option )
+      if option.option_name == optionname:
+         optiontoremove = option
+   if optiontoremove != None:
+      botrunner.options.remove( optiontoremove )
+
+   sqlalchemysetup.session.flush()
 
    jinjahelper.message( "Removed ok" )
 

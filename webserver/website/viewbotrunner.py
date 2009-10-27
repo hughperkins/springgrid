@@ -41,7 +41,7 @@ showform = ( isbotrunnerowner or roles.isInRole(roles.botrunneradmin) )
 
 potentialoptions = listhelper.tuplelisttolist( sqlalchemysetup.session.query(AIOption.option_name) )
 for option in botrunner.options:
-   potentialoptions.remove(option.option.option_name )
+   potentialoptions.remove(option.option_name )
 
 jinjahelper.rendertemplate('viewbotrunner.html', isbotrunnerowner = isbotrunnerowner, botrunner = botrunner, showform = showform, potentialoptions = potentialoptions )
 

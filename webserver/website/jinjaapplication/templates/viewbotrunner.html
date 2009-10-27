@@ -32,9 +32,9 @@
 {% endif %}
 
 {% for option in botrunner.options %}
-   <tr><td>{{option.option.option_name|e}}</td>
+   <tr><td>{{option.option_name|e}}</td>
    {% if showform %}
-      <td><a href='deleteoptionfrombotrunner.py?botrunnername={{botrunner.botrunner_name|e}}&optionname={{option.option.option_name|e}}'>Delete option</a></td>
+      <td><a href='deleteoptionfrombotrunner.py?botrunnername={{botrunner.botrunner_name|e}}&optionname={{option.option_name|e}}'>Delete option</a></td>
    {% endif %}
    </tr>
 {% endfor %}
