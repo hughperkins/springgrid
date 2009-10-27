@@ -55,7 +55,7 @@
 <table>
 <tr class='tablehead'><td>Map</td>
 {% for map in botrunner.supportedmaps %}
-   <tr class='success'><td>{{map.map.map_name|e}}</td>
+   <tr class='success'><td>{{map.map_name|e}}</td>
 {% endfor %}
 </table>
 
@@ -64,7 +64,7 @@
 <table>
 <tr class='tablehead'><td>Mod</td>
 {% for mod in botrunner.supportedmods %}
-   <tr class='success'><td>{{mod.mod.mod_name|e}}</td>
+   <tr class='success'><td>{{mod.mod_name|e}}</td>
 {% endfor %}
 </table>
 

@@ -63,11 +63,11 @@ def getcompatibleitemfromqueue( botrunnername, sessionid ):
    for matchrequest in matchrequests:
       mapok = False
       for map in botrunner.supportedmaps:
-         if map.map.map_name == matchrequest.map.map_name:
+         if map.map_name == matchrequest.map.map_name:
             mapok = True
       modok = False
       for mod in botrunner.supportedmods:
-         if mod.mod.mod_name == matchrequest.mod.mod_name:
+         if mod.mod_name == matchrequest.mod.mod_name:
             modok = True
       if mapok and modok:
          # mark request in progress:

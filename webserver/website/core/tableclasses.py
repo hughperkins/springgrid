@@ -161,16 +161,17 @@ class Cookie(Base):
 #   botrunner_option_id = Column(Integer,primary_key=True)
 #   botrunner_option_name = Column(String(255))
 
-class BotRunnerSupportedMap(Base):
-   __tablename__ = 'botrunner_supportedmaps'
+botrunner_supportedmaps = Table( 'botrunner_supportedmaps', Base.metadata,
+   Column('botrunner_id', Integer,ForeignKey('botrunners.botrunner_id'),nullable = False),
+   Column('map_id', Integer,ForeignKey('maps.map_id'),nullable = False),
+   UniqueConstraint('botrunner_id', 'map_id' )
+)
 
-   botrunner_id = Column(Integer,ForeignKey('botrunners.botrunner_id'),primary_key=True)
-   map_id = Column(Integer,ForeignKey('maps.map_id'),primary_key=True)
-
-   map = relation("Map",uselist = False)
-
-   def __init__(self, map ):
-      self.map = map
+botrunner_supportedmods = Table( 'botrunner_supportedmods', Base.metadata,
+   Column('botrunner_id', Integer,ForeignKey('botrunners.botrunner_id'),nullable = False),
+   Column('mod_id', Integer,ForeignKey('mods.mod_id'),nullable = False),
+   UniqueConstraint('botrunner_id', 'mod_id' )
+)
 
 class BotRunnerSupportedAI(Base):
    __tablename__ = 'botrunner_supportedais'
@@ -182,17 +183,6 @@ class BotRunnerSupportedAI(Base):
 
    def __init__ (self, ai ):
       self.ai = ai
-
-class BotRunnerSupportedMod(Base):
-   __tablename__ = 'botrunner_supportedmods'
-
-   botrunner_id = Column(Integer,ForeignKey('botrunners.botrunner_id'),primary_key=True)
-   mod_id = Column(Integer,ForeignKey('mods.mod_id'),primary_key=True)
-
-   mod = relation("Mod")
-
-   def __init__(self, mod ):
-      self.mod = mod
 
 class BotRunnerAssignedOption(Base):
    __tablename__ = 'botrunner_assignedoptions'
@@ -230,8 +220,8 @@ class BotRunner(Base):
 
    owneraccount = relation("Account")
    options = relation("BotRunnerAssignedOption")
-   supportedmaps = relation("BotRunnerSupportedMap", uselist=True )
-   supportedmods = relation("BotRunnerSupportedMod", uselist=True )
+   supportedmaps = relation("Map", secondary = botrunner_supportedmaps )
+   supportedmods = relation("Mod", secondary = botrunner_supportedmods )
    supportedais = relation("BotRunnerSupportedAI", uselist = True )
    sessions = relation("BotRunnerSession",uselist = True)
 
