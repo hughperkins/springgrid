@@ -102,6 +102,16 @@ class SpringGridService:
 
       return (True,'')
 
+   # for whatever reason, the botrunner no longers supports this AI
+   def registerunsupportedai( self, botrunnername, sharedsecret, ainame, aiversion ):
+      if not botrunnerhelper.validatesharedsecret(botrunnername, sharedsecret):
+         return (False, "Not authenticated")
+
+      if not aihelper.setbotrunnernotsupportsthisai( botrunnername, ainame, aiversion ):
+         return (False, "couldn't mark ai as not supported for botrunner")
+
+      return (True,'')
+
    def getsupportedmods( self, botrunnername, sharedsecret ):
       return modhelper.getsupportedmods(botrunnername)
 
@@ -205,9 +215,9 @@ class SpringGridService:
                   ai1ok = True 
             if mapok and modok:
                if not ai0ok and not request.ai0.ai_needscompiling:  # this should be added to some flags somewhere, but for now....
-                  if not request.ai0 in aisbeingdownloaded and not request.ai0 in aistodownload:
+                  if not request.ai0 in aisbeingdownloaded and not request.ai0 in aistodownload and request.ai0.ai_needscompiling == False:
                      aistodownload.append( request.ai0 )
-               if not ai1ok and not request.ai1.ai_needscompiling and not request.ai1 in aistodownload:
+               if not ai1ok and not request.ai1.ai_needscompiling and not request.ai1 in aistodownload and request.ai1.ai_needscompiling == False:
                   if not request.ai1 in aisbeingdownloaded:
                      aistodownload.append( request.ai1 )
          if len(aistodownload) == 0:

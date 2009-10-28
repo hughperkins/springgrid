@@ -235,7 +235,6 @@ def rungame( serverrequest ):
          if os.getenv(varname) != None:
             existingenv[varname ] = os.getenv(varname)
       existingenv[ "JAVA_HOME" ] = os.path.dirname( config.JAVA_HOME )
-      print existingenv
       popen = subprocess.Popen( [ config.springPath, writabledatadirectory + "/script.txt"], 
          env = existingenv )
    else:
@@ -530,6 +529,8 @@ def registerais(host,registeredais):
    print registeredais
 
    multicall = xmlrpclib.MultiCall(getxmlrpcproxy(host))
+   registeredaiswehave = []  # we'll go through this and figure out which ones we don't have,
+                             # then unregister them
    for i in xrange( unitsync.GetSkirmishAICount() ):
       shortname = ''
       version = ''
@@ -543,6 +544,14 @@ def registerais(host,registeredais):
          if registeredais.count( [ shortname, version ] ) == 0:
             print "registering ai " + shortname + " version " + version + " ..."
             multicall.registersupportedai( config.botrunnername, config.sharedsecret, shortname, version )
+         else:
+            registeredaiswehave.append( [shortname,version] )
+
+   for shortname, version in registeredais:
+      if registeredaiswehave.count( [shortname, version] ) == 0:
+         print "un-registering ai " + shortname + " version " + version + " ..."
+         multicall.registerunsupportedai( config.botrunnername, config.sharedsecret, shortname, version )
+
    results = multicall()
    successcount = 0
    total = 0
