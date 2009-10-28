@@ -214,7 +214,7 @@ def rungame( serverrequest ):
       for varname in os.environ.keys():
          if os.getenv(varname) != None:
             existingenv[varname ] = os.getenv(varname)
-      existingenv[ "JAVA_HOME" ] = os.path.dirname( config.javaexepath )
+      existingenv[ "JAVA_HOME" ] = os.path.dirname( config.JAVA_HOME )
       print existingenv
       popen = subprocess.Popen( [ config.springPath, writabledatadirectory + "/script.txt"], 
          env = existingenv )
@@ -415,9 +415,9 @@ def  setupConfig():
       usejava = userinput.getbooleanfromuser( "Do you have Java installed?  This will increase the number of AIs this botrunner can run." )
       if usejava:
          print ""
-         javapath = userinput.getPath( "java executable (eg /usr/bin/java or c:\\program files\\sun jdk\\bin\\java)", [ '/usr/bin/java', '/usr/local/bin/java'] )
+         JAVA_HOME = userinput.getPath( "Appropriate value for JAVA_HOME (eg /usr/lib/jvm/java-6-sun/jre or c:\\program files\\sun jdk\\bin\\java)", [ 'c:\\program files\\sun jdk', '/usr/lib/jvm/java-6-sun/jre'] )
       else:
-         javapath = None
+         JAVA_HOME = None
       print ""
       downloadingok = userinput.getbooleanfromuser( "Are you ok with downloading new AIs?  You can answer no, but your botrunner will be far more useful if you answer yes.  You should be aware that the code you download is not necessarily trusted or safe.  By answering yes, you confirm that you are running the botrunner on a machine that does not contain sensitive data, and whose compromise will not cause any issues to you or others.  You agree that you will not hold the SpringGrid website host, or admin, or author responsible for any damages that may occur whatsover." )
       print ""
@@ -429,7 +429,7 @@ def  setupConfig():
       print "   UnitSync path: " + unitsyncPath
       print "   Enable Java AIs: " + str(usejava)
       if usejava:
-         print "   Path to Java executable: " + javapath
+         print "   JAVA_HOME: " + JAVA_HOME
       print "   Downloading ok: " + str( downloadingok )
       print ""
       if userinput.getConfirmation( "Is this correct?" ):
@@ -446,9 +446,9 @@ def  setupConfig():
    newconfig = newconfig.replace( "ALLOWDOWNLOADING", str(downloadingok) )
    newconfig = newconfig.replace( "CANCOMPILE", 'False' )
    if usejava:
-      newconfig = newconfig.replace( "JAVAEXEPATH", javapath )
+      newconfig = newconfig.replace( "JAVA_HOME", JAVA_HOME )
    else:
-      newconfig = newconfig.replace( "JAVAEXEPATH", "None" )
+      newconfig = newconfig.replace( "JAVA_HOME", "None" )
    filehelper.writeFile( scriptdir + "/config.py", newconfig )
 
    # and import it...

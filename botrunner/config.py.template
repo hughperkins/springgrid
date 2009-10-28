@@ -20,8 +20,8 @@ springPath="SPRINGPATH"
 # full path to unitsync.dll or (lib)unitsync.so
 unitsyncPath="UNITSYNCPATH"
 
-# full path to java.exe or java
-javaexepath = "JAVAEXEPATH"
+# value of JAVA_HOME, eg /usr/lib/jvm/java-6-sun/jre
+JAVA_HOME = "$JAVA_HOME"
 
 #######################################################################3
 # stuff under this line probably doesn't need modifying, in general
