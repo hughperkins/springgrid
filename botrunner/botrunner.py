@@ -446,9 +446,9 @@ def  setupConfig():
    newconfig = newconfig.replace( "ALLOWDOWNLOADING", str(downloadingok) )
    newconfig = newconfig.replace( "CANCOMPILE", 'False' )
    if usejava:
-      newconfig = newconfig.replace( "JAVA_HOME", JAVA_HOME )
+      newconfig = newconfig.replace( "$JAVA_HOME", JAVA_HOME )
    else:
-      newconfig = newconfig.replace( "JAVA_HOME", "None" )
+      newconfig = newconfig.replace( "$JAVA_HOME", "None" )
    filehelper.writeFile( scriptdir + "/config.py", newconfig )
 
    # and import it...
