@@ -14,6 +14,10 @@ sleepthislongwhennothingtodoseconds = 60
 allowdownloading = ALLOWDOWNLOADING
 cancompile = CANCOMPILE
 
+# override this if you want, eg we do on aegis' cluster
+# should point to the 'AI' directory itself where you want to install the AIs
+aiinstallationdirectory = "AIINSTALLATIONDIRECTORY"
+
 # full path to "spring(.exe)" or "spring-headlessstubs(.exe)"
 springPath="SPRINGPATH"
 

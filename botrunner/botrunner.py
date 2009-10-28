@@ -178,7 +178,7 @@ def trydownloadingai(host):
          print "shortName (" + aiinfodict['shortName'] + ") or version (" + aiinfodict['version'] + ") contained in AIInfo.lua do not match requested download AI (" + ai_name + ", " + ai_version + ") -> aborting"
          return
 
-      targetpath = writabledatadirectory + "/AI/Skirmish/" + ai_name + "/" + ai_version
+      targetpath = config.aiinstallationdirectory + "/Skirmish/" + ai_name + "/" + ai_version
       if not os.path.exists(targetpath):
          os.makedirs(targetpath)
 
@@ -456,6 +456,10 @@ def  setupConfig():
          gotdata = True
 
    # that's all we need, let's create the config file...
+   # wait, need writable datadirectory from unitsync:
+
+   initUnitSyncWithUnitSyncPath( unitsyncPath )
+
    templatecontents = filehelper.readFile(scriptdir + "/config.py.template")
    newconfig = templatecontents
    newconfig = newconfig.replace( "WEBSITEURL", weburl )
@@ -464,6 +468,7 @@ def  setupConfig():
    newconfig = newconfig.replace( "SPRINGPATH", springPath )
    newconfig = newconfig.replace( "UNITSYNCPATH", unitsyncPath )
    newconfig = newconfig.replace( "ALLOWDOWNLOADING", str(downloadingok) )
+   newconfig = newconfig.replace( "AIINSTALLATIONDIRECTORY", writabledatadirectory + 'AI' )
    newconfig = newconfig.replace( "CANCOMPILE", 'False' )
    if usejava:
       newconfig = newconfig.replace( "$JAVA_HOME", JAVA_HOME )
@@ -473,6 +478,7 @@ def  setupConfig():
 
    # and import it...
    import config
+
    return True
 
 def registermaps(host,registeredmaps):
@@ -570,8 +576,12 @@ def registeraisallhosts():
       registerais(host, registeredais )
 
 def initUnitSync():
-   global config, unitsync, writabledatadirectory
-   unitsync = unitsyncpkg.Unitsync(config.unitsyncPath)
+   global config
+   initUnitSyncWithUnitSyncPath(config.unitsyncPath)
+
+def initUnitSyncWithUnitSyncPath(unitsyncpath):
+   global unitsync, writabledatadirectory
+   unitsync = unitsyncpkg.Unitsync(unitsyncpath)
    unitsync.Init(True,1)
    writabledatadirectory = unitsync.GetWritableDataDirectory()
 
