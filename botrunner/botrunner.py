@@ -209,7 +209,7 @@ def rungame( serverrequest ):
       os.remove( writabledatadirectory + "/infolog.txt" )
 
    os.chdir( writabledatadirectory )
-   if config.javaexepath != None:
+   if config.JAVA_HOME != None:
       existingenv = {}
       for varname in os.environ.keys():
          if os.getenv(varname) != None:
