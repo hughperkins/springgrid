@@ -292,6 +292,26 @@ def rungame( serverrequest ):
          gameresult['replaypath'] = getreplaypath( infologcontents )
          return gameresult
 
+      # check timeout in game time:
+      infologlines = infologcontents.split("\n")
+      lastguaranteedinfologline = infologlines[len(infologlines) - 1]
+      if lastguaranteedinfologline.find("[") != -1:
+         numstring = lastguaranteedinfologline.split("[")[1].split("]")[0].strip()
+         print "frame number string: " + numstring
+         try:
+            frames = int(numstring)
+            print "frames: " + str( frames )
+            if frames / 30 > serverrequest['gametimeoutminutes'] * 60:
+               # timeout
+               print "Game timed out"
+               gameresult['winningai'] = -1
+               gameresult['resultstring'] = "gametimeout"
+               popen.kill()
+               gameresult['replaypath'] = getreplaypath( infologcontents )
+               return gameresult
+         except:
+            pass
+
       if popen.poll() != None:
          # spring finished / died / crashed
          # presumably if we got here, it crashed, otherwise infolog would have been written   
