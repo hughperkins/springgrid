@@ -70,3 +70,11 @@ def setbotrunnersupportsthisai( botrunnername, ainame, aiversion ):
    sqlalchemysetup.session.commit()
    return (True,'')
 
+def setbotrunnernotsupportsthisai( botrunnername, ainame, aiversion ):
+   botrunner = botrunnerhelper.getBotRunner( botrunnername )
+   for ai in botrunner.supportedais:
+      if ai.ai_name == ainame and ai.ai_version == aiversion:
+       botrunner.supportedais.remove( ai )
+   sqlalchemysetup.session.commit()
+   return (True,'')
+

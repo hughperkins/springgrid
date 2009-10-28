@@ -5,7 +5,23 @@
 
 <h3>SpringGrid - View AI {{ai.ai_name}} {{ai.ai_version}}</h3>
 
-<p>This page can configure the options compatible with one ai</p>
+{% if showform %}
+<h4>Update AI properties</h4>
+
+<form method='post' action='updateai.py'>
+<table>
+   <tr><td>Download url</td><td><input name='downloadurl' value="{{ai.ai_downloadurl|e}}"</td></tr>
+   <tr><td>Needs compiling?</td><td><select name="needscompiling">{% if ai.ai_needscompiling %}<option value="yes" selected="selected">Yes</option><option value="no">No</option>{% else %}<option value="yes">Yes</option><option value="no" selected="selected">No</option>{% endif %}</select></tr>
+   <tr><td></td><td><input type='submit' value='Update' /></td></tr>
+</table>
+<input type='hidden' name='ainame' value="{{ai.ai_name}}" />
+<input type='hidden' name='aiversion' value="{{ai.ai_version}}" />
+</form>
+{% endif %}
+
+<h4>Configure AI options</h4>
+
+<p>Configure the options compatible with one ai</p>
 <p>For example, if it can run when cheating is allowed, then add the option 'cheatingallowed', or, if it can run when cheating is banned, then add the option 'cheatingequalslose'.</p>
 
 <table border='1' padding='3'>
