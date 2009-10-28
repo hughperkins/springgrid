@@ -158,6 +158,26 @@ def trydownloadingai(host):
          return
 
       print "ai sourcepath: " + sourcepath
+
+      aiinfopath = sourcepath + "/AIInfo.lua"
+      if not os.path.exists( aiinfopath ):
+         print "No AIAinfo.lua found, so aborting"
+         return
+
+      try:
+         aiinfodict = aiinfoparser.parse( aiinfopath )
+      except:
+         print "Failed to parse AIInfo.lua, aborting " + str(sys.exc_info()) + "\n" + str( traceback.extract_tb( sys.exc_traceback ) )
+         return
+        
+      if not aiinfodict.has_key('shortName') or not aiinfodict.has_key('version'):
+         print "AIInfo.lua does not appear to contain shortName or version -> aborting"
+         return
+
+      if ai_name != aiinfodict['shortName'] or ai_version != aiinfodict['version']:
+         print "shortName (" + aiinfodict['shortName'] + ") or version (" + aiinfodict['version'] + ") contained in AIInfo.lua do not match requested download AI (" + ai_name + ", " + ai_version + ") -> aborting"
+         return
+
       targetpath = writabledatadirectory + "/AI/Skirmish/" + ai_name + "/" + ai_version
       if not os.path.exists(targetpath):
          os.makedirs(targetpath)
@@ -392,7 +412,7 @@ def  setupConfig():
    gotdata = False
    while not gotdata:
       print ""
-      weburl = userinput.getValueFromUser("Which webserver to you want to subscribe to?  Examples:\n   - manageddreams.com/springgrid\n   - manageddreams.com/springgridstaging\n   - localhost/springgrid")
+      weburl = userinput.getChoice("Which webserver to you want to subscribe to?", ['manageddreams.com/springgrid','manageddreams.com/springgridstaging', 'localhost/springgrid' ], None, None )
       print ""
       if weburl.lower().find("http://") == -1:
          weburl = "http://" + weburl

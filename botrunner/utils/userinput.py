@@ -60,6 +60,59 @@ def getbooleanfromuser(questiontouser):
       if uservalue == 'n' or uservalue == 'no':
          return False
 
+# validatefunction should be a function like:
+# def myvalidatefunction( potentialvalue)
+# which should return True if valid, otherwise False
+# validateddisplaychoicesfunction is used to filter the choices that are displayed to the user
+# validateuserchoicefunction is used to validate the user's actual choice
+# if either are set to None then those tests are skipped
+def getChoice( question, potentialchoices, validatedisplayedchoicesfunction, validateuserschoicefunction ):
+   # just include paths that exist
+   choices = []
+   for potentialchoice in potentialchoices:
+      if validatedisplayedchoicesfunction == None or validatedisplayedchoicesfunction( potentialchoice ):
+         choices.append( potentialchoice )
+
+   #print choices
+   while True:
+      print question
+      print "Please enter the number of your choice:"
+      for i in xrange( len( choices ) ):
+         print str(i + 1 ) + ". " + choices[i]
+      print str( len( choices ) + 1 ) + ". custom (eg " + potentialchoices[0] + ")"
+
+      inputline = sys.stdin.readline().strip()
+      if inputline == '':
+         continue
+      try:
+         index = int( inputline )
+      except:
+         # user didn't enter a number
+         # could be a path?
+         try:
+            if validateuserschoicefunction != None and not validateuserschoicefunction( inputline ):
+               print "Not a valid choice"
+               continue
+            return inputline
+         except:
+            print "Not a valid choice"
+            continue
+         
+      if index < 1 or index > len( choices ) + 1:
+         print "Please enter a number from 1 to " + str( len( choices ) + 1 ) + "."
+         continue
+      if index <= len( choices ):
+         return choices[index - 1]
+      # user wants to enter a custom choice:
+      print "Please type in your answer (eg " + potentialchoices[0] + ") :"
+      inputline = sys.stdin.readline().strip()
+      if inputline == '':
+         continue
+      if validateuserschoicefunction != None and not validateuserchoicefunction( inputline ):
+         print "Not a valid choice"
+         continue
+      return inputline
+
 def getPath( pathname, potentialpaths ):
    # just include paths that exist
    paths = []
