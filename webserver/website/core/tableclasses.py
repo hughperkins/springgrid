@@ -326,32 +326,17 @@ def addstaticdata(session):
                        # imported inside confighelper, because circular import loop
    confighelper.applydefaults()
 
-   # maybe roles static data could be created by core/roles.py?
-   # anyway, for now... :
-   accountadminrole = Role("accountadmin")
-   aiadminrole = Role("aiadmin")
-   modadminrole = Role("modadmin")
-   mapadminrole = Role("mapadmin")
-   leagueadminrole = Role("leagueadmin")
-   botrunneradminrole = Role("botrunneradmin")
-   apiclientrole = Role("apiclient")
-
-   session.add(accountadminrole)
-   session.add(aiadminrole)
-   session.add(modadminrole)
-   session.add(mapadminrole)
-   session.add(leagueadminrole)
-   session.add(botrunneradminrole)
-   session.add(apiclientrole)
-
+   import roles
+   roles.addstaticdata()
    account = Account("admin","admin", "admin")
    session.add(account)
-   account.addRole( accountadminrole )
-   account.addRole( aiadminrole )
-   account.addRole( modadminrole )
-   account.addRole( mapadminrole )
-   account.addRole( leagueadminrole )
-   account.addRole( botrunneradminrole )
+   account.addRole( roles.getRole('accountadmin') )
+   account.addRole( roles.getRole('aiadmin') )
+   account.addRole( roles.getRole('mapadmin') )
+   account.addRole( roles.getRole('modadmin') )
+   account.addRole( roles.getRole('leagueadmin') )
+   account.addRole( roles.getRole('botrunneradmin') )
+   account.addRole( roles.getRole('requestadmin') )
 
    session.add(Account("guest","guest","guest"))
 

@@ -39,9 +39,28 @@ mapadmin = 'mapadmin'
 modadmin = 'modadmin'
 leagueadmin = 'leagueadmin'
 botrunneradmin = 'botrunneradmin'
+requestadmin = 'requestadmin'
+apiclient = 'apiclient'
+
+# note that there's probably a better way to sort out all this static data and stuff, but for
+# now, this works ...
+
+# adds any missing roles to the table, can be called as many times as you like
+def addstaticdata():
+   rolerows = sqlalchemysetup.session.query(Role).all()
+   for rolename in [ 'accountadmin', 'aiadmin', 'mapadmin', 'modadmin', 'leagueadmin', 'botrunneradmin', 'requestadmin', 'apiclient' ]:
+      rolefound = False
+      for rolerow in rolerows:
+         if rolerow.role_name == rolename:
+            rolefound = True
+      if not rolefound:
+         role = Role( rolename )
+         sqlalchemysetup.session.add(role)
+         sqlalchemysetup.session.flush()
 
 # returns Role object using sqlalchemy
 def getRole(rolename ):
+   addstaticdata()
    return sqlalchemysetup.session.query(Role).filter(Role.role_name == rolename ).first()
 
 # returns if the logged-in user is in the named role
@@ -61,6 +80,7 @@ def isInRole2(username, rolename):
       return False
 
    # validate rolename:
+   addstaticdata()
    rolerow = sqlalchemysetup.session.query(Role).filter(Role.role_name == rolename ).first()
    if rolerow == None:
       print "ERROR: invalid rolename specified"
