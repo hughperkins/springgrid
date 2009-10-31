@@ -36,6 +36,7 @@ import base64
 import xmlrpclib
 from optparse import OptionParser
 import traceback
+import imp
 
 from unitsync import unitsync as unitsyncpkg
 
@@ -60,6 +61,7 @@ def parseopts():
 
    parser = OptionParser()
    parser.add_option( "--sessionid", help = 'force sessionid to specific string', dest = 'sessionid' )
+   parser.add_option( "--configpath", help = 'path to configfile (default: config.py).  Note: must already exist.', dest = 'configpath' )
    parser.add_option( "--no-register-capabilities", help = 'do not register maps, mods or ais with web service', dest = 'noregistercapabilities', action='store_true' )
    parser.add_option( "--version", '-V', help = 'show version', dest = 'version', action='store_true' )
 
@@ -631,7 +633,10 @@ def go():
 
    # check for config, question user if doesn't exist
    try:
-      import config
+      if options.configpath != None:
+         config = imp.load_source('config', options.configpath )
+      else:
+         import config
       print "Configuration found, using"
    except:
       ok = setupConfig()
