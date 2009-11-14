@@ -1,4 +1,4 @@
-#!/usr/bash
+#!/bin/bash
 
 sitehostname=manageddreams.com
 # sitehostname=localhost
