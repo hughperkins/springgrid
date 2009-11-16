@@ -1,0 +1,15 @@
+Wed Apr 22 16:13:19 PDT 2009  cygnus@janrain.com
+  tagged release-2.2.4
+  Ignore-this: 61b846c99ca5a6ca9fd7a77139ea2dbc
+
+Wed Apr 22 16:13:01 PDT 2009  cygnus@janrain.com
+  * Set version to 2.2.4
+  Ignore-this: a066625460741847b75217363da721fb
+
+Wed Apr 22 10:10:15 PDT 2009  cygnus@janrain.com
+  * Add missing openid.extensions.draft to setup.py
+  Ignore-this: 5ceefd2763ffa9ebc1758e2262cfb686
+
+Wed Apr 22 10:05:28 PDT 2009  cygnus@janrain.com
+  tagged release-2.2.3
+  Ignore-this: 6c6c0ca9dbf3a26970214f80eafa7445

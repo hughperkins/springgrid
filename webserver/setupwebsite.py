@@ -85,6 +85,15 @@ def main():
       print "... need to install jinja2"
    print ""
 
+   print "Check python-openid..."
+   try:
+      import openid
+      print "checked python-openid: already installed.  Good."
+   except:
+      neededpackages.append('openid')
+      print "... need to install python-openid"
+   print ""
+
    newpythonexecutable = None
    if len(neededpackages) > 0:
       print "We need to install some packages to run AILadder website."
@@ -111,6 +120,10 @@ def main():
             os.chdir(scriptdir + "/dependencies/Jinja2-2.2.1")
             popen = subprocess.Popen([sys.executable, "setup.py","install"] )
             popen.wait()
+         if 'openid' in neededpackages:
+            os.chdir(scriptdir + "/dependencies/python-openid-2.2.4")
+            popen = subprocess.Popen([sys.executable, "setup.py","install"] )
+            popen.wait()
       elif installlocation == 'virtualenv':
          virtualenvpath = ''
          while virtualenvpath == '':
@@ -127,6 +140,10 @@ def main():
                popen.wait()
             if 'jinja2' in neededpackages:
                os.chdir(scriptdir + "/dependencies/Jinja2-2.2.1")
+               popen = subprocess.Popen([newpythonexecutable, "setup.py","install"] )
+               popen.wait()
+            if 'jinja2' in neededpackages:
+               os.chdir(scriptdir + "/dependencies/python-openid-2.2.4")
                popen = subprocess.Popen([newpythonexecutable, "setup.py","install"] )
                popen.wait()
 
