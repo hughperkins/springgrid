@@ -1,6 +1,8 @@
 # make sure configs are not included:
 config.py
 config.pyc
+config_vbox.py
+config_vbox.pyc
 
 # exclude all compiled modules
 *.pyc
