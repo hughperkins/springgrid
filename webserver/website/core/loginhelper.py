@@ -46,13 +46,19 @@ loginhtml = ""
 cookiereference = ''
 cookie = Cookie.SimpleCookie()
 
-authmethod = None # 'password' or 'openid'
-
 saltlength = 200
 
 def GenerateRef():
    return stringhelper.getRandomAlphaNumericString(40)
 
+def hasPassword():
+   account = sqlalchemysetup.session.query(tableclasses.Account).filter( tableclasses.Account.username == gusername ).first()
+   if account == None:
+      return False
+   if account.passwordinfo == None:
+      return False
+   return True
+   
 def isLoggedOn():
    global gusername
    return ( gusername != '')
@@ -76,7 +82,6 @@ def validateUsernamePassword( username, password ):
    if account.passwordinfo == None:
       return False
    result = account.passwordinfo.checkPassword( password )
-   authmethod = 'password'
    return result
 
 def logonUserWithAuthenticatedOpenID( openidurl ):
@@ -108,7 +113,6 @@ def logonUserWithAuthenticatedOpenID( openidurl ):
    sqlalchemysetup.session.commit()
 
    gusername = account.username
-   authmethod = 'openid'
    loginhtml = "<p>Logged in as: " + gusername + "</p>"
 
 def logonUserWithPassword(username, password):

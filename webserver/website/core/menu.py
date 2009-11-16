@@ -18,7 +18,7 @@ def getmenus():
    menus = []
    if loginhelper.isLoggedOn():
       accountmenus = []
-      if loginhelper.authmethod == 'password':
+      if loginhelper.hasPassword():
          accountmenus.append( ['Change Password', 'changepasswordform.py'] )
       accountmenus.append( ['Logout', 'logout.py'] )
       menus.append([ loginhelper.gusername.split('.')[0], accountmenus ])
