@@ -115,6 +115,13 @@ def downloaddataurl( url, filepath, md5sum ):
       data = serverrequestarray = serverrequesthandle.read(1000000)
    file.close()
 
+   if md5sum != None:
+      print "Verifying checksum..."
+      checksum = md5sumfile( filepath )
+      if checksum != md5sum:
+         raise Exception("invalid checksum for " + filepath )
+      print " ... checksum ok"
+    
 def downloadurllist():
    global urllist
 
@@ -138,7 +145,15 @@ def downloadspringheadless():
 def downloadbotrunner():
    git.gitClone( urllist.springgridgiturl, scriptdir + "/springgrid" )
 
+# we don't want to continually uncompress the harddrive during script-testing
+# if there is some way of detecting an exiting valid harddrive and using that it is good
+# or at least to delete any existing confflicting harddrive and vm
 def installvm():
+   hdds = virtualbox.gethdds()
+   for hdd in hdds:
+      hddfilepath = hdd['Location']
+      if os.path.basename( hddfilepath ) == 'botrunner-hd.vmdk':
+         
    virtualbox.importAppliance( gettempdir() + "/botrunner.ovf" )
 
 def configuresharedfolders():
@@ -168,7 +183,7 @@ def go():
    downloadspringheadless()
    downloadbotrunner()
 
-   #installvm()
+   installvm()
    #configurebotrunnerconfig()
    configuresharedfolders()
 

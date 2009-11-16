@@ -48,6 +48,22 @@ def getvms():
          vms.append(line.split('"')[1])
    return vms
 
+def gethdds():
+   (stdout,stderr) = vboxmanage( ['list', 'hdds' ])
+   hdds = []
+   hdd = {}
+   for line in stdout.split("\n"):
+      if line.strip() != '':
+         splitline = line.split(" ")
+         key = splitline[0].split(":")[0]
+         value = splitline[len(splitline) - 1]
+         #print key + " " + value
+         hdd[key] = value
+      else:
+         if len(hdd.keys())> 0:
+            hdds.append(hdd)
+   return hdds
+
 def createvm( vmname ):
    print vboxmanage(['createvm','--name',vmname,'--register'])[0]
 
