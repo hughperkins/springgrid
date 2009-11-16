@@ -72,22 +72,23 @@ class Role(Base):
    role_id = Column(Integer,primary_key=True)
    role_name = Column(String(255), unique = True, nullable = False)
 
-class Account(Base):
-   __tablename__ = 'accounts'
+class OpenID(Base):
+   __tablename__ = 'openids'
 
-   account_id = Column(Integer,primary_key=True)
-   username = Column(String(255), unique = True, nullable = False)
-   userfullname = Column(String(255))
-   useremailaddress = Column(String(255))
+   account_id = Column(Integer, ForeignKey('accounts.account_id'), primary_key = True)
+   openid = Column(String(255), primary_key = True)
+
+   def __init__( self, openid ):
+      self.openid = openid
+
+class PasswordInfo(Base):
+   __tablename__ = 'passwords'
+
+   account_id = Column(Integer, ForeignKey('accounts.account_id'), primary_key = True)
    passwordsalt = Column(String(255), nullable = False)
    passwordhash = Column(String(255), nullable = False)
 
-   roles = relation("Role", secondary = account_roles )
-
-   def __init__(self, username, userfullname, password ):
-      self.username = username
-      self.userfullname = userfullname
-
+   def __init__(self, password ):
       self.passwordsalt = loginhelper.createSalt()
       self.passwordhash = md5.md5( password + self.passwordsalt ).hexdigest()
 
@@ -97,6 +98,22 @@ class Account(Base):
    def changePassword( self, newpassword ):
       self.passwordsalt = loginhelper.createSalt()
       self.passwordhash = md5.md5( newpassword + self.passwordsalt ).hexdigest()
+
+class Account(Base):
+   __tablename__ = 'accounts'
+
+   account_id = Column(Integer,primary_key=True)
+   username = Column(String(255), unique = True, nullable = False)
+   userfullname = Column(String(255))
+   useremailaddress = Column(String(255))
+
+   roles = relation("Role", secondary = account_roles )
+   passwordinfo = relation('PasswordInfo', uselist = False)
+   openids = relation('OpenID')
+
+   def __init__(self, username, userfullname ):
+      self.username = username
+      self.userfullname = userfullname
 
    def addRole( self, role ):
       self.roles.append(role)
@@ -328,7 +345,8 @@ def addstaticdata(session):
 
    import roles
    roles.addstaticdata()
-   account = Account("admin","admin", "admin")
+   account = Account("admin","admin" )
+   account.passwordinfo = PasswordInfo('admin')
    session.add(account)
    account.addRole( roles.getRole('accountadmin') )
    account.addRole( roles.getRole('aiadmin') )
@@ -338,7 +356,7 @@ def addstaticdata(session):
    account.addRole( roles.getRole('botrunneradmin') )
    account.addRole( roles.getRole('requestadmin') )
 
-   session.add(Account("guest","guest","guest"))
+   # session.add(Account("guest","guest","guest"))
 
    aioption_cheatingequalslose = AIOption('cheatingequalslose')
    aioption_cheatingallowed = AIOption('cheatingallowed')
@@ -349,9 +367,11 @@ def addstaticdata(session):
 
 def createall(engine):
    Base.metadata.create_all(engine)
+   openidhelper.createtables(engine)
 
 def dropall(engine):
    Base.metadata.drop_all(engine)
+   openidhelper.droptables(engine)
 
 
 

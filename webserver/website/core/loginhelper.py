@@ -35,6 +35,7 @@ from utils import *
 
 import sqlalchemysetup
 import tableclasses
+# from tableclasses import *
 
 gusername = ""  # first call loginhelper.processCookie().  If the user
                 # is already logged in after that, then gusername will no
@@ -44,6 +45,8 @@ gusername = ""  # first call loginhelper.processCookie().  If the user
 loginhtml = ""
 cookiereference = ''
 cookie = Cookie.SimpleCookie()
+
+authmethod = None # 'password' or 'openid'
 
 saltlength = 200
 
@@ -65,12 +68,50 @@ def createSalt():
 
 # returns True if password correct, otherwise false
 def validateUsernamePassword( username, password ):
+   global authmethod
+
    account = sqlalchemysetup.session.query(tableclasses.Account).filter( tableclasses.Account.username == username ).first()
    if account == None:
       return False
-   return account.checkPassword( password )
+   if account.passwordinfo == None:
+      return False
+   result = account.passwordinfo.checkPassword( password )
+   authmethod = 'password'
+   return result
 
-def logonUser(username, password):
+def logonUserWithAuthenticatedOpenID( openidurl ):
+   global gusername
+   global loginhtml
+   global cookie
+   global cookiereference
+   global authmethod
+
+   cookiereference = GenerateRef()
+
+   cookie = Cookie.SimpleCookie()
+   cookie["cookiereference"] = cookiereference
+
+   account = None
+   # note: this could be optimized a little...
+   for thisaccount in sqlalchemysetup.session.query(tableclasses.Account):
+      for openid in thisaccount.openids:
+         if openid.openid == openidurl:
+            account = thisaccount
+   if account == None:
+      # create new account
+      account = tableclasses.Account(openidurl, openidurl )
+      account.openids.append( tableclasses.OpenID( openidurl ) )
+      sqlalchemysetup.session.add( account )
+
+   cookierow = tableclasses.Cookie( cookiereference, account )
+   sqlalchemysetup.session.add(cookierow)
+   sqlalchemysetup.session.commit()
+
+   gusername = account.username
+   authmethod = 'openid'
+   loginhtml = "<p>Logged in as: " + gusername + "</p>"
+
+def logonUserWithPassword(username, password):
    global gusername
    global loginhtml
    global cookie
@@ -100,7 +141,7 @@ def logonUser(username, password):
 
 def changePassword( username, password ):
    account = sqlalchemysetup.session.query(tableclasses.Account).filter( tableclasses.Account.username == username ).first()
-   account.changePassword( password )
+   account.passwordinfo.changePassword( password )
    sqlalchemysetup.session.commit()
    return True
 

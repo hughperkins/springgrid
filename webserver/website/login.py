@@ -36,7 +36,7 @@ password = formhelper.getValue('password')
 if username == None or password == None or username == '' or password == '':
    jinjahelper.rendertemplate('genericmessage.html', message = 'Logon error: Please fill in the username and password fields.' )
 else:
-   loginhelper.logonUser( username, password )
+   loginhelper.logonUserWithPassword( username, password )
 
    #headers = "Content-type: text/html\n"
    # adding the cookie into the headers keeps hte cookie there magically

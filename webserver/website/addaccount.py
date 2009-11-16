@@ -47,7 +47,8 @@ else:
    if username != None and userfullname != None and userpassword != None and username != '' and userfullname != '' and userpassword != '':
       if useremailaddress == None:
          useremailaddress = ''
-      account = Account( username, userfullname, userpassword )
+      account = Account( username, userfullname )
+      account.passwordinfo = PasswordInfo( userpassword )
       sqlalchemysetup.session.add( account )
       sqlalchemysetup.session.commit()
       jinjahelper.message( "Added ok" )

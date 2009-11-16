@@ -24,6 +24,14 @@ http://www.opensource.org/licenses/gpl-license.php
 
 {% block content %}
 <h3>SpringGrid - login</h3>
+<h4>Login using OpenID:</h4>
+<form action='loginopenid.py' method='post'>
+<table border='1' cellpadding='3'>
+<tr><td>Enter your OpenID:</td><td>&nbsp;<img src='images/openid-inputicon.gif' />&nbsp;<input type='text' name='openidurl'></td></tr>
+<tr><td></td><td><input type='submit' value='Login'></td></tr>
+</table>
+</form>
+<h4>Login using username and password:</h4>
 <form action='login.py' method='post'>
 <table border='1' cellpadding='3'>
 <tr><td>Username:</td><td><input type='text' name='username'></td></tr>

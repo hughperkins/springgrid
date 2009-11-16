@@ -17,10 +17,11 @@ import jinjahelper
 def getmenus():
    menus = []
    if loginhelper.isLoggedOn():
-      menus.append([ "Username: " + loginhelper.gusername,[ 
-        ['Change Password', 'changepasswordform.py'],
-        ['Logout', 'logout.py']
-      ]])
+      accountmenus = []
+      if loginhelper.authmethod == 'password':
+         accountmenus.append( ['Change Password', 'changepasswordform.py'] )
+      accountmenus.append( ['Logout', 'logout.py'] )
+      menus.append([ loginhelper.gusername.split('.')[0], accountmenus ])
    else:
       menus.append(["Login", [
          [ 'Login', 'loginform.py' ]

@@ -22,8 +22,6 @@
 #
 
 # lets a user add a single account to the database
-#
-# This is mostly for bootstrapping, to make the website immediately useful
 
 import cgitb; cgitb.enable()
 import cgi
@@ -45,7 +43,12 @@ else:
       if roles.isInRole2( username, roles.accountadmin ):
          jinjahelper.message( "Please drop the accountadmin role from " + username + " and try again" )
       else:
-         sqlalchemysetup.session.query( Account ).filter( Account.username == username ).delete()
+         account = sqlalchemysetup.session.query( Account ).filter( Account.username == username ).first()
+         if account.passwordinfo != None:
+            sqlalchemysetup.session.delete( account.passwordinfo )
+         for openid in account.openids:
+            sqlalchemysetup.session.delete( openid )
+         sqlalchemysetup.session.delete( account )
          jinjahelper.message( "Removed ok" )
    else:
       jinjahelper.message( "Please fill in the fields and try again" )
