@@ -94,6 +94,15 @@ def main():
       print "... need to install python-openid"
    print ""
 
+   print "Check elementtree..."
+   try:
+      import elementtree
+      print "checked elementtree: already installed.  Good."
+   except:
+      neededpackages.append('elementtree')
+      print "... need to install elementtree"
+   print ""
+
    newpythonexecutable = None
    if len(neededpackages) > 0:
       print "We need to install some packages to run AILadder website."
@@ -124,6 +133,10 @@ def main():
             os.chdir(scriptdir + "/dependencies/python-openid-2.2.4")
             popen = subprocess.Popen([sys.executable, "setup.py","install"] )
             popen.wait()
+         if 'elementtree' in neededpackages:
+            os.chdir(scriptdir + "/dependencies/elementtree-1.2.6")
+            popen = subprocess.Popen([sys.executable, "setup.py","install"] )
+            popen.wait()
       elif installlocation == 'virtualenv':
          virtualenvpath = ''
          while virtualenvpath == '':
@@ -144,6 +157,10 @@ def main():
                popen.wait()
             if 'jinja2' in neededpackages:
                os.chdir(scriptdir + "/dependencies/python-openid-2.2.4")
+               popen = subprocess.Popen([newpythonexecutable, "setup.py","install"] )
+               popen.wait()
+            if 'elementtree' in neededpackages:
+               os.chdir(scriptdir + "/dependencies/elementtree-1.2.6")
                popen = subprocess.Popen([newpythonexecutable, "setup.py","install"] )
                popen.wait()
 
