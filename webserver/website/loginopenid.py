@@ -27,7 +27,6 @@ import cgitb; cgitb.enable()
 import cgi
 import os
 import sys
-import urlparse
 
 from utils import *
 from core import *
@@ -63,10 +62,9 @@ def go():
 
    # in theory, we arrived here from the openid provider page redirect
    # get query string dict from openid provider redirect:
-   _querystringdict = urlparse.parse_qs(os.getenv("QUERY_STRING"))
    querystringdict = {}
-   for key in _querystringdict.keys():
-      querystringdict[key] = _querystringdict[key][0]
+   for key in formhelper.getform().keys():
+      querystringdict[key] = formhelper.getform().getvalue(key)
 
    # get openid auth result:
    result = myconsumer.complete(querystringdict, fullpagewebpath )
