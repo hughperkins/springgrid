@@ -61,6 +61,13 @@ def parseopts():
 
    parser = OptionParser()
    parser.add_option( "--sessionid", help = 'force sessionid to specific string', dest = 'sessionid' )
+   parser.add_option( "--target-web-site", help = 'website we should subscribe to', dest = 'targetwebsite' )
+   parser.add_option( "--botrunner-name", help = 'botrunner-name', dest = 'botrunnername' )
+   parser.add_option( "--botrunner-shared-secret", help = 'botrunner shared secret', dest = 'botrunnersharedsecret' )
+   parser.add_option( "--spring-path", help = 'path to spring executable', dest = 'springpath' )
+   parser.add_option( "--unitsync-path", help = 'path to unitsync library', dest = 'unitsyncpath' )
+   parser.add_option( "--downloading-ok", help = 'ok to download AIs', dest = 'downloadingok', action='store_true' )
+   parser.add_option( "--yes", help = 'automatically confirm', dest = 'yes', action='store_true' )
    parser.add_option( "--configpath", help = 'path to configfile (default: config.py).  Note: must already exist.', dest = 'configpath' )
    parser.add_option( "--no-register-capabilities", help = 'do not register maps, mods or ais with web service', dest = 'noregistercapabilities', action='store_true' )
    parser.add_option( "--version", '-V', help = 'show version', dest = 'version', action='store_true' )
@@ -424,44 +431,68 @@ def getUnitSyncPath():
    return userinput.getPath( "unitsync", potentialpaths )
 
 def  setupConfig():
-   global config
+   global config, options
 
    print ""
    print "Welcome to botrunner."
    print ""
    print "Let's get you set up..."
    gotdata = False
+
    while not gotdata:
       print ""
-      weburl = userinput.getChoice("Which webserver to you want to subscribe to?", ['manageddreams.com/springgrid','manageddreams.com/springgridstaging', 'localhost/springgrid' ], None, None )
-      print ""
+      if options.targetwebsite != None:
+         weburl = options.targetwebsite
+      else:
+         weburl = userinput.getChoice("Which webserver to you want to subscribe to?", ['manageddreams.com/springgrid','manageddreams.com/springgridstaging', 'localhost/springgrid' ], None, None )
+         print ""
       if weburl.lower().find("http://") == -1:
          weburl = "http://" + weburl
-      botrunnername = userinput.getValueFromUser("What name do you want to give to your botrunner?  This name will be shown on the website.")
-      print ""
-      botrunnersharedsecret = userinput.getValueFromUser("What sharedsecret do you want to use with this botrunner?  This will be used to authenticate your botrunner to the website.  Just pick something, and remember it.")
-      print ""
-      springPath = getSpringPath()
-      if springPath == '':
-         print "Spring executable not found. Please check that it is installed"
-         return False
-      print "Spring executable found: " + springPath
-      print ""
-      unitsyncPath = getUnitSyncPath()
-      if unitsyncPath == '':
-         print "UnitSync not found. Please check that it is installed"
-         return False
-      print "UnitSync found: " + unitsyncPath
-      print ""
-      usejava = userinput.getbooleanfromuser( "Do you have Java installed?  This will increase the number of AIs this botrunner can run." )
-      if usejava:
-         print ""
-         JAVA_HOME = userinput.getPath( "Appropriate value for JAVA_HOME (eg /usr/lib/jvm/java-6-sun/jre or c:\\program files\\sun jdk\\bin\\java)", [ 'c:\\program files\\sun jdk', '/usr/lib/jvm/java-6-sun/jre'] )
+      if options.botrunnername != None:
+         botrunnername = options.botrunnername
       else:
-         JAVA_HOME = None
-      print ""
-      downloadingok = userinput.getbooleanfromuser( "Are you ok with downloading new AIs?  You can answer no, but your botrunner will be far more useful if you answer yes.  You should be aware that the code you download is not necessarily trusted or safe.  By answering yes, you confirm that you are running the botrunner on a machine that does not contain sensitive data, and whose compromise will not cause any issues to you or others.  You agree that you will not hold the SpringGrid website host, or admin, or author responsible for any damages that may occur whatsover." )
-      print ""
+         botrunnername = userinput.getValueFromUser("What name do you want to give to your botrunner?  This name will be shown on the website.")
+         print ""
+      if options.botrunnersharedsecret != None:
+         botrunnersharedsecret = options.botrunnersharedsecret
+      else:
+         botrunnersharedsecret = userinput.getValueFromUser("What sharedsecret do you want to use with this botrunner?  This will be used to authenticate your botrunner to the website.  Just pick something, and remember it.")
+         print ""
+
+      if options.springpath != None:
+         springPath = options.springpath
+      else:
+         springPath = getSpringPath()
+         if springPath == '':
+            print "Spring executable not found. Please check that it is installed"
+            return False
+         print "Spring executable found: " + springPath
+         print ""
+      if options.unitsyncpath != None:
+         unitsyncPath = options.unitsyncpath
+      else:
+         unitsyncPath = getUnitSyncPath()
+         if unitsyncPath == '':
+            print "UnitSync not found. Please check that it is installed"
+            return False
+         print "UnitSync found: " + unitsyncPath
+         print ""
+      if os.getenv('JAVA_HOME') != None:
+         JAVA_HOME=os.getenv('JAVA_HOME')
+         usejava = True
+      else:
+         usejava = userinput.getbooleanfromuser( "Do you have Java installed?  This will increase the number of AIs this botrunner can run." )
+         if usejava:
+            print ""
+            JAVA_HOME = userinput.getPath( "Appropriate value for JAVA_HOME (eg /usr/lib/jvm/java-6-sun/jre or c:\\program files\\sun jdk\\bin\\java)", [ 'c:\\program files\\sun jdk', '/usr/lib/jvm/java-6-sun/jre'] )
+         else:
+            JAVA_HOME = None
+         print ""
+      if options.downloadingok:
+         downloadingok = True
+      else:
+         downloadingok = userinput.getbooleanfromuser( "Are you ok with downloading new AIs?  You can answer no, but your botrunner will be far more useful if you answer yes.  You should be aware that the code you download is not necessarily trusted or safe.  By answering yes, you confirm that you are running the botrunner on a machine that does not contain sensitive data, and whose compromise will not cause any issues to you or others.  You agree that you will not hold the SpringGrid website host, or admin, or author responsible for any damages that may occur whatsover." )
+         print ""
       print "You have input:"
       print "   target web server: " + weburl
       print "   botrunner name: " + botrunnername
@@ -473,7 +504,7 @@ def  setupConfig():
          print "   JAVA_HOME: " + JAVA_HOME
       print "   Downloading ok: " + str( downloadingok )
       print ""
-      if userinput.getConfirmation( "Is this correct?" ):
+      if options.yes or userinput.getConfirmation( "Is this correct?" ):
          gotdata = True
 
    # that's all we need, let's create the config file...
