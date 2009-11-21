@@ -1,0 +1,19 @@
+Content-type: text/plain
+
+#!/bin/bash
+
+springheadlesspath='http://manageddreams.com/ailadder/download/springheadlessstubs08051_ubuntujaunty.tar.bz2'
+gitclonepath='git://github.com/hughperkins/springgrid.git'
+
+sudo apt-get --yes install git-core
+git clone $gitclonepath
+
+mkdir springheadless
+cd springheadless
+wget $springheadlesspath
+tar -xjf $(basename $springheadlesspath)
+
+cd $HOME/springgrid/botrunner
+python botrunner.py --target-web-site=http://manageddreams.com/springgridstaging --botrunner-name=cloud --botrunner-shared-secret=foo --spring-path=$HOME/springheadless/game-distrib-test/spring --unitsync-path=$HOME/springheadless/game-distrib-test/libunitsync.so --downloading-ok --yes
+
+
