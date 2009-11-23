@@ -35,6 +35,15 @@ def rsyncav( sourcepath, destinationpath ):
       for file in files:
          shutil.copy( root + "/" + file, destinationpath + "/" + reldir + "/" + file )
 
+# deletes targetpath and all children paths.  use with care :-P
+def rmdirrecursive( targetpath ):
+   if targetpath.endswith("/") or targetpath.endswith("\\"):
+      targetpath = targetpath[:len(targetpath)-1]
+   for root, dirs, files in os.walk( targetpath, topdown = False ):
+      for file in files:
+         os.remove( root + "/" + file )
+      os.rmdir( root )
+
 # return contents of filepath as string
 def readFile( filepath ):
    filehandle = open( filepath, "r" )

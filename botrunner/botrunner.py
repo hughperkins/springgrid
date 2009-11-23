@@ -64,6 +64,7 @@ def parseopts():
    parser.add_option( "--target-web-site", help = 'website we should subscribe to', dest = 'targetwebsite' )
    parser.add_option( "--botrunner-name", help = 'botrunner-name', dest = 'botrunnername' )
    parser.add_option( "--botrunner-shared-secret", help = 'botrunner shared secret', dest = 'botrunnersharedsecret' )
+   parser.add_option( "--spring-source-path", help = 'path to spring source', dest = 'springsourcepath' )
    parser.add_option( "--spring-path", help = 'path to spring executable', dest = 'springpath' )
    parser.add_option( "--unitsync-path", help = 'path to unitsync library', dest = 'unitsyncpath' )
    parser.add_option( "--downloading-ok", help = 'ok to download AIs', dest = 'downloadingok', action='store_true' )
@@ -118,7 +119,7 @@ def getreplaypath( infologcontents ):
          return demopath
    return None
 
-def trydownloadingai(host):
+def trydownloadingsomething(host):
    global sessionid, config, writabledatadirectory
    try:
       [success, downloadrequestlist ] = getxmlrpcproxy(host).getdownloadrequest(config.botrunnername, config.sharedsecret, sessionid )
@@ -133,28 +134,80 @@ def trydownloadingai(host):
       downloadrequest = downloadrequestlist[0]
 
       print "Got download request: " + str( downloadrequest )
-      ai_name = downloadrequest['ai_name']
-      ai_version = downloadrequest['ai_version']
+      if downloadrequest.has_key('ai_name'):
+         return downloadai( downloadrequest )
+      if downloadrequest.has_key('map_name'):
+         return downloadmap( downloadrequest )
+      if downloadrequest.has_key('mod_name'):
+         return downloadmod( downloadrequest )
+      print "Warning: unknown download reqest type: " + str( downloadrequest ) + ". Please check you are running the latest botrunner version."
+      
+   except:
+      print "something went wrong: " + str(sys.exc_info()) + "\n" + str( traceback.extract_tb( sys.exc_traceback ) )
 
-      # ok, so we'll download it  to .... writabledatadirectory?
-      # then use tar to extract it to .... the writabledatadirectory/AI ?
-      # start by retrieving it:
-      serverrequesthandle = urllib.urlopen( downloadrequest['ai_downloadurl'], None )
-      data = serverrequestarray = serverrequesthandle.read()
-      file = open(writabledatadirectory + "aidownload.tar.bz2", "wb")
-      file.write(data)
-      file.close()
+def downloadmap(downloadrequest ):
+   mapname = downloadrequest['map_name']
+   mapurl = downloadrequest['map_url']
+   print "Downloading map " + mapname + ' ' + mapurl + ' ...'
 
-      extractdir = writabledatadirectory + "/extractdir"
-      # should think about purgging the old directory...
+   serverrequesthandle = urllib.urlopen( mapurl, None )
+   data = serverrequestarray = serverrequesthandle.read()
+   file = open(writabledatadirectory + mapname, "wb")
+   file.write(data)
+   file.close()
+   os.renames(writabledatadirectory + mapname, writabledatadirectory + "maps/" + mapname )
 
-      if not os.path.exists(extractdir):
-         os.makedirs(extractdir)
+   initUnitSync()
+   registermapsallhosts()
+   return True
 
-      tar = tarfile.open(writabledatadirectory + "aidownload.tar.bz2")
-      tar.extractall(extractdir)
-      tar.close()
+def downloadmod( downloadrequest):
+   modname = downloadrequest['mod_name']
+   modurl = downloadrequest['mod_url']
+   print "Downloading mod " + modname + ' ' + modurl + ' ...'
 
+   serverrequesthandle = urllib.urlopen( modurl, None )
+   data = serverrequestarray = serverrequesthandle.read()
+   file = open(writabledatadirectory + modname, "wb")
+   file.write(data)
+   file.close()
+   os.renames(writabledatadirectory + modname, writabledatadirectory + "mods/" + modname.replace(" ", "_") + ".sd7" ) # need to rename it to .sd7, otherwise unitsync won't find it
+
+   initUnitSync()
+   registermodsallhosts()
+   return True
+
+def downloadai( downloadrequest ):
+   global config
+
+   ai_name = downloadrequest['ai_name']
+   ai_version = downloadrequest['ai_version']
+   print "Downloading ai " + str(downloadrequest )
+
+   needscompiling = downloadrequest['ai_needscompiling']
+   # ok, so we'll download it  to .... writabledatadirectory?
+   # then use tar to extract it to .... the writabledatadirectory/AI ?
+   # start by retrieving it:
+   serverrequesthandle = urllib.urlopen( downloadrequest['ai_downloadurl'], None )
+   downloadfilename = os.path.basename(downloadrequest['ai_downloadurl'])
+   data = serverrequestarray = serverrequesthandle.read()
+   file = open(writabledatadirectory + downloadfilename, "wb")
+   file.write(data)
+   file.close()
+
+   extractdir = writabledatadirectory + "/extractdir"
+   # should think about purgging the old directory...
+
+   if not os.path.exists(extractdir):
+      os.makedirs(extractdir)
+
+   tar = tarfile.open(writabledatadirectory + downloadfilename)
+   tar.extractall(extractdir)
+   tar.close()
+   os.remove( downloadfilename )
+
+   if not needscompiling:  # java ai most likely, or some other scripted/bytecode ai
+      # look for a directory with the name $ai_name/$ai_version
       sourcepath = None
       for root, dirs, files in os.walk( extractdir ):
          if root.find( ai_name + "/" + ai_version ) != -1:
@@ -193,18 +246,50 @@ def trydownloadingai(host):
 
       # copy the files across...
       filehelper.rsyncav( sourcepath, targetpath )
-         
-      # so it is installed....
-      # rerun unitsync I guess?
 
-      initUnitSync()
-      registeraisallhosts()
+   else:  # needs compiling, probably a C++ AI
+      # now what...
+      # compile it first I guess :-P
+      # assume we have a c compiler to hand and stuff (we could make that configurable later)
+      # ok, we will copy it into a subdirectory of AI/Skirmish in the spring source
+      # then simply run 'make install' and let that run its course
+      # we should probably remove any directory for that AI currently in the spring source
+      # then copy the directory we just unpacked exactly to that AI's name in the AI/Skirmish
+      # directory
+      # sanity check: we will check there is a VERSION file, and that is how we will determine
+      # which directory to copy
+      sourcepath = None
+      for root, dirs, files in os.walk( extractdir ):
+         if 'VERSION' in files:
+            sourcepath = root.split('VERSION')[0]
       
-      # tell base we're finished...
-      getxmlrpcproxy(host).finisheddownloadingai( config.botrunnername, config.sharedsecret, sessionid, ai_name, ai_version )
+      if sourcepath == None:
+         print "Failed to find ai in download, ie we failed to find a file called VERSION."
+         return
 
-   except:
-      print "something went wrong: " + str(sys.exc_info()) + "\n" + str( traceback.extract_tb( sys.exc_traceback ) )
+      aitargetsourcedir = config.springSourcePath + "/AI/Skirmish/" + ai_name
+      filehelper.rmdirrecursive( aitargetsourcedir )
+      filehelper.rsyncav( sourcepath, aitargetsourcedir )
+
+      # now, do a 'make install' on spring source, and cross-fingers :-P
+      print "launching make install for " + ai_name + " ..."
+      os.chdir( config.springSourcePath + '/build')
+      popen = subprocess.Popen(['make','install'])  # not very portable, but hey we're just going
+                                                    # to target karmic on ec2 right? (?)
+      popen.wait()
+      print "make install finished"
+      # maybe that's it?
+
+   # so it is installed....
+   # rerun unitsync I guess?
+
+   initUnitSync()
+   registeraisallhosts()
+   
+   # tell base we're finished...
+   getxmlrpcproxy(host).finisheddownloadingai( config.botrunnername, config.sharedsecret, sessionid, ai_name, ai_version )
+
+   return True
 
 def rungame( serverrequest ):
    global config, writabledatadirectory
@@ -459,6 +544,13 @@ def  setupConfig():
          botrunnersharedsecret = userinput.getValueFromUser("What sharedsecret do you want to use with this botrunner?  This will be used to authenticate your botrunner to the website.  Just pick something, and remember it.")
          print ""
 
+      if options.springsourcepath != None:
+         springSourcePath = options.springsourcepaath
+      else:
+         springSourcePath = userinput.getPath( "path to Spring sourcecode", ['/home/user/springheadless'] )
+         print "Spring source path: " + springSourcePath
+         print ""
+
       if options.springpath != None:
          springPath = options.springpath
       else:
@@ -497,6 +589,7 @@ def  setupConfig():
       print "   target web server: " + weburl
       print "   botrunner name: " + botrunnername
       print "   botrunner shared secret: " + botrunnersharedsecret
+      print "   spring source path: " + springSourcePath
       print "   spring executable path: " + springPath
       print "   UnitSync path: " + unitsyncPath
       print "   Enable Java AIs: " + str(usejava)
@@ -517,6 +610,7 @@ def  setupConfig():
    newconfig = newconfig.replace( "WEBSITEURL", weburl )
    newconfig = newconfig.replace( "BOTRUNNERNAME", botrunnername )
    newconfig = newconfig.replace( "SHAREDSECRET", botrunnersharedsecret )
+   newconfig = newconfig.replace( "SPRINGSOURCEPATH", springSourcePath )
    newconfig = newconfig.replace( "SPRINGPATH", springPath )
    newconfig = newconfig.replace( "UNITSYNCPATH", unitsyncPath )
    newconfig = newconfig.replace( "ALLOWDOWNLOADING", str(downloadingok) )
@@ -637,6 +731,20 @@ def registeraisallhosts():
       registeredais = getxmlrpcproxy(host).getsupportedais( config.botrunnername, config.sharedsecret )
       registerais(host, registeredais )
 
+# registers maps to all hosts
+# used after downloading a new map
+def registermapsallhosts():
+   for host in config.websiteurls:
+      registeredmaps = getxmlrpcproxy(host).getsupportedmaps( config.botrunnername, config.sharedsecret )
+      registermaps(host, registeredmaps )
+
+# registers mods to all hosts
+# used after downloading a new mod
+def registermodsallhosts():
+   for host in config.websiteurls:
+      registeredmods = getxmlrpcproxy(host).getsupportedmods( config.botrunnername, config.sharedsecret )
+      registermods(host, registeredmods )
+
 def initUnitSync():
    global config
    initUnitSyncWithUnitSyncPath(config.unitsyncPath)
@@ -710,7 +818,7 @@ def go():
       if not gotrequest and config.allowdownloading:  # see if we can download a new ai
          print "checking for download request ... "
          for host in config.websiteurls:
-            if trydownloadingai(host) != None:
+            if trydownloadingsomething(host) != None:
                gotrequest = True
                break
       

@@ -364,12 +364,12 @@ def addstaticdata(session):
    session.add(aioption_dummymatch)
 
    # add a couple of default mods/maps/ais:
-   map = Map( 'SmallDivide.sd7')
+   map = Map( 'SmallDivide.smf')
    map.map_url = 'http://spring-portal.com/index.php/docman/doc_download/104-smalldivide'
    session.add(map)
 
-   mod = Mod('Balanced Annihilation v7.04')
-   mod.mod_url = 'http://spring-portal.com/index.php/docman/doc_details/314-balanced-annihilation-v704'
+   mod = Mod('Balanced Annihilation V7.04')
+   mod.mod_url = 'http://spring-portal.com/index.php/docman/doc_download/314-balanced-annihilation-v704'
    session.add(mod)
 
    ai = AI('E323AI','2.83')

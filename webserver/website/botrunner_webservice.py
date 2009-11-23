@@ -180,6 +180,10 @@ class SpringGridService:
   
          botrunner = botrunnerhelper.getBotRunner( botrunnername )
 
+         # first we'll look for an ai to download (one in the queue that this 
+         # botrunner doesn't have), then a map, then a mod
+
+         # update: ignore sessions for now, since even aegis' cluster doesn't use them ;-)
          aisbeingdownloaded = [] # list of ais being downloaded by this botrunner
          # we'll make sure that each botrunner can only download one of each ai name/version pair
          # at any one time, for example, for aegis' cluster this makes sense, since all botrunner
@@ -195,6 +199,8 @@ class SpringGridService:
             all()
          aistodownload = [] # just add all to list, and select randomly, so dont centrate on
                             # any failed ones
+         mapstodownload = []
+         modstodownload = []
          for request in requests:
             mapok = False
             modok = False
@@ -213,26 +219,47 @@ class SpringGridService:
                   ai0ok = True 
                if ai.ai_name == request.ai1.ai_name and ai.ai_version == request.ai1.ai_version:
                   ai1ok = True 
-            if mapok and modok:
-               if not ai0ok and not request.ai0.ai_needscompiling:  # this should be added to some flags somewhere, but for now....
-                  if not request.ai0 in aisbeingdownloaded and not request.ai0 in aistodownload and request.ai0.ai_needscompiling == False:
-                     aistodownload.append( request.ai0 )
-               if not ai1ok and not request.ai1.ai_needscompiling and not request.ai1 in aistodownload and request.ai1.ai_needscompiling == False:
-                  if not request.ai1 in aisbeingdownloaded:
-                     aistodownload.append( request.ai1 )
-         if len(aistodownload) == 0:
-            return [True,[]]  #cannot return None in python xmlrpclib 2.4
+            if not mapok:
+               if request.map not in mapstodownload:
+                  mapstodownload.append(request.map)
+            if not modok:
+               if request.mod not in modstodownload:
+                  modstodownload.append(request.mod)
+            if not ai0ok:
+               if not request.ai0 in aistodownload:
+                  aistodownload.append( request.ai0 )
+            if not ai1ok:
+               if not request.ai1 in aistodownload:
+                  aistodownload.append( request.ai1 )
+         if len(aistodownload) != 0:
+            # select one at random...
+            aitodownload = aistodownload[ random.randint(0, len(aistodownload) - 1 ) ]
+            session = botrunnerhelper.getBotRunnerSession( botrunnername, sessionid )
+            session.downloadingai = aitodownload
+            dicttoreturn = {'ai_name': aitodownload.ai_name, 
+                           'ai_version': aitodownload.ai_version,
+                           'ai_downloadurl': aitodownload.ai_downloadurl,
+                           'ai_needscompiling': aitodownload.ai_needscompiling }
+            sqlalchemysetup.session.commit()
+            return [True,[ dicttoreturn ] ]
 
-         # select one at random...
-         aitodownload = aistodownload[ random.randint(0, len(aistodownload) - 1 ) ]
-         session = botrunnerhelper.getBotRunnerSession( botrunnername, sessionid )
-         session.downloadingai = aitodownload
-         dicttoreturn = {'ai_name': aitodownload.ai_name, 
-                        'ai_version': aitodownload.ai_version,
-                        'ai_downloadurl': aitodownload.ai_downloadurl,
-                        'ai_needscompiling': aitodownload.ai_needscompiling }
-         sqlalchemysetup.session.commit()
-         return [True,[ dicttoreturn ] ]
+         # next up: try a map
+         if len(mapstodownload) != 0:
+            maptodownload = mapstodownload[ random.randint(0, len(mapstodownload) - 1 ) ]
+            dicttoreturn = {'map_name': maptodownload.map_name, 
+                           'map_url': maptodownload.map_url }
+            return [True,[ dicttoreturn ] ]
+
+         # next up: try a mod
+         if len(modstodownload) != 0:
+            modtodownload = modstodownload[ random.randint(0, len(modstodownload) - 1 ) ]
+            dicttoreturn = {'mod_name': modtodownload.mod_name, 
+                           'mod_url': modtodownload.mod_url }
+            return [True,[ dicttoreturn ] ]
+
+         # nothing to download...
+         return [True,[]]  #cannot return None in python xmlrpclib 2.4
+
       except:
          return (False,"An unexpected exception occurred: " + str( sys.exc_info() ) + "\n" + str( traceback.extract_tb( sys.exc_traceback ) ) )
 

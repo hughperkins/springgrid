@@ -38,6 +38,10 @@ def addmodifdoesntexist(modname, modarchivechecksum):
 
       return (True,'')
 
+   if mod.mod_name != modname:
+      mod.mod_name = modname
+      sqlalchemysetup.session.flush()
+
    if mod.mod_archivechecksum == None:
       mod.mod_archivechecksum = modarchivechecksum
       try:

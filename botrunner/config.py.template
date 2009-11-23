@@ -18,6 +18,11 @@ cancompile = CANCOMPILE
 # should point to the 'AI' directory itself where you want to install the AIs
 aiinstallationdirectory = "AIINSTALLATIONDIRECTORY"
 
+# full path to spring source directory, ie to a directory that conains 'rts', 'AI', 'build'
+# the subdirectory 'build' should be already created, and ccmake run from that directoryy
+# ideally spring itself and so on hvae already been built once too ;-)
+springSourcePath="SPRINGSOURCEPATH"
+
 # full path to "spring(.exe)" or "spring-headlessstubs(.exe)"
 springPath="SPRINGPATH"
 
