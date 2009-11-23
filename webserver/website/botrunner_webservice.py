@@ -220,16 +220,16 @@ class SpringGridService:
                if ai.ai_name == request.ai1.ai_name and ai.ai_version == request.ai1.ai_version:
                   ai1ok = True 
             if not mapok:
-               if request.map not in mapstodownload:
+               if request.map not in mapstodownload and request.map.map_url != None:
                   mapstodownload.append(request.map)
             if not modok:
-               if request.mod not in modstodownload:
+               if request.mod not in modstodownload and request.mod.mod_url != None:
                   modstodownload.append(request.mod)
             if not ai0ok:
-               if not request.ai0 in aistodownload:
+               if not request.ai0 in aistodownload and request.ai0.ai_downloadurl != None:
                   aistodownload.append( request.ai0 )
             if not ai1ok:
-               if not request.ai1 in aistodownload:
+               if not request.ai1 in aistodownload and request.ai1.ai_downloadurl != None:
                   aistodownload.append( request.ai1 )
          if len(aistodownload) != 0:
             # select one at random...
