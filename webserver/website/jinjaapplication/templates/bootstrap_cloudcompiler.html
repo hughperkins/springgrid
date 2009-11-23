@@ -27,8 +27,12 @@ git checkout -b springheadless origin/springheadless
 # build
 mkdir build
 cd build
-cmake -D AIDIR:STRING=$HOME/git/springheadless/game -D AI_DATA_DIR:STRING=$HOME/git/springheadless/game -D AI_LIBS_DIR:STRING=$HOME/git/springheadless/game -D CMAKE_INSTALL_PREFIX:STRING=$HOME/git/springheadless/game -D DATADIR:STRING=$HOME/git/springheadless/game -D LIBDIR:STRING=$HOME/git/springheadless/game ..
+cmake -D AIDIR:STRING=$HOME/git/springheadless/game -D AI_DATA_DIR:STRING=$HOME/git/springheadless/game -D AI_LIBS_DIR:STRING=$HOME/git/springheadless/game -D CMAKE_INSTALL_PREFIX:STRING=$HOME/git/springheadless/game -D DATADIR:STRING=$HOME/git/springheadless/game -D LIBDIR:STRING=$HOME/git/springheadless/game -D BINDIR:STRING=$HOME/git/springheadless/game ..
 make
+make install
+
+cd $HOME/git
+tar -cjf springheadless.tar.bz2 springheadless
 
 # run botrunner
 # cd $HOME/springgrid/botrunner
