@@ -7,6 +7,28 @@ springgridgitclonepath='git://github.com/hughperkins/springgrid.git'
 
 export JAVA_HOME='/usr/lib/jvm/java-6-openjdk/jre'
 
+# get details first
+gotdetails=false
+while [[ $gotdetails != true ]]; do {
+   echo What is your aws accesskey? (get it from http://aws.amazon.com)
+   read accesskey
+   echo What is your aws secretaccesskey? (get it from http://aws.amazon.com)
+   read secretaccesskey
+   echo What s3 bucketname do you want to use?
+   read bucketname
+   echo Do you want to shutdown at the end (y/n)?
+   read shutdownpreference
+   echo bucket $bucketname accesskey $accesskey secretaccesskey $secretaccesskey shutdown at end: $shutdownpreference
+   echo bucket $bucketname must be owned by you, and already exist
+   echo if you don't have a bucket please download boto first, and create one
+   echo The download url will be: http://$bucketname.s3.amazonaws.com/springheadless.tar.bz2
+   echo are you sure? (y/n)
+   read check
+   if [[ $check == y ]]; then {
+      gotdetails=true
+   }
+} done
+
 # base stuff for running spring:
 sudo apt-get update
 sudo apt-get --yes install git-core
@@ -17,6 +39,14 @@ sudo apt-get --yes install openjdk-6-jre-headless
 sudo apt-get --yes install cmake-curses-gui build-essential p7zip-full
 sudo apt-get --yes install zlib1g-dev libfreetype6-dev libsdl1.2-dev libopenal-dev libglew-dev zip libvorbis-dev libxcursor-dev libdevil-dev libboost-regex1.40-dev libboost-thread1.40-dev libboost-program-options1.40-dev libboost-system1.40-dev libboost-signals1.40-dev
 sudo apt-get --yes install openjdk-6-jdk
+
+# s3fs
+wget http://s3fs.googlecode.com/files/s3fs-r177-source.tar.gz
+tar -xzf s3fs-r177-source.tar.gz
+sudo apt-get install libfuse-dev libxml2-dev pkg-config libcurl4-openssl-dev
+cd 3sfs
+sudo make install
+cd
 
 mkdir git
 cd git
@@ -33,6 +63,20 @@ make install
 
 cd $HOME/git
 tar -cjf springheadless.tar.bz2 springheadless
+
+# copy up to s3
+echo copying springheadless.tar.bz2 up to s3 bucket...
+cd
+mkdir s3mnt
+s3fs $bucketname -o accessKeyId=$accesskey -o secretAccessKey=$secretaccesskey -o use_cache=/tmp  -url=https://s3.amazonaws.com -o default_acl=public-read s3mnt
+cp git/springheadless.tar.bz2 s3mnt
+fusermount -u s3mnt
+
+# shutdown
+if [[ $shutdownpreference == y ]]; then {
+   echo "shutting down now ..."
+   sudo shutdown -h now
+} fi
 
 # run botrunner
 # cd $HOME/springgrid/botrunner
