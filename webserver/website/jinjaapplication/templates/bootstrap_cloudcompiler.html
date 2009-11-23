@@ -10,19 +10,19 @@ export JAVA_HOME='/usr/lib/jvm/java-6-openjdk/jre'
 # get details first
 gotdetails=false
 while [[ $gotdetails != true ]]; do {
-   echo What is your aws accesskey? (get it from http://aws.amazon.com)
+   echo "What is your aws accesskey? (get it from http://aws.amazon.com)"
    read accesskey
-   echo What is your aws secretaccesskey? (get it from http://aws.amazon.com)
+   echo "What is your aws secretaccesskey? (get it from http://aws.amazon.com)"
    read secretaccesskey
-   echo What s3 bucketname do you want to use?
+   echo "What s3 bucketname do you want to use?"
    read bucketname
-   echo Do you want to shutdown at the end (y/n)?
+   echo "Do you want to shutdown at the end (y/n)?"
    read shutdownpreference
    echo bucket $bucketname accesskey $accesskey secretaccesskey $secretaccesskey shutdown at end: $shutdownpreference
-   echo bucket $bucketname must be owned by you, and already exist
-   echo if you don't have a bucket please download boto first, and create one
-   echo The download url will be: http://$bucketname.s3.amazonaws.com/springheadless.tar.bz2
-   echo are you sure? (y/n)
+   echo "bucket $bucketname must be owned by you, and already exist"
+   echo "if you don't have a bucket please download boto first, and create one"
+   echo "The download url will be: http://$bucketname.s3.amazonaws.com/springheadless.tar.bz2"
+   echo "are you sure? (y/n)"
    read check
    if [[ $check == y ]]; then {
       gotdetails=true
@@ -65,7 +65,7 @@ cd $HOME/git
 tar -cjf springheadless.tar.bz2 springheadless
 
 # copy up to s3
-echo copying springheadless.tar.bz2 up to s3 bucket...
+echo "copying springheadless.tar.bz2 up to s3 bucket..."
 cd
 mkdir s3mnt
 s3fs $bucketname -o accessKeyId=$accesskey -o secretAccessKey=$secretaccesskey -o use_cache=/tmp  -url=https://s3.amazonaws.com -o default_acl=public-read s3mnt
