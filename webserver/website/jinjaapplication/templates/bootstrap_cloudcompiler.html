@@ -18,7 +18,12 @@ while [[ $gotdetails != true ]]; do {
    read bucketname
    echo "Do you want to shutdown at the end (y/n)?"
    read shutdownpreference
-   echo bucket $bucketname accesskey $accesskey secretaccesskey $secretaccesskey shutdown at end: $shutdownpreference
+   echo ""
+   echo "bucket: $bucketname"
+   echo "accesskey: $accesskey"
+   echo "secretaccesskey: $secretaccesskey"
+   echo "shutdown at end: $shutdownpreference"
+   echo ""
    echo "bucket $bucketname must be owned by you, and already exist"
    echo "if you don't have a bucket please download boto first, and create one"
    echo "The download url will be: http://$bucketname.s3.amazonaws.com/springheadless.tar.bz2"
