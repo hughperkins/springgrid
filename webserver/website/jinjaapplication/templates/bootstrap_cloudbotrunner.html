@@ -2,8 +2,8 @@ Content-type: text/plain
 
 #!/bin/bash
 
-springheadlesspath='http://manageddreams.com/ailadder/download/springheadlessstubs08051_ubuntujaunty.tar.bz2'
-gitclonepath='git://github.com/hughperkins/springgrid.git'
+springheadlessurl='http://hughperkins.s3.amazonaws.com/springheadless.tar.bz2'
+springgridgitclonepath='git://github.com/hughperkins/springgrid.git'
 export JAVA_HOME='/usr/lib/jvm/java-6-openjdk/jre'
 
 sudo apt-get update
@@ -11,14 +11,13 @@ sudo apt-get --yes install git-core
 sudo apt-get --yes install openjdk-6-jre-headless
 sudo apt-get --yes install libopenal1 libogg0 libvorbisfile3 libfreetype6 libxcursor1 libboost-regex1.40.0 libboost-thread1.40.0 libboost-program-options1.40.0 libboost-system1.40.0 libboost-signals1.40.0 libglew1.5  libdevil1c2
 
-git clone $gitclonepath
+git clone $springgridgitclonepath
 
-mkdir springheadless
-cd springheadless
-wget $springheadlesspath
-tar -xjf $(basename $springheadlesspath)
+cd
+wget $springheadlessurl
+tar -xjf $(basename $springheadlessurl)
 
 cd $HOME/springgrid/botrunner
-python botrunner.py --target-web-site=http://manageddreams.com/springgridstaging --botrunner-name=cloud --botrunner-shared-secret=foo --spring-path=$HOME/springheadless/game-distrib-test/spring --unitsync-path=$HOME/springheadless/game-distrib-test/libunitsync.so --downloading-ok --yes
+python botrunner.py --target-web-site=http://manageddreams.com/springgridstaging --botrunner-name=cloud --botrunner-shared-secret=foo --spring-path=$HOME/springheadless/game/spring-hl --unitsync-path=$HOME/springheadless/game/libunitsync.so --downloading-ok --yes
 
 
