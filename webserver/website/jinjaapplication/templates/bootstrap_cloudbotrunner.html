@@ -4,8 +4,13 @@ Content-type: text/plain
 
 springheadlesspath='http://manageddreams.com/ailadder/download/springheadlessstubs08051_ubuntujaunty.tar.bz2'
 gitclonepath='git://github.com/hughperkins/springgrid.git'
+export JAVA_HOME='/usr/lib/jvm/java-6-openjdk/jre'
 
+sudo apt-get update
 sudo apt-get --yes install git-core
+sudo apt-get --yes install openjdk-6-jre-headless
+sudo apt-get --yes install libopenal1 libogg0 libvorbisfile3 libfreetype6 libxcursor1 libboost-regex1.40.0 libboost-thread1.40.0 libboost-program-options1.40.0 libboost-system1.40.0 libboost-signals1.40.0 libglew1.5  libdevil1c2
+
 git clone $gitclonepath
 
 mkdir springheadless

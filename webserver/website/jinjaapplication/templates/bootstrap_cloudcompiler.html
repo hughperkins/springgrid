@@ -1,0 +1,37 @@
+Content-type: text/plain
+
+#!/bin/bash
+
+springheadlessgitclonepath='git://github.com/hughperkins/springheadless.git'
+springgridgitclonepath='git://github.com/hughperkins/springgrid.git'
+
+export JAVA_HOME='/usr/lib/jvm/java-6-openjdk/jre'
+
+# base stuff for running spring:
+sudo apt-get update
+sudo apt-get --yes install git-core
+sudo apt-get --yes install libopenal1 libogg0 libvorbisfile3 libfreetype6 libxcursor1 libboost-regex1.40.0 libboost-thread1.40.0 libboost-program-options1.40.0 libboost-system1.40.0 libboost-signals1.40.0 libglew1.5  libdevil1c2
+sudo apt-get --yes install openjdk-6-jre-headless
+
+# stuff for compiling spring:
+sudo apt-get --yes install cmake-curses-gui build-essential p7zip-full
+sudo apt-get --yes install zlib1g-dev libfreetype6-dev libsdl1.2-dev libopenal-dev libglew-dev zip libvorbis-dev libxcursor-dev libdevil-dev libboost-regex1.40-dev libboost-thread1.40-dev libboost-program-options1.40-dev libboost-system1.40-dev libboost-signals1.40-dev
+sudo apt-get --yes install openjdk-6-jdk
+
+mkdir git
+cd git
+git clone $springheadlessgitclonepath
+cd springheadless
+git checkout -b springheadless origin/springheadless
+
+# build
+mkdir build
+cd build
+cmake -D AIDIR:STRING=$HOME/git/springheadless/game -D AI_DATA_DIR:STRING=$HOME/git/springheadless/game -D AI_LIBS_DIR:STRING=$HOME/git/springheadless/game -D CMAKE_INSTALL_PREFIX:STRING=$HOME/git/springheadless/game -D DATADIR:STRING=$HOME/git/springheadless/game -D LIBDIR:STRING=$HOME/git/springheadless/game ..
+make
+
+# run botrunner
+# cd $HOME/springgrid/botrunner
+# python botrunner.py --target-web-site=http://manageddreams.com/springgridstaging --botrunner-name=cloud --botrunner-shared-secret=foo --spring-path=$HOME/springheadless/game-distrib-test/spring --unitsync-path=$HOME/springheadless/game-distrib-test/libunitsync.so --downloading-ok --yes
+
+
