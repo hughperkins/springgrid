@@ -15,9 +15,11 @@ git clone $springgridgitclonepath
 
 cd
 wget $springheadlessurl
+echo "unpacking springheadless.tar.bz2 ..."
 tar -xjf $(basename $springheadlessurl)
 
 cd $HOME/springgrid/botrunner
+export SPRING_DATADIR=$HOME/springheadless/game
 python botrunner.py --target-web-site=http://manageddreams.com/springgridstaging --botrunner-name=cloud --botrunner-shared-secret=foo --spring-path=$HOME/springheadless/game/spring-hl --unitsync-path=$HOME/springheadless/game/libunitsync.so --downloading-ok --yes
 
 
