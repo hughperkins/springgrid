@@ -21,22 +21,32 @@
 # http://www.opensource.org/licenses/gpl-license.php
 #
 
+# lets a user add a single mod to the database
+#
+# This is mostly for bootstrapping, to make the website immediately useful
+
 import cgitb; cgitb.enable()
+import cgi
 
 from utils import *
 from core import *
+from core.tableclasses import *
 
 sqlalchemysetup.setup()
 
 loginhelper.processCookie()
 
-mods = sqlalchemysetup.session.query(tableclasses.Mod)
-
-showform = False
-if roles.isInRole(roles.modadmin):
-   showform = True
-
-jinjahelper.rendertemplate('viewmods.html', menus = menu.getmenus(), mods = mods, showform = showform )
+if not roles.isInRole(roles.modadmin):
+   jinjahelper.message( "You must be logged in as a modadmin" )
+else:
+   modname = formhelper.getValue("modname")
+   if modname != None and modname != "":
+      mod = sqlalchemysetup.session.query( Mod ).filter( Mod.mod_name == modname ).first()
+      sqlalchemysetup.session.delete(mod)
+      jinjahelper.message( "Deleted ok" )
+   else:
+      jinjahelper.message( "Please fill in the fields and try again" )
 
 sqlalchemysetup.close()
+
 

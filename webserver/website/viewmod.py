@@ -25,18 +25,20 @@ import cgitb; cgitb.enable()
 
 from utils import *
 from core import *
+from core.tableclasses import *
 
 sqlalchemysetup.setup()
 
 loginhelper.processCookie()
 
-mods = sqlalchemysetup.session.query(tableclasses.Mod)
+modname = formhelper.getValue('modname')
+mod = sqlalchemysetup.session.query(Mod).filter(Mod.mod_name == modname ).first()
 
 showform = False
 if roles.isInRole(roles.modadmin):
    showform = True
 
-jinjahelper.rendertemplate('viewmods.html', menus = menu.getmenus(), mods = mods, showform = showform )
+jinjahelper.rendertemplate('viewmod.html', menus = menu.getmenus(), mod = mod, showform = showform )
 
 sqlalchemysetup.close()
 
