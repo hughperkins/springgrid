@@ -12,7 +12,7 @@
    <td>{{mod.mod_archivechecksum}}</td>
    <td>
       {% if mod.mod_url != None %}
-         <a href='{{mod.mod_url|e}}'>{{mod.mod_url|e}}</a>
+         <a href='{{mod.mod_url|e}}' rel="nofollow">{{mod.mod_url|e}}</a>
       {% else %}
          &nbsp;
       {% endif %}
@@ -33,8 +33,7 @@
    game directory</p>
    <form action='addmod.py' method='post'>
    <table border='1' padding='3'>
-   <tr><td>Mod name</td><td><input name='modname'</td></tr>
-   <tr><td>Mod hash</td><td><input name='modhash'</td></tr>
+   <tr><td>Mod name (this should be what would appear in the start script)</td><td><input name='modname'</td></tr>
    <tr><td>Mod download url</td><td><input name='modurl'</td></tr>
    <tr><td></td><td><input type='submit' value='Add' /></td></tr>
    </table>

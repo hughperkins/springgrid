@@ -41,9 +41,8 @@ class Map(Base):
    map_archivechecksum = Column(String(255))
    map_url = Column(String(255))
 
-   def __init__(self, map_name, map_archivechecksum ):
+   def __init__(self, map_name ):
       self.map_name = map_name
-      self.map_archivechecksum = map_archivechecksum
 
 class Mod(Base):
    __tablename__ = 'mods'
@@ -53,9 +52,8 @@ class Mod(Base):
    mod_archivechecksum = Column(String(255))
    mod_url = Column(String(255))
 
-   def __init__(self, mod_name, mod_archivechecksum ):
+   def __init__(self, mod_name ):
       self.mod_name = mod_name
-      self.mod_archivechecksum = mod_archivechecksum
 
 account_roles = Table('role_members', Base.metadata,
    Column('role_id', Integer,ForeignKey('roles.role_id'),nullable=False),
@@ -364,6 +362,20 @@ def addstaticdata(session):
    session.add(aioption_cheatingequalslose)
    session.add(aioption_cheatingallowed)
    session.add(aioption_dummymatch)
+
+   # add a couple of default mods/maps/ais:
+   map = Map( 'SmallDivide.sd7')
+   map.map_url = 'http://spring-portal.com/index.php/docman/doc_download/104-smalldivide'
+   session.add(map)
+
+   mod = Mod('Balanced Annihilation v7.04')
+   mod.mod_url = 'http://spring-portal.com/index.php/docman/doc_details/314-balanced-annihilation-v704'
+   session.add(mod)
+
+   ai = AI('E323AI','2.83')
+   ai.ai_download_url = 'http://github.com/Error323/E323AI/tarball/v2.83'
+   ai.ai_needscompiling = True
+   session.add(ai)
 
 def createall(engine):
    Base.metadata.create_all(engine)

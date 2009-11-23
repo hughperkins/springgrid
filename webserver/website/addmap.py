@@ -43,11 +43,10 @@ else:
    maparchivechecksum = formhelper.getValue("maparchivechecksum")
    mapurl = formhelper.getValue("mapurl")
 
-   if mapname != None and mapname != "" and maparchivechecksum != None and maparchivechecksum != '':
-      if mapurl == None:
-         mapurl = ''
-      map = Map( mapname, maparchivechecksum )
-      map.mapurl = mapurl
+   if mapname != None and mapname != "":
+      map = Map( mapname )
+      map.map_url = mapurl
+      map.map_archivechecksum = maparchivechecksum
       sqlalchemysetup.session.add( map )
       sqlalchemysetup.session.commit()
       jinjahelper.message( "Added ok" )

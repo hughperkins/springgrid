@@ -30,7 +30,7 @@ http://www.opensource.org/licenses/gpl-license.php
 
 {% for map in maps %}
 <tr><td>{{map.map_name|e}}</td><td>{{map.map_archivechecksum}}</td>
-   <td>{% if not map.map_url is none %}<a href='{{map.map_url|e}}'>{{map.map_url|e}}</a>{%endif%}&nbsp;</td>
+   <td>{% if not map.map_url is none %}<a href='{{map.map_url|e}}' rel="nofollow">{{map.map_url|e}}</a>{%endif%}&nbsp;</td>
 </tr>
 {% endfor %}
 
@@ -48,7 +48,7 @@ http://www.opensource.org/licenses/gpl-license.php
    game directory</p>
    <form action='addmap.py' method='post'>
    <table border='1' padding='3'>
-   <tr><td>Map name</td><td><input name='mapname'</td></tr>
+   <tr><td>Map name (this should be what would be in the startscript)</td><td><input name='mapname'</td></tr>
    <tr><td>Map download url</td><td><input name='mapurl'</td></tr>
    <tr><td></td><td><input type='submit' value='Add' /></td></tr>
    </table>

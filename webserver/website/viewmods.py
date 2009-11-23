@@ -33,7 +33,7 @@ loginhelper.processCookie()
 mods = sqlalchemysetup.session.query(tableclasses.Mod)
 
 showform = False
-if loginhelper.gusername != '' and False:
+if roles.isInRole(roles.modadmin):
    showform = True
 
 jinjahelper.rendertemplate('viewmods.html', mods = mods, showform = showform )

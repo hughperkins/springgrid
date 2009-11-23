@@ -29,7 +29,8 @@ def addmodifdoesntexist(modname, modarchivechecksum):
    mod = sqlalchemysetup.session.query(Mod).filter(Mod.mod_name == modname ).first()
    if mod == None:
       try:
-         mod = Mod( modname, modarchivechecksum )
+         mod = Mod( modname )
+         mod.mod_archivechecksum = modarchivechecksum
          sqlalchemysetup.session.add(mod)
          sqlalchemysetup.session.commit()
       except:
@@ -37,6 +38,14 @@ def addmodifdoesntexist(modname, modarchivechecksum):
 
       return (True,'')
 
+   if mod.mod_archivechecksum == None:
+      mod.mod_archivechecksum = modarchivechecksum
+      try:
+         sqlalchemysetup.session.commit()
+         return (True,'')          
+      except:
+         return(False, "error updating db: " + str( sys.exc_value ) )
+ 
    if mod.mod_archivechecksum != modarchivechecksum:
       return (False,"mod archive checksum doesn't match the one already on the website.")
 

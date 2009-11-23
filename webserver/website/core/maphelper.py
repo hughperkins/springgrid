@@ -29,7 +29,8 @@ def addmapifdoesntexist(mapname, maparchivechecksum):
    map = sqlalchemysetup.session.query(Map).filter(Map.map_name == mapname ).first()
    if map == None:
       try:
-         map = Map( mapname, maparchivechecksum )
+         map = Map( mapname )
+         map.map_archivechecksum = maparchivechecksum
          sqlalchemysetup.session.add(map)
          sqlalchemysetup.session.commit()
       except:
@@ -37,6 +38,14 @@ def addmapifdoesntexist(mapname, maparchivechecksum):
 
       return (True,'')
 
+   if map.map_archivechecksum == None:
+      map.map_archivechecksum = maparchivechecksum
+      try:
+         sqlalchemysetup.session.commit()
+         return (True,'')          
+      except:
+         return(False, "error updating db: " + str( sys.exc_value ) )
+ 
    if map.map_archivechecksum != maparchivechecksum:
       return (False,"map archive checksum doesn't match the one already on the website.")
 

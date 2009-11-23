@@ -43,11 +43,10 @@ else:
    modarchivechecksum = formhelper.getValue("modarchivechecksum")
    modurl = formhelper.getValue("modurl")
 
-   if modname != None and modname != "" and modarchivechecksum != None and modarchivechecksum != '':
-      if modurl == None:
-         modurl = ''
-      mod = Mod( modname, modarchivechecksum )
-      mod.modurl = modurl
+   if modname != None and modname != "":
+      mod = Mod( modname )
+      mod.mod_archivechecksum = modarchivechecksum
+      mod.mod_url = modurl
       sqlalchemysetup.session.add( mod )
       sqlalchemysetup.session.commit()
       jinjahelper.message( "Added ok" )

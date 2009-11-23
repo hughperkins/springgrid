@@ -33,7 +33,7 @@ loginhelper.processCookie()
 maps = sqlalchemysetup.session.query(tableclasses.Map)
 
 showform = False
-if loginhelper.gusername != '' and False:  # hiding this for now
+if roles.isInRole(roles.mapadmin):
    showform = True
 
 jinjahelper.rendertemplate('viewmaps.html', menus = menu.getmenus(), maps = maps, showform = showform )
