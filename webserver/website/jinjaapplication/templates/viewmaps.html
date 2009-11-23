@@ -26,11 +26,12 @@ http://www.opensource.org/licenses/gpl-license.php
 
 <h3>SpringGrid - Map List</h3>
 <table border='1' padding='3'>
-<tr class='tablehead'><td>Map name</td><td>Map archive checksum (Note: this is NOT the maphash seen in the start script)</td><td>Map download url</td></tr>
+<tr class='tablehead'><td>Map name</td><td>Map archive checksum (Note: this is NOT the maphash seen in the start script)</td><td>Map download url</td>{% if showform %}<td>&nbsp;</td>{% endif %}</tr>
 
 {% for map in maps %}
-<tr><td>{{map.map_name|e}}</td><td>{{map.map_archivechecksum}}</td>
+<tr><td><a href="viewmap.py?mapname={{map.map_name|e}}">{{map.map_name|e}}</a></td><td>{{map.map_archivechecksum}}</td>
    <td>{% if not map.map_url is none %}<a href='{{map.map_url|e}}' rel="nofollow">{{map.map_url|e}}</a>{%endif%}&nbsp;</td>
+{% if showform %}<td><a href="removemap.py?mapname={{map.map_name|e}}">Delete</a></td>{% endif %}
 </tr>
 {% endfor %}
 
