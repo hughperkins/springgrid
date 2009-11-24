@@ -9,15 +9,22 @@ sudo apt-get --yes install git-core;
 sudo apt-get --yes install openjdk-6-jre-headless;
 sudo apt-get --yes install libopenal1 libogg0 libvorbisfile3 libfreetype6 libxcursor1 libboost-regex1.40.0 libboost-thread1.40.0 libboost-program-options1.40.0 libboost-system1.40.0 libboost-signals1.40.0 libglew1.5  libdevil1c2;
 
+echo "Downloading prerequisites for building AIs...";
+sudo apt-get --yes install cmake-curses-gui build-essential p7zip-full;
+sudo apt-get --yes install zlib1g-dev libfreetype6-dev libsdl1.2-dev libopenal-dev libglew-dev zip libvorbis-dev libxcursor-dev libdevil-dev libboost-regex1.40-dev libboost-thread1.40-dev libboost-program-options1.40-dev libboost-system1.40-dev libboost-signals1.40-dev;
+
 git clone $springgridgitclonepath;
 
 cd;
+mkdir git;
+cd git;
 wget $springheadlessurl;
 echo "unpacking springheadless.tar.bz2 ...";
 tar -xjf $(basename $springheadlessurl);
 
 cd $HOME/springgrid/botrunner;
-export SPRING_DATADIR=$HOME/springheadless/game;
-python botrunner.py --target-web-site=http://manageddreams.com/springgridstaging --botrunner-name=cloud-$RANDOM --botrunner-shared-secret=foo --spring-source-path=$HOME/springheadless --spring-path=$HOME/springheadless/game/spring-hl --unitsync-path=$HOME/springheadless/game/libunitsync.so --downloading-ok --yes;
+export SPRING_DATADIR=$HOME/git/springheadless/game;
+SPRINGSRCDIR=$HOME/git/springheadless
+python botrunner.py --target-web-site=http://manageddreams.com/springgridstaging --botrunner-name=cloud-$RANDOM --botrunner-shared-secret=foo --spring-source-path=$SPRINGSRCDIR --spring-path=$SPRINGSRCDIR/game/spring-hl --unitsync-path=$SPRINGSRCDIR/game/libunitsync.so --downloading-ok --yes;
 
 

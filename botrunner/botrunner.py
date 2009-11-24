@@ -252,7 +252,8 @@ def downloadai( downloadrequest ):
       # compile it first I guess :-P
       # assume we have a c compiler to hand and stuff (we could make that configurable later)
       # ok, we will copy it into a subdirectory of AI/Skirmish in the spring source
-      # then simply run 'make install' and let that run its course
+      # with the name of the AI
+      # then we will run 'ccmake ..' from the build directory, then 'make <ainame>'
       # we should probably remove any directory for that AI currently in the spring source
       # then copy the directory we just unpacked exactly to that AI's name in the AI/Skirmish
       # directory
@@ -274,11 +275,15 @@ def downloadai( downloadrequest ):
       # now, do a 'make install' on spring source, and cross-fingers :-P
       print "launching make install for " + ai_name + " ..."
       os.chdir( config.springSourcePath + '/build')
-      popen = subprocess.Popen(['make','install'])  # not very portable, but hey we're just going
-                                                    # to target karmic on ec2 right? (?)
+      popen = subprocess.Popen(['ccmake','..'])  
       popen.wait()
-      print "make install finished"
-      # maybe that's it?
+      popen = subprocess.Popen(['make',ai_name])  # note: calling 'make' directly is not very portable
+      popen.wait()
+      print "ai build finished finished"
+      # run 'cmake -P AI/Skirmish/<ainame>/cmake_install.cmake' to install the AI
+      popen = subprocess.Popen(['ccmake','-P','AI/Skirmish/' + ai_name])
+      popen.wait()
+      print "ai installed"
 
    # so it is installed....
    # rerun unitsync I guess?
