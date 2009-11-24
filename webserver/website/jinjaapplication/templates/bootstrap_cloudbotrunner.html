@@ -1,25 +1,23 @@
 Content-type: text/plain
 
-#!/bin/bash
+springheadlessurl='http://hughperkins.s3.amazonaws.com/springheadless.tar.bz2';
+springgridgitclonepath='git://github.com/hughperkins/springgrid.git';
+export JAVA_HOME='/usr/lib/jvm/java-6-openjdk/jre';
 
-springheadlessurl='http://hughperkins.s3.amazonaws.com/springheadless.tar.bz2'
-springgridgitclonepath='git://github.com/hughperkins/springgrid.git'
-export JAVA_HOME='/usr/lib/jvm/java-6-openjdk/jre'
+sudo apt-get update;
+sudo apt-get --yes install git-core;
+sudo apt-get --yes install openjdk-6-jre-headless;
+sudo apt-get --yes install libopenal1 libogg0 libvorbisfile3 libfreetype6 libxcursor1 libboost-regex1.40.0 libboost-thread1.40.0 libboost-program-options1.40.0 libboost-system1.40.0 libboost-signals1.40.0 libglew1.5  libdevil1c2;
 
-sudo apt-get update
-sudo apt-get --yes install git-core
-sudo apt-get --yes install openjdk-6-jre-headless
-sudo apt-get --yes install libopenal1 libogg0 libvorbisfile3 libfreetype6 libxcursor1 libboost-regex1.40.0 libboost-thread1.40.0 libboost-program-options1.40.0 libboost-system1.40.0 libboost-signals1.40.0 libglew1.5  libdevil1c2
+git clone $springgridgitclonepath;
 
-git clone $springgridgitclonepath
+cd;
+wget $springheadlessurl;
+echo "unpacking springheadless.tar.bz2 ...";
+tar -xjf $(basename $springheadlessurl);
 
-cd
-wget $springheadlessurl
-echo "unpacking springheadless.tar.bz2 ..."
-tar -xjf $(basename $springheadlessurl)
-
-cd $HOME/springgrid/botrunner
-export SPRING_DATADIR=$HOME/springheadless/game
-python botrunner.py --target-web-site=http://manageddreams.com/springgridstaging --botrunner-name=cloud-$RANDOM --botrunner-shared-secret=foo --spring-source-path=$HOME/springheadless --spring-path=$HOME/springheadless/game/spring-hl --unitsync-path=$HOME/springheadless/game/libunitsync.so --downloading-ok --yes
+cd $HOME/springgrid/botrunner;
+export SPRING_DATADIR=$HOME/springheadless/game;
+python botrunner.py --target-web-site=http://manageddreams.com/springgridstaging --botrunner-name=cloud-$RANDOM --botrunner-shared-secret=foo --spring-source-path=$HOME/springheadless --spring-path=$HOME/springheadless/game/spring-hl --unitsync-path=$HOME/springheadless/game/libunitsync.so --downloading-ok --yes;
 
 
