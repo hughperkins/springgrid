@@ -275,7 +275,7 @@ def downloadai( downloadrequest ):
       # now, do a 'make install' on spring source, and cross-fingers :-P
       print "launching make install for " + ai_name + " ..."
       os.chdir( config.springSourcePath + '/build')
-      popen = subprocess.Popen(['ccmake','..'])  
+      popen = subprocess.Popen(['cmake','..'])  
       popen.wait()
       popen = subprocess.Popen(['make',ai_name])  # note: calling 'make' directly is not very portable
       popen.wait()
