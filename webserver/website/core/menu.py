@@ -19,19 +19,20 @@ def getmenus():
    if loginhelper.isLoggedOn():
       accountmenus = []
       if loginhelper.hasPassword():
-         accountmenus.append( ['Change Password', 'changepasswordform.py'] )
+         accountmenus.append( ['Change Password...', 'changepasswordform.py'] )
       accountmenus.append( ['Logout', 'logout.py'] )
       menus.append([ loginhelper.gusername.split('.')[0], accountmenus ])
    else:
       menus.append(["Login", [
-         [ 'Login', 'loginform.py' ]
+         [ 'Login ...', 'loginform.py' ]
       ]])
    menus.append(['Results', [
       ['View match results', 'viewresults.py']
    ]])
    menus.append([ 'Runner', [
       ['View request queue', 'viewrequests.py'],
-      ['Add request to queue', 'submitrequestform.py']
+      ['Add request to queue...', 'submitrequestform.py'],
+      ['Start botrunner instance...', 'startbotrunner.py']
    ]])
 
    menus.append([ 'Configuration', [

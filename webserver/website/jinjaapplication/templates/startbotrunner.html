@@ -1,0 +1,42 @@
+{% extends 'menu.html' %}
+{% block content %}
+
+<h3>SpringGrid - Start botrunner</h3>
+
+<p>A botrunner is one of the engines that handles running the actual matches, launching spring, getting the result of the match.</p>
+
+<p>You can see the current botrunners on the <a href="viewbotrunners.py">View Botrunners</a> page.</p>
+
+<p>This page will tell you how to run a botrunner</p>
+
+<h4>Pre-requisites</h4>
+
+<p>A botrunner will use lots of cpu and memory, and will download third-party maps, mods and ai code to the machine it  is running on.  So, it is best to run it on an isolated machine or virtual machine for security reasons (it will be running untrusted code), and performance reasons (so it won't impact your day-to-day desktop)</p>
+
+<p>Some examples of possible environments:</p>
+<ul>
+<li>An <a href="http://aws.amazon.com/ec2/">Amazon EC2</a> instance</li>
+<li>A dedicated machine you don't use for anything else</li>
+<li>A <a href="http://www.virtualbox.org/">VirtualBox</a> instance
+</ul>
+
+<h4>Instance preparation</h4>
+
+<p>Please ensure the target machine is running <a href="http://www.ubuntu.com/products/whatisubuntu/910features">Ubuntu Karmic Koala</a>.</p>
+
+<p>For Amazon EC2, an appropriate image to use is: <a href="http://uec-images.ubuntu.com/releases/karmic/release/">ami-1515f67c</a></p>
+
+<h4>Running the botrunner</h4>
+
+<p>To launch a botrunner:</p>
+<ul>
+<li>open a terminal on the target instance, eg by using ssh</li>
+<li>type the following (or copy and paste), and press 'Enter':
+<pre>wget http://manageddreams.com/springgridstaging/bootstrap_cloudbotrunner.py -o bootstrap_cloudbotrunner.sh
+bash bootstrap_cloudbotrunner.sh</pre>
+</li>
+<li>the botrunner should install itself, and start to process requests from the webserver</li>
+</ul>
+
+{% endblock %}
+
