@@ -583,7 +583,7 @@ def  setupConfig():
       if options.downloadingok:
          downloadingok = True
       else:
-         downloadingok = userinput.getbooleanfromuser( "Are you ok with downloading new AIs?  You can answer no, but your botrunner will be far more useful if you answer yes.  You should be aware that the code you download is not necessarily trusted or safe.  By answering yes, you confirm that you are running the botrunner on a machine that does not contain sensitive data, and whose compromise will not cause any issues to you or others.  You agree that you will not hold the SpringGrid website host, or admin, or author responsible for any damages that may occur whatsover." )
+         downloadingok = userinput.getbooleanfromuser( "Do you wish to enable downloading new AIs, maps and mods?  For your security, you should probably only answer yes if you are running the botrunner in an isolated environment, such as a VirtualBox instance, a pc you don't use for anything else, or an EC2 instance." )
          print ""
       print "You have input:"
       print "   target web server: " + weburl
