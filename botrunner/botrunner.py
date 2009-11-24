@@ -545,7 +545,7 @@ def  setupConfig():
          print ""
 
       if options.springsourcepath != None:
-         springSourcePath = options.springsourcepaath
+         springSourcePath = options.springsourcepath
       else:
          springSourcePath = userinput.getPath( "path to Spring sourcecode", ['/home/user/springheadless'] )
          print "Spring source path: " + springSourcePath
