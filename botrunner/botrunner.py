@@ -281,7 +281,7 @@ def downloadai( host, downloadrequest ):
       popen.wait()
       print "ai build finished finished"
       # run 'cmake -P AI/Skirmish/<ainame>/cmake_install.cmake' to install the AI
-      popen = subprocess.Popen(['cmake','-P','AI/Skirmish/' + ai_name])
+      popen = subprocess.Popen(['cmake','-P','AI/Skirmish/' + ai_name + '/cmake_install.cmake'])
       popen.wait()
       print "ai installed"
 
