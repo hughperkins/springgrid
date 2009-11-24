@@ -135,17 +135,17 @@ def trydownloadingsomething(host):
 
       print "Got download request: " + str( downloadrequest )
       if downloadrequest.has_key('ai_name'):
-         return downloadai( downloadrequest )
+         return downloadai( host, downloadrequest )
       if downloadrequest.has_key('map_name'):
-         return downloadmap( downloadrequest )
+         return downloadmap( host, downloadrequest )
       if downloadrequest.has_key('mod_name'):
-         return downloadmod( downloadrequest )
+         return downloadmod( host, downloadrequest )
       print "Warning: unknown download reqest type: " + str( downloadrequest ) + ". Please check you are running the latest botrunner version."
       
    except:
       print "something went wrong: " + str(sys.exc_info()) + "\n" + str( traceback.extract_tb( sys.exc_traceback ) )
 
-def downloadmap(downloadrequest ):
+def downloadmap( host, downloadrequest ):
    mapname = downloadrequest['map_name']
    mapurl = downloadrequest['map_url']
    print "Downloading map " + mapname + ' ' + mapurl + ' ...'
@@ -161,7 +161,7 @@ def downloadmap(downloadrequest ):
    registermapsallhosts()
    return True
 
-def downloadmod( downloadrequest):
+def downloadmod( host, downloadrequest):
    modname = downloadrequest['mod_name']
    modurl = downloadrequest['mod_url']
    print "Downloading mod " + modname + ' ' + modurl + ' ...'
@@ -177,7 +177,7 @@ def downloadmod( downloadrequest):
    registermodsallhosts()
    return True
 
-def downloadai( downloadrequest ):
+def downloadai( host, downloadrequest ):
    global config
 
    ai_name = downloadrequest['ai_name']
