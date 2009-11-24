@@ -47,7 +47,7 @@ try:
 except:
    versionstring = 'Unversioned dev code, not a versioned release.'
 
-jinjahelper.rendertemplate('about.html', version=versionstring, isloggedin = loginhelper.isLoggedOn(), loginhelper = loginhelper, menus = menu.getmenus() )
+jinjahelper.rendertemplate('about.html', version=versionstring )
 
 sqlalchemysetup.close()
 
