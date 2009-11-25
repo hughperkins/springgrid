@@ -1,0 +1,89 @@
+Content-type: text/plain
+
+#!/bin/bash
+# Copyright Hugh Perkins 2009
+# hughperkins@gmail.com http://hughperkins.com
+#
+# ====================================================================
+# This program is free software; you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by the
+# Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+# or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+#  more details.
+#
+# You should have received a copy of the GNU General Public License along
+# with this program in the file licence.txt; if not, write to the
+# Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-
+# 1307 USA
+# You can find the licence also on the web at:
+# http://www.opensource.org/licenses/gpl-license.php
+# ====================================================================
+#
+# Script goal:
+# 
+# This script runs a botrunner instance, downloading and installing 
+# any necessary dependencies
+#
+# What it does:
+# - downloads dependencies for using a botrunner
+# - downloads springheadless built, generated previously by the bootstrap_cloudcompiler
+#   script
+# - starts botrunner
+#
+# Pre-requisites:
+# - base ubuntu server install (jaunty or karmic), or compatible
+# - fast internet connection
+#
+# This script will be run by part1, and part1 will run this one as a normal bash script
+# so this script can use normal comments, does'nt need ; at the end of each line etc
+
+# assume we are running on ubuntu
+distribname='other';
+if [[ -f /etc/lsb-release ]]; then {
+   distribname=$(cat /etc/lsb-release |grep DISTRIB_CODENAME | cut -d= -f 2);
+} fi;
+
+springheadlessurl='http://hughperkins.s3.amazonaws.com/springheadless_$distribname.tar.bz2';
+springgridgitclonepath='git://github.com/hughperkins/springgrid.git';
+export JAVA_HOME='/usr/lib/jvm/java-6-openjdk';
+
+boostversion=40;
+if [[ $distribname == jaunty ]]; then {
+   boostversion=37;
+} fi;
+
+sudo apt-get update;
+sudo apt-get --yes install git-core;
+sudo apt-get --yes install openjdk-6-jre-headless;
+sudo apt-get --yes install libopenal1 libogg0 libvorbisfile3 libfreetype6 libxcursor1 libboost-regex1.${boostversion}.0 libboost-thread1.${boostversion}.0 libboost-program-options1.${boostversion}.0 libboost-system1.${boostversion}.0 libboost-signals1.${boostversion}.0 libglew1.5  libdevil1c2;
+
+echo "Downloading prerequisites for building AIs...";
+sudo apt-get --yes install build-essential p7zip-full;
+if [[ $distribname == jaunty]]; then {
+   sudo apt-get --yes install cmake;
+} fi;
+if [[ $distribname == karmic]]; then {
+   sudo apt-get --yes install cmake-curses-gui;
+} fi;
+sudo apt-get --yes install build-essential p7zip-full;
+sudo apt-get --yes install zlib1g-dev libfreetype6-dev libsdl1.2-dev libopenal-dev libglew-dev zip libvorbis-dev libxcursor-dev libdevil-dev libboost-regex1.${boostversion}-dev libboost-thread1.${boostversion}-dev libboost-program-options1.${boostversion}-dev libboost-system1.${boostversion}-dev libboost-signals1.${boostversion}-dev;
+
+git clone $springgridgitclonepath;
+
+cd;
+mkdir git;
+cd $HOME/git;
+wget $springheadlessurl;
+echo "unpacking springheadless.tar.bz2 ...";
+tar -xjf $(basename $springheadlessurl);
+
+cd $HOME/springgrid/botrunner;
+export SPRING_DATADIR=$HOME/git/springheadless/game;
+SPRINGSRCDIR=$HOME/git/springheadless
+python botrunner.py --target-web-site={{websiteurl}} --botrunner-name=cloud-$RANDOM --botrunner-shared-secret=foo --spring-source-path=$SPRINGSRCDIR --spring-path=$SPRINGSRCDIR/game/spring-hl --unitsync-path=$SPRINGSRCDIR/game/libunitsync.so --downloading-ok --yes;
+
+
