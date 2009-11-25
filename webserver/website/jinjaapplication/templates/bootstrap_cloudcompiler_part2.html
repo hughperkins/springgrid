@@ -51,6 +51,8 @@ while [[ $gotdetails != true ]]; do {
    } fi;
 } done;
 
+cd;
+
 echo "Installing prerequisites for running spring...";
 sudo apt-get update;
 sudo apt-get --yes install git-core;
@@ -88,6 +90,7 @@ mkdir build;
 cd build;
 GAMEDIR=$HOME/git/springheadless/game
 cmake -D AIDIR:STRING=$GAMEDIR -D AI_DATA_DIR:STRING=$GAMEDIR -D AI_LIBS_DIR:STRING=$GAMEDIR -D CMAKE_INSTALL_PREFIX:STRING=$GAMEDIR -D DATADIR:STRING=$GAMEDIR -D LIBDIR:STRING=$GAMEDIR -D BINDIR:STRING=$GAMEDIR -D SPRING_DATADIR:STRING=$GAMEDIR ..;
+cmake ..;
 make;
 make install;
 
