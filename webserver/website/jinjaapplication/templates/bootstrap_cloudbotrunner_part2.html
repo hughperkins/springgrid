@@ -60,6 +60,7 @@ if [[ ${distribname} == jaunty ]]; then {
 } fi;
 
 sudo apt-get update;
+sudo dpkg --configure -a  # in case we interrupted the script and rerun it
 sudo apt-get --yes install git-core;
 sudo apt-get --yes install openjdk-6-jre-headless;
 sudo apt-get --yes install libopenal1 libogg0 libvorbisfile3 libfreetype6 libxcursor1 libboost-regex1.${boostversion}.0 libboost-thread1.${boostversion}.0 libboost-program-options1.${boostversion}.0 libboost-system1.${boostversion}.0 libboost-signals1.${boostversion}.0 libglew1.5  libdevil1c2;
@@ -76,11 +77,16 @@ sudo apt-get --yes install build-essential p7zip-full;
 sudo apt-get --yes install zlib1g-dev libfreetype6-dev libsdl1.2-dev libopenal-dev libglew-dev zip libvorbis-dev libxcursor-dev libdevil-dev libboost-regex1.${boostversion}-dev libboost-thread1.${boostversion}-dev libboost-program-options1.${boostversion}-dev libboost-system1.${boostversion}-dev libboost-signals1.${boostversion}-dev;
 
 cd;
+if [[ -d $HOME/springgrid ]] then {   # means we can run this script multiple times
+                                      # without errors
+   rm -Rf $HOME/springgrid
+};
 git clone $springgridgitclonepath;
 
 mkdir -p $HOME/git;
 cd $HOME/git;
-if [[ ! -f $(basename $springheadlessurl) ]]; then {
+if [[ ! -f $(basename $springheadlessurl) ]]; then {   # save downloading it multiple
+                                                       # times
    echo "downloading springheadless.tar.bz2 ...";
    wget $springheadlessurl;
 } fi;
