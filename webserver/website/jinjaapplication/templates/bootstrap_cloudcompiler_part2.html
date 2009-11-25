@@ -1,0 +1,112 @@
+Content-type: text/plain
+
+#!/bin/bash
+# This script will be run by part1, and part1 will run this one as a normal bash script
+# so this script can use normal comments, does'nt need ; at the end of each line etc
+
+springheadlessgitclonepath='git://github.com/hughperkins/springheadless.git';
+springgridgitclonepath='git://github.com/hughperkins/springgrid.git';
+
+export JAVA_HOME='/usr/lib/jvm/java-6-openjdk/jre';
+
+# assume we are running on ubuntu
+distribname='other';
+if [[ -f /etc/lsb-release ]]; then {
+   distribname=$(cat /etc/lsb-release |grep DISTRIB_CODENAME | cut -d= -f 2);
+} fi;
+
+boostversion=40;
+if [[ $distribname == jaunty ]]; then {
+   boostversion=37;
+} fi;
+
+echo "Let's get some information from you first:";
+gotdetails=false;
+while [[ $gotdetails != true ]]; do {
+   echo "What is your aws accesskey? (get it from http://aws.amazon.com)";
+   read accesskey;
+   echo "What is your aws secretaccesskey? (get it from http://aws.amazon.com)";
+   read secretaccesskey;
+   echo "What s3 bucketname do you want to use?";
+   read bucketname;
+   echo "Do you want to shutdown at the end (y/n)?";
+   read shutdownpreference;
+   echo "";
+   echo "Build preferences:";
+   echo "==================";
+   echo "bucket: $bucketname";
+   echo "accesskey: $accesskey";
+   echo "secretaccesskey: $secretaccesskey";
+   echo "shutdown at end: $shutdownpreference";
+   echo "";
+   echo "Notes:";
+   echo "- bucket $bucketname must be owned by you, and already exist";
+   echo "- if you don't have a bucket please download boto first, and create one";
+   echo "- the download url will be: http://$bucketname.s3.amazonaws.com/springheadless_${distribname}.tar.bz2";
+   echo "";
+   echo "Are you sure? (y/n)";
+   read check;
+   if [[ $check == y ]]; then {
+      gotdetails=true;
+   } fi;
+} done;
+
+echo "Installing prerequisites for running spring...";
+sudo apt-get update;
+sudo apt-get --yes install git-core;
+sudo apt-get --yes install libopenal1 libogg0 libvorbisfile3 libfreetype6 libxcursor1 libboost-regex1.${boostversion}.0 libboost-thread1.${boostversion}.0 libboost-program-options1.${boostversion}.0 libboost-system1.${boostversion}.0 libboost-signals1.${boostversion}.0 libglew1.5  libdevil1c2;
+sudo apt-get --yes install openjdk-6-jre-headless;
+
+echo "Installing prequisites for compiling spring...";
+sudo apt-get --yes install build-essential p7zip-full;
+if [[ $distribname == jaunty ]]; then {
+   sudo apt-get --yes install cmake;
+} fi;
+if [[ $distribname == karmic ]]; then {
+   sudo apt-get --yes install cmake-curses-gui;
+} fi;
+sudo apt-get --yes install zlib1g-dev libfreetype6-dev libsdl1.2-dev libopenal-dev libglew-dev zip libvorbis-dev libxcursor-dev libdevil-dev libboost-regex1.${boostversion}-dev libboost-thread1.${boostversion}-dev libboost-program-options1.${boostversion}-dev libboost-system1.${boostversion}-dev libboost-signals1.${boostversion}-dev;
+sudo apt-get --yes install openjdk-6-jdk;
+
+sudo apt-get --yes install libfuse-dev libxml2-dev pkg-config libcurl4-openssl-dev;
+
+echo "Installing s3fs...";
+wget http://s3fs.googlecode.com/files/s3fs-r177-source.tar.gz;
+tar -xzf s3fs-r177-source.tar.gz;
+cd $HOME/s3fs;
+sudo make install;
+
+cd;
+mkdir git;
+cd git;
+git clone $springheadlessgitclonepath;
+cd $HOME/git/springheadless;
+git checkout -b springheadless origin/springheadless;
+
+echo "Building...";
+mkdir build;
+cd build;
+GAMEDIR=$HOME/git/springheadless/game
+cmake -D AIDIR:STRING=$GAMEDIR -D AI_DATA_DIR:STRING=$GAMEDIR -D AI_LIBS_DIR:STRING=$GAMEDIR -D CMAKE_INSTALL_PREFIX:STRING=$GAMEDIR -D DATADIR:STRING=$GAMEDIR -D LIBDIR:STRING=$GAMEDIR -D BINDIR:STRING=$GAMEDIR -D SPRING_DATADIR:STRING=$GAMEDIR ..;
+make;
+make install;
+
+cd $HOME/git;
+tar -cjf springheadless_${distribname}.tar.bz2 springheadless;
+
+echo "Uploading up to s3...";
+echo "copying springheadless.tar.bz2 up to s3 bucket...";
+cd;
+mkdir s3mnt;
+s3fs $bucketname -o accessKeyId=$accesskey -o secretAccessKey=$secretaccesskey -o use_cache=/tmp  -url=https://s3.amazonaws.com -o default_acl=public-read s3mnt;
+cp git/springheadless_${distribname}.tar.bz2 s3mnt;
+fusermount -u s3mnt;
+
+echo "Checking for shutdown...";
+if [[ $shutdownpreference == y ]]; then {
+   echo "shutting down now ...";
+   sudo shutdown -h now;
+} fi;
+
+echo "Finished";
+

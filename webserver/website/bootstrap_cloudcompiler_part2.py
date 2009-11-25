@@ -5,6 +5,7 @@
 #
 # This script assumes it will be run on disposable ec2 cloud nodes, and does not
 # take any steps to protect the os from being compromised
+#
 
 import sys
 import os
@@ -14,5 +15,5 @@ from utils import *
 
 websiteurl=os.path.dirname(os.getenv('SCRIPT_URI'))
 
-jinjahelper.rendertemplate('bootstrap_cloudcompiler.html', websiteurl=websiteurl )
+jinjahelper.rendertemplate('bootstrap_cloudcompiler_part2.html', websiteurl=websiteurl)
 

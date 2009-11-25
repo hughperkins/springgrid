@@ -4,90 +4,9 @@ echo "This script should be able to run in eval, so make sure the lines are ">/d
 echo "terminated in nulls, and also avoid using the # operator, since this">/dev/null;
 echo "will comment out the entirety of the rest of the script :-P">/dev/null;
 
-springheadlessgitclonepath='git://github.com/hughperkins/springheadless.git';
-springgridgitclonepath='git://github.com/hughperkins/springgrid.git';
+echo "This script installs runurl, then runs part2" >/dev/null;
 
-export JAVA_HOME='/usr/lib/jvm/java-6-openjdk/jre';
-
-echo "Let's get some information from you first:";
-gotdetails=false;
-while [[ $gotdetails != true ]]; do {
-   echo "What is your aws accesskey? (get it from http://aws.amazon.com)";
-   read accesskey;
-   echo "What is your aws secretaccesskey? (get it from http://aws.amazon.com)";
-   read secretaccesskey;
-   echo "What s3 bucketname do you want to use?";
-   read bucketname;
-   echo "Do you want to shutdown at the end (y/n)?";
-   read shutdownpreference;
-   echo "";
-   echo "Build preferences:";
-   echo "==================";
-   echo "bucket: $bucketname";
-   echo "accesskey: $accesskey";
-   echo "secretaccesskey: $secretaccesskey";
-   echo "shutdown at end: $shutdownpreference";
-   echo "";
-   echo "Notes:";
-   echo "- bucket $bucketname must be owned by you, and already exist";
-   echo "- if you don't have a bucket please download boto first, and create one";
-   echo "- the download url will be: http://$bucketname.s3.amazonaws.com/springheadless.tar.bz2";
-   echo "";
-   echo "Are you sure? (y/n)";
-   read check;
-   if [[ $check == y ]]; then {
-      gotdetails=true;
-   } fi;
-} done;
-
-echo "Installing prerequisites for running spring...";
-sudo apt-get update;
-sudo apt-get --yes install git-core;
-sudo apt-get --yes install libopenal1 libogg0 libvorbisfile3 libfreetype6 libxcursor1 libboost-regex1.40.0 libboost-thread1.40.0 libboost-program-options1.40.0 libboost-system1.40.0 libboost-signals1.40.0 libglew1.5  libdevil1c2;
-sudo apt-get --yes install openjdk-6-jre-headless;
-
-echo "Installing prequisites for compiling spring...";
-sudo apt-get --yes install cmake-curses-gui build-essential p7zip-full;
-sudo apt-get --yes install zlib1g-dev libfreetype6-dev libsdl1.2-dev libopenal-dev libglew-dev zip libvorbis-dev libxcursor-dev libdevil-dev libboost-regex1.40-dev libboost-thread1.40-dev libboost-program-options1.40-dev libboost-system1.40-dev libboost-signals1.40-dev;
-sudo apt-get --yes install openjdk-6-jdk;
-
-echo "Installing s3fs...";
-wget http://s3fs.googlecode.com/files/s3fs-r177-source.tar.gz;
-tar -xzf s3fs-r177-source.tar.gz;
-sudo apt-get install libfuse-dev libxml2-dev pkg-config libcurl4-openssl-dev;
-cd 3sfs;
-sudo make install;
-cd;
-
-mkdir git;
-cd git;
-git clone $springheadlessgitclonepath;
-cd springheadless;
-git checkout -b springheadless origin/springheadless;
-
-echo "Building...";
-mkdir build;
-cd build;
-cmake -D AIDIR:STRING=$HOME/git/springheadless/game -D AI_DATA_DIR:STRING=$HOME/git/springheadless/game -D AI_LIBS_DIR:STRING=$HOME/git/springheadless/game -D CMAKE_INSTALL_PREFIX:STRING=$HOME/git/springheadless/game -D DATADIR:STRING=$HOME/git/springheadless/game -D LIBDIR:STRING=$HOME/git/springheadless/game -D BINDIR:STRING=$HOME/git/springheadless/game ..;
-make;
-make install;
-
-cd $HOME/git;
-tar -cjf springheadless.tar.bz2 springheadless;
-
-echo "Uploading up to s3...";
-echo "copying springheadless.tar.bz2 up to s3 bucket...";
-cd;
-mkdir s3mnt;
-s3fs $bucketname -o accessKeyId=$accesskey -o secretAccessKey=$secretaccesskey -o use_cache=/tmp  -url=https://s3.amazonaws.com -o default_acl=public-read s3mnt;
-cp git/springheadless.tar.bz2 s3mnt;
-fusermount -u s3mnt;
-
-echo "Checking for shutdown...";
-if [[ $shutdownpreference == y ]]; then {
-   echo "shutting down now ...";
-   sudo shutdown -h now;
-} fi;
-
-echo "Finished";
+sudo wget -qO/usr/bin/runurl run.alestic.com/runurl;
+sudo chmod 755 /usr/bin/runurl;
+runurl {{websiteurl}}/bootstrap_cloudcompiler_part2.py;
 
