@@ -41,18 +41,21 @@ Content-type: text/plain
 # This script will be run by part1, and part1 will run this one as a normal bash script
 # so this script can use normal comments, does'nt need ; at the end of each line etc
 
+set -x # show commands
+set -e # stop on error
+
 # assume we are running on ubuntu
 distribname='other';
 if [[ -f /etc/lsb-release ]]; then {
    distribname=$(cat /etc/lsb-release |grep DISTRIB_CODENAME | cut -d= -f 2);
 } fi;
 
-springheadlessurl='http://hughperkins.s3.amazonaws.com/springheadless_$distribname.tar.bz2';
+springheadlessurl='http://hughperkins.s3.amazonaws.com/springheadless_${distribname}.tar.bz2';
 springgridgitclonepath='git://github.com/hughperkins/springgrid.git';
 export JAVA_HOME='/usr/lib/jvm/java-6-openjdk';
 
 boostversion=40;
-if [[ $distribname == jaunty ]]; then {
+if [[ ${distribname} == jaunty ]]; then {
    boostversion=37;
 } fi;
 
@@ -63,19 +66,19 @@ sudo apt-get --yes install libopenal1 libogg0 libvorbisfile3 libfreetype6 libxcu
 
 echo "Downloading prerequisites for building AIs...";
 sudo apt-get --yes install build-essential p7zip-full;
-if [[ $distribname == jaunty ]]; then {
+if [[ ${distribname} == jaunty ]]; then {
    sudo apt-get --yes install cmake;
 } fi;
-if [[ $distribname == karmic ]]; then {
+if [[ ${distribname} == karmic ]]; then {
    sudo apt-get --yes install cmake-curses-gui;
 } fi;
 sudo apt-get --yes install build-essential p7zip-full;
 sudo apt-get --yes install zlib1g-dev libfreetype6-dev libsdl1.2-dev libopenal-dev libglew-dev zip libvorbis-dev libxcursor-dev libdevil-dev libboost-regex1.${boostversion}-dev libboost-thread1.${boostversion}-dev libboost-program-options1.${boostversion}-dev libboost-system1.${boostversion}-dev libboost-signals1.${boostversion}-dev;
 
+cd;
 git clone $springgridgitclonepath;
 
-cd;
-mkdir git;
+mkdir -p $HOME/git;
 cd $HOME/git;
 if [[ ! -f $(basename $springheadlessurl) ]]; then {
    echo "downloading springheadless.tar.bz2 ...";
