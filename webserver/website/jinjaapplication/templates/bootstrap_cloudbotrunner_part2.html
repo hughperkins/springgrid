@@ -50,9 +50,9 @@ if [[ -f /etc/lsb-release ]]; then {
    distribname=$(cat /etc/lsb-release |grep DISTRIB_CODENAME | cut -d= -f 2);
 } fi;
 
-springheadlessurl='http://hughperkins.s3.amazonaws.com/springheadless_${distribname}.tar.bz2';
-springgridgitclonepath='git://github.com/hughperkins/springgrid.git';
-export JAVA_HOME='/usr/lib/jvm/java-6-openjdk';
+springheadlessurl="http://hughperkins.s3.amazonaws.com/springheadless_${distribname}.tar.bz2";
+springgridgitclonepath="git://github.com/hughperkins/springgrid.git";
+export JAVA_HOME="/usr/lib/jvm/java-6-openjdk";
 
 boostversion=40;
 if [[ ${distribname} == jaunty ]]; then {
@@ -98,4 +98,4 @@ export SPRING_DATADIR=$HOME/git/springheadless/game;
 SPRINGSRCDIR=$HOME/git/springheadless
 python botrunner.py --target-web-site={{websiteurl}} --botrunner-name=cloud-$RANDOM --botrunner-shared-secret=foo --spring-source-path=$SPRINGSRCDIR --spring-path=$SPRINGSRCDIR/game/spring-hl --unitsync-path=$SPRINGSRCDIR/game/libunitsync.so --downloading-ok --yes;
 
-
+s
