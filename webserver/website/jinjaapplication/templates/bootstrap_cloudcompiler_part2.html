@@ -1,8 +1,56 @@
 Content-type: text/plain
 
 #!/bin/bash
-# This script will be run by part1, and part1 will run this one as a normal bash script
-# so this script can use normal comments, does'nt need ; at the end of each line etc
+#
+# Copyright Hugh Perkins 2009
+# hughperkins@gmail.com http://hughperkins.com
+#
+# ====================================================================
+# This program is free software; you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by the
+# Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+# or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+#  more details.
+#
+# You should have received a copy of the GNU General Public License along
+# with this program in the file licence.txt; if not, write to the
+# Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-
+# 1307 USA
+# You can find the licence also on the web at:
+# http://www.opensource.org/licenses/gpl-license.php
+# ====================================================================
+#
+# Script goal:
+#
+# Compile springheadless, and upload the entire build tree
+# to somewhere accessible by the cloudbotrunner script
+#
+# Pre-requisites
+# - base ubuntu server install (jaunty or karmic), or compatible
+# - fast internet connection
+#
+# What it does:
+# - asks for some information from the user:
+#    - s3 connection credentials
+#    - s3 bucket name (corresponds to the 'hughperkins' bit in the download url above)
+#    - whether to shut down the machine after compiling and uploading has finished
+# - downloads all build dependencies: java, gcc, boost, ...
+# - downloads s3fs, for use in upload later
+# - downloads springheadless from git, and checks out the origin/springheadless branch
+# - configures and makes, and make installs
+# - tar.bz2's the entire source tree, including build tree and install dir (result is about 185MB)
+# - uploads to s3
+# - shuts down, or not, depending on earlier user preference
+#
+# ====================================================================
+
+# This script will be run by bootstrap_cloudcompiler, which will download
+# and run this one as a normal bash script
+# so this script can use normal comments, does'nt need ; at the end of each line etc,
 
 springheadlessgitclonepath='git://github.com/hughperkins/springheadless.git';
 springgridgitclonepath='git://github.com/hughperkins/springgrid.git';
