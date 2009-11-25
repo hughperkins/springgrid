@@ -80,7 +80,7 @@ cd;
 if [[ -d $HOME/springgrid ]]; then {   # means we can run this script multiple times
                                       # without errors
    rm -Rf $HOME/springgrid
-};
+} fi;
 git clone $springgridgitclonepath;
 
 mkdir -p $HOME/git;
