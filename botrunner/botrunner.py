@@ -152,10 +152,10 @@ def downloadmap( host, downloadrequest ):
 
    serverrequesthandle = urllib.urlopen( mapurl, None )
    data = serverrequestarray = serverrequesthandle.read()
-   file = open(writabledatadirectory + mapname.split('.')[0] + ".sd7", "wb")
+   file = open(writabledatadirectory + mapname, "wb")
    file.write(data)
    file.close()
-   os.renames(writabledatadirectory + mapname, writabledatadirectory + "maps/" + mapname )
+   os.renames(writabledatadirectory + mapname, writabledatadirectory + "maps/" + mapname.split('.')[0] + ".sd7" )
 
    initUnitSync()
    registermapsallhosts()
