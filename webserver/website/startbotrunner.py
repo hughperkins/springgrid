@@ -31,11 +31,13 @@ from utils import *
 from core import *
 from core.tableclasses import *
 
+websiteurl=os.path.dirname(os.getenv('SCRIPT_URI'))
+
 sqlalchemysetup.setup()
 
 loginhelper.processCookie()
 
-jinjahelper.rendertemplate('startbotrunner.html' )
+jinjahelper.rendertemplate('startbotrunner.html', websiteurl = websiteurl )
 
 sqlalchemysetup.close()
 
