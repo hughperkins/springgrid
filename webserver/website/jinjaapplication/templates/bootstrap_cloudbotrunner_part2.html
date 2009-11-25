@@ -63,10 +63,10 @@ sudo apt-get --yes install libopenal1 libogg0 libvorbisfile3 libfreetype6 libxcu
 
 echo "Downloading prerequisites for building AIs...";
 sudo apt-get --yes install build-essential p7zip-full;
-if [[ $distribname == jaunty]]; then {
+if [[ $distribname == jaunty ]]; then {
    sudo apt-get --yes install cmake;
 } fi;
-if [[ $distribname == karmic]]; then {
+if [[ $distribname == karmic ]]; then {
    sudo apt-get --yes install cmake-curses-gui;
 } fi;
 sudo apt-get --yes install build-essential p7zip-full;
@@ -77,7 +77,10 @@ git clone $springgridgitclonepath;
 cd;
 mkdir git;
 cd $HOME/git;
-wget $springheadlessurl;
+if [[ ! -f $(basename $springheadlessurl) ]]; then {
+   echo "downloading springheadless.tar.bz2 ...";
+   wget $springheadlessurl;
+} fi;
 echo "unpacking springheadless.tar.bz2 ...";
 tar -xjf $(basename $springheadlessurl);
 
