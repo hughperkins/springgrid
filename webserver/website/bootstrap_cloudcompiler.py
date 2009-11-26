@@ -12,5 +12,5 @@ import os
 from core import *
 from utils import *
 
-jinjahelper.rendertemplate('bootstrap_cloudcompiler.html', websiteurl = cgihelper.getScriptWebUrl() )
+jinjahelper.rendertemplate('bootstrap_cloudcompiler.html', websiteurl = cgihelper.getScriptWebDirectory() )
 

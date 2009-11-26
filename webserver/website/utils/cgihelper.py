@@ -24,6 +24,9 @@
 import os
 import sys
 
+def getScriptWebDirectory():
+   return os.path.dirname(getScriptWebUrl())
+
 # returns weburl used to run this script
 # may not be terribly reliable...
 def getScriptWebUrl():

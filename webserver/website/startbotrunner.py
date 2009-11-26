@@ -35,7 +35,7 @@ sqlalchemysetup.setup()
 
 loginhelper.processCookie()
 
-jinjahelper.rendertemplate('startbotrunner.html', websiteurl = cgihelper.getScriptWebUrl() )
+jinjahelper.rendertemplate('startbotrunner.html', websiteurl = cgihelper.getScriptWebDirectory() )
 
 sqlalchemysetup.close()
 
