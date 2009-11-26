@@ -93,6 +93,9 @@ if [[ ! -f $(basename $springheadlessurl) ]]; then {   # save downloading it mul
 echo "unpacking springheadless.tar.bz2 ...";
 tar -xjf $(basename $springheadlessurl);
 
+# initalize config to headless config:
+cp $HOME/git/springheadless/game/config-headless.txt $HOME/.springrc
+
 cd $HOME/springgrid/botrunner;
 export SPRING_DATADIR=$HOME/git/springheadless/game;
 SPRINGSRCDIR=$HOME/git/springheadless
