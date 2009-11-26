@@ -351,42 +351,33 @@ def rungame( serverrequest ):
       if time.time() - lastpingtimeseconds > config.pingintervalminutes * 60:
          doping ( "playing game " + serverrequest['ai0_name'] + " vs " + serverrequest['ai1_name'] + " on " + serverrequest['map_name'] + " " + serverrequest['mod_name'] )
          lastpingtimeseconds = time.time()
+      infologcontents = '' # initialize just in case it doesn't exist yet
       if os.path.exists( writabledatadirectory + "/infolog.txt" ):
          infologcontents = filehelper.readFile( writabledatadirectory + "/infolog.txt" )
-         # print infologcontents
-         ai0endstring = serverrequest['gameendstring'].replace("%TEAMNUMBER%", "0")
-         ai1endstring = serverrequest['gameendstring'].replace("%TEAMNUMBER%", "1")
-         if ( infologcontents.find( ai0endstring ) != -1 ) and ( infologcontents.find(ai1endstring ) == - 1 ):
-            # ai0 died
-            print "team 1 won!"
-            gameresult['winningai'] = 1
-            gameresult['resultstring'] = "ai1won"
-            popen.kill()
-            gameresult['replaypath'] = getreplaypath( infologcontents )
-            return gameresult
-         if infologcontents.find( ai0endstring ) == -1 and infologcontents.find(ai1endstring ) != - 1:
-            # ai1 died
-            print "team 0 won!"
-            gameresult['winningai'] = 0
-            gameresult['resultstring'] = "ai0won"
-            popen.kill()
-            gameresult['replaypath'] = getreplaypath( infologcontents )
-            return gameresult
-         if infologcontents.find( ai0endstring ) != -1 and infologcontents.find(ai1endstring ) != - 1:
-            # both died...
-            print "A draw..." 
-            gameresult['winningai'] = -1
-            gameresult['resultstring'] = "draw"
-            popen.kill()
-            gameresult['replaypath'] = getreplaypath( infologcontents )
-            return gameresult
-
-      # check timeout (== draw)
-      if ( time.time() - starttimeseconds ) > serverrequest['gametimeoutminutes'] * 60:
-         # timeout
-         print "Game timed out"
+      # print infologcontents
+      ai0endstring = serverrequest['gameendstring'].replace("%TEAMNUMBER%", "0")
+      ai1endstring = serverrequest['gameendstring'].replace("%TEAMNUMBER%", "1")
+      if ( infologcontents.find( ai0endstring ) != -1 ) and ( infologcontents.find(ai1endstring ) == - 1 ):
+         # ai0 died
+         print "team 1 won!"
+         gameresult['winningai'] = 1
+         gameresult['resultstring'] = "ai1won"
+         popen.kill()
+         gameresult['replaypath'] = getreplaypath( infologcontents )
+         return gameresult
+      if infologcontents.find( ai0endstring ) == -1 and infologcontents.find(ai1endstring ) != - 1:
+         # ai1 died
+         print "team 0 won!"
+         gameresult['winningai'] = 0
+         gameresult['resultstring'] = "ai0won"
+         popen.kill()
+         gameresult['replaypath'] = getreplaypath( infologcontents )
+         return gameresult
+      if infologcontents.find( ai0endstring ) != -1 and infologcontents.find(ai1endstring ) != - 1:
+         # both died...
+         print "A draw..." 
          gameresult['winningai'] = -1
-         gameresult['resultstring'] = "gametimeout"
+         gameresult['resultstring'] = "draw"
          popen.kill()
          gameresult['replaypath'] = getreplaypath( infologcontents )
          return gameresult
@@ -410,6 +401,16 @@ def rungame( serverrequest ):
                return gameresult
          except:
             pass
+
+      # check timeout (== draw)
+      if ( time.time() - starttimeseconds ) > serverrequest['gametimeoutminutes'] * 60:
+         # timeout
+         print "Game timed out"
+         gameresult['winningai'] = -1
+         gameresult['resultstring'] = "gametimeout"
+         popen.kill()
+         gameresult['replaypath'] = getreplaypath( infologcontents )
+         return gameresult
 
       if popen.poll() != None:
          # spring finished / died / crashed
