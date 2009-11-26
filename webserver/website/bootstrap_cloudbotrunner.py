@@ -12,7 +12,5 @@ import os
 from core import *
 from utils import *
 
-websiteurl=os.path.dirname(os.getenv('SCRIPT_URI'))
-
-jinjahelper.rendertemplate('bootstrap_cloudbotrunner.html', websiteurl = websiteurl )
+jinjahelper.rendertemplate('bootstrap_cloudbotrunner.html', websiteurl = websiteurl = cgihelper.getScriptWebUrl() )
 

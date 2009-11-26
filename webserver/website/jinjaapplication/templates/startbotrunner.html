@@ -37,5 +37,34 @@
 <li>the botrunner should install itself, and start to process requests from the webserver</li>
 </ul>
 
+<h4>Build maintenance procedures</h4>
+
+<p>The botrunner uses a pre-built version of springheadless, which is downloaded from:</p>
+
+<ul>
+<li>http://hughperkins.s3.amazonaws.com/springheadless_karmic.tar.bz2</li>
+</ul>
+
+<p>This distribution is created from springheadless HEAD by running an instance of karmic, and launching the following script in a terminal:</p>
+
+<pre>
+eval $(curl http://manageddreams.com/springgridstaging/bootstrap_cloudcompiler.py)
+</pre>
+
+<p>This will ask you for your s3 credentials, whether to shut down at the end, then run the build and upload it to s3 .</p>
+
+<p>If you don't want to upload it to s3, you can just put empty s3 credentials and bucketname, say 'n' too 'shutdown at the end?', then upload $HOME/git/springheadless_karmic.tar.bz2 yourself to your preferred location once the build has finished.</p>
+
+<h4>Where are the scripts in git?</h4>
+
+<p>The scripts executed by the eval lines above are ultimately derived from the following git files:</p>
+
+<ul>
+<li><a href="http://github.com/hughperkins/springgrid/blob/master/webserver/website/jinjaapplication/templates/bootstrap_cloudcompiler_part2.html">webserver/website/jinjaapplication/templates/bootstrap_cloudcompiler_part2.html</a></li>
+<li><a href="http://github.com/hughperkins/springgrid/blob/master/webserver/website/jinjaapplication/templates/bootstrap_cloudbotrunner_part2.html">webserver/website/jinjaapplication/templates/bootstrap_cloudbotrunner_part2.html</a></li>
+</ul>
+
+<p>This page is derived from: <a href="http://github.com/hughperkins/springgrid/blob/master/webserver/website/jinjaapplication/templates/startbotrunner.html">webserver/website/jinjaapplication/templates/startbotrunner.html</a>.</p>
+
 {% endblock %}
 

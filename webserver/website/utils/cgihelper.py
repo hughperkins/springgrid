@@ -1,5 +1,3 @@
-#!/usr/bin/python
-
 # Copyright Hugh Perkins 2009
 # hughperkins@gmail.com http://manageddreams.com
 #
@@ -21,21 +19,13 @@
 # http://www.opensource.org/licenses/gpl-license.php
 #
 
-import cgitb; cgitb.enable()
-import datetime
+# check also 'formhelper' module for form-specific methods
 
-import sys
 import os
+import sys
 
-from utils import *
-from core import *
-from core.tableclasses import *
-
-sqlalchemysetup.setup()
-
-loginhelper.processCookie()
-
-jinjahelper.rendertemplate('startbotrunner.html', websiteurl = cgihelper.getScriptWebUrl() )
-
-sqlalchemysetup.close()
+# returns weburl used to run this script
+# may not be terribly reliable...
+def getScriptWebUrl():
+   return "http://" + str(os.getenv("SERVER_NAME")) + str(os.getenv("REQUEST_URI"))
 
