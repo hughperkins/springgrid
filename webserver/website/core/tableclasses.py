@@ -277,9 +277,11 @@ class MatchRequestInProgress(Base):
    __tablename__ = 'matchrequests_inprogress'
 
    matchrequest_id = Column(Integer,ForeignKey('matchrequestqueue.matchrequest_id'),primary_key=True )
-   botrunner_id = Column(Integer,ForeignKey('botrunners.botrunner_id'),ForeignKey('botrunner_sessions.botrunner_id'), nullable = False)
-   botrunner_session_id = Column(String(255),ForeignKey('botrunner_sessions.botrunner_session_id'), nullable = False)
+   botrunner_id = Column(Integer,ForeignKey('botrunners.botrunner_id'), nullable = False)
+   botrunner_session_id = Column(String(255), nullable = False)
    datetimeassigned = Column(String(255), nullable = False)
+
+   __table_args__ = (schema.ForeignKeyConstraint(('botrunner_id','botrunner_session_id'),('botrunner_sessions.botrunner_id','botrunner_sessions.botrunner_session_id')), {} )
 
    botrunner= relation("BotRunner")
    botrunnersession = relation("BotRunnerSession", primaryjoin=and_( botrunner_id == BotRunnerSession.botrunner_id, botrunner_session_id == BotRunnerSession.botrunner_session_id ) )
@@ -343,6 +345,10 @@ def addstaticdata(session):
 
    import roles
    roles.addstaticdata()
+
+   import optionshelper
+   optionshelper.addstaticdata()
+
    account = Account("admin","admin" )
    account.passwordinfo = PasswordInfo('admin')
    session.add(account)
@@ -353,15 +359,6 @@ def addstaticdata(session):
    account.addRole( roles.getRole('leagueadmin') )
    account.addRole( roles.getRole('botrunneradmin') )
    account.addRole( roles.getRole('requestadmin') )
-
-   # session.add(Account("guest","guest","guest"))
-
-   aioption_cheatingequalslose = AIOption('cheatingequalslose')
-   aioption_cheatingallowed = AIOption('cheatingallowed')
-   aioption_dummymatch = AIOption('dummymatch')
-   session.add(aioption_cheatingequalslose)
-   session.add(aioption_cheatingallowed)
-   session.add(aioption_dummymatch)
 
    # add a couple of default mods/maps/ais:
    map = Map( 'SmallDivide.smf')

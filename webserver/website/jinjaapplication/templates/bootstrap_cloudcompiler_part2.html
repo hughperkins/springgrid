@@ -118,9 +118,8 @@ if [[ $distribname == karmic ]]; then {
 sudo apt-get --yes install zlib1g-dev libfreetype6-dev libsdl1.2-dev libopenal-dev libglew-dev zip libvorbis-dev libxcursor-dev libdevil-dev libboost-regex1.${boostversion}-dev libboost-thread1.${boostversion}-dev libboost-program-options1.${boostversion}-dev libboost-system1.${boostversion}-dev libboost-signals1.${boostversion}-dev;
 sudo apt-get --yes install openjdk-6-jdk;
 
-sudo apt-get --yes install libfuse-dev libxml2-dev pkg-config libcurl4-openssl-dev;
-
 echo "Installing s3fs...";
+sudo apt-get --yes install libfuse-dev libxml2-dev pkg-config libcurl4-openssl-dev;
 wget http://s3fs.googlecode.com/files/s3fs-r177-source.tar.gz;
 tar -xzf s3fs-r177-source.tar.gz;
 cd $HOME/s3fs;
